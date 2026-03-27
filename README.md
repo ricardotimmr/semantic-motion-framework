@@ -45,7 +45,7 @@ Kern des Tools ist eine strukturierte **Mapping-Datenbank**, die Animationsparam
 | **Framework** | React + Vite |
 | **Sprache** | TypeScript |
 | **Animation** | Framer Motion |
-| **Styling** | TBD |
+| **Styling** | CSS |
 
 ---
 
