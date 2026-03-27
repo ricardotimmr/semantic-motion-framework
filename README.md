@@ -1,131 +1,84 @@
-# React + TypeScript + Vite Frame
+# semantic-motion-ui
 
-A minimal, opinionated starter repository for building modern React applications with TypeScript and Vite.
-
-This repository is intended to be used as a **project frame**: clone or generate a new repository from it, rename it, and build on top without redoing basic setup each time.
-
----
-
-## Features
-
-* **React + TypeScript + Vite** for a fast development experience.
-* **ESLint (flat config) + Prettier** for code quality and consistent formatting.
-* **Path alias** `@/` → `src/` for cleaner imports.
-* **Environment variable** handling via `.env`.
-* **Scalable folder structure** designed for growth.
-* **Minimal starter components** to get you moving immediately.
-* **Project rename script** to quickly personalize new clones.
+> **Bachelor Arbeit · HfG / FH · 2026**  
+> heoriegestütztes Framework und interaktiver Editor zur semantischen Klassifikation von UI-Animationen, umgesetzt mit React, TypeScript & Framer Motion.
 
 ---
 
-## Getting Started
+## Über das Projekt
 
-### Use as a template (Recommended)
+Animationen in modernen User Interfaces werden überwiegend intuitiv oder rein ästhetisch eingesetzt. Große Design-Systeme wie Material Design 3, Apple HIG oder IBM Carbon beschreiben *welche* Animationen verwendet werden sollen — liefern aber keine theoretisch begründete Antwort darauf, *warum* eine bestimmte Bewegung eine bestimmte Bedeutung transportiert.
 
-1. Click **"Use this template"** on GitHub.
-2. Create a new repository from the template.
-3. Clone your new repository locally.
-4. Install dependencies:
+Diese Arbeit entwickelt ein theorie-gestütztes Framework, das UI-Animationen nach ihrer **semantischen Bedeutung** klassifiziert — und demonstriert dieses Framework in einem interaktiven Prototyp: dem **Semantic Motion Editor**.
 
-```bash
-npm install
-npm run dev
+---
+
+## Theoretische Grundlagen
+
+Das Framework stützt sich auf drei Theoriebereiche:
+
+| Bereich | Konzepte | Schlüsselquellen |
+|---|---|---|
+| **Semiotik** | Ikon, Index, Symbol (Peirce); Signifikant / Signifikat (Saussure) | Peirce, C. S. (1931). *Collected Papers*. Harvard University Press. |
+| **Wahrnehmungspsychologie** | Präattentive Verarbeitung, Direction Bias, Object Continuity | Treisman & Gelade (1980). *A feature-integration theory of attention.* Cognitive Psychology. |
+| **Motion Design** | Disney-Prinzipien (Easing, Anticipation, Followthrough), Timing als semantischer Träger | Johnston & Thomas (1981). *The Illusion of Life.* Abbeville Press. |
+
+---
+
+## Prototyp: Semantic Motion Editor
+
+Ein browserbasiertes Tool, das das Framework direkt implementiert:
+
+- **Komponente wählen** — Button, Toggle, Toast, Modal
+- **Motion-Pattern auswählen** — aus der Mapping-Datenbank des Frameworks
+- **Animation in Echtzeit erleben** — mit semantischer Begründung
+- **Code exportieren** — als Framer Motion oder CSS
+
+Kern des Tools ist eine strukturierte **Mapping-Datenbank**, die Animationsparameter auf semantische Bedeutungsdimensionen abbildet (Feedback, State Change, Direction, Hierarchie, Aufmerksamkeit).
+
+---
+
+## Tech Stack
+
+| | |
+|---|---|
+| **Framework** | React + Vite |
+| **Sprache** | TypeScript |
+| **Animation** | Framer Motion |
+| **Styling** | TBD |
+
+---
+
+## Projektstruktur
 
 ```
-
-### Clone manually
-
-If you prefer to clone the repository directly:
-
-```bash
-git clone <repo-url> my-new-project
-cd my-new-project
-npm install
-
+semantic-motion-ui/
+├── src/
+│   ├── framework/          # Mapping-Datenbank & Klassifikationslogik
+│   ├── components/         # UI-Komponenten (Button, Modal, Toast, …)
+│   ├── editor/             # Semantic Motion Editor (Hauptprototyp)
+│   └── theory/             # Theoretische Dokumentation als TS-Typen
+├── docs/                   # Begleitende Dokumentation
+└── README.md
 ```
 
-**Rename the project:**
-To update your `package.json` and project references automatically:
-
-```bash
-npm run rename -- my-new-project
-
-```
+> ⚠️ Struktur vorläufig — wird im Verlauf der Arbeit angepasst.
 
 ---
 
-## Scripts
+## Abgrenzung
 
-| Script | Description |
-| --- | --- |
-| `npm run dev` | Start the development server |
-| `npm run build` | Type-check and build for production |
-| `npm run preview` | Preview the production build locally |
-| `npm run lint` | Run ESLint to find code issues |
-| `npm run format` | Format code with Prettier |
-| `npm run rename -- <name>` | Rename the project (updates `package.json`) |
+Diese Arbeit führt **keine empirische Nutzerstudie** durch. Der wissenschaftliche Beitrag liegt in der theoretischen Herleitung und Systematisierung des Frameworks. Der Prototyp ist **Demonstration**, nicht Evaluation.
 
 ---
 
-## Environment Variables
+## Status
 
-This project uses Vite’s environment variable system. Create a `.env` file based on the provided example:
-
-```bash
-cp .env.example .env
-
-```
-
-> **Note:** All public variables must be prefixed with `VITE_` to be accessible in your application.
+🚧 **In Entwicklung** — Bachelor Thesis, voraussichtlicher Abschluss: 2025
 
 ---
 
-## Path Aliases
+## Autor
 
-The alias `@/` points to the `src/` directory, allowing for cleaner imports regardless of file depth.
-
-**Example:**
-
-```ts
-import { Button } from '@/components/Button';
-import { useAuth } from '@/lib/hooks';
-
-```
-
----
-
-## Project Structure
-
-```text
-src/
-├── app/          # Application shell, providers, layout
-├── components/   # Reusable UI components
-├── lib/          # Utilities, hooks, and helpers
-├── styles/       # Global styles and themes
-└── types/        # Shared TypeScript types and interfaces
-
-```
-
----
-
-## Formatting & Linting
-
-* **ESLint** handles code quality and identifies common React/TypeScript issues.
-* **Prettier** is responsible for code formatting only.
-* Conflicting ESLint formatting rules are disabled via `eslint-config-prettier`.
-
-**Recommended Editor Setup:**
-
-* Enable **Format on Save**.
-* Install the **ESLint** and **Prettier** extensions (e.g., for VS Code).
-
----
-
-## Adding More Tooling
-
-This frame intentionally avoids locking in specific libraries to remain flexible. Add these as needed:
-
-* **Styling:** Tailwind CSS, CSS Modules, or Styled Components.
-* **Routing:** React Router or TanStack Router.
-* **State Management:** Zustand, Redux Toolkit, or Jotai.
-* **Testing:** Vitest and React Testing Library.
+**Ricardo Timm**  
+Bachelor Thesis · TH Köln · Betreuer: Prof. Christian Noss
