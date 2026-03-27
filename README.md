@@ -1,4 +1,4 @@
-# semantic-motion-ui
+# semantic-motion-framework
 
 > **Bachelor Arbeit · HfG / FH · 2026**  
 > heoriegestütztes Framework und interaktiver Editor zur semantischen Klassifikation von UI-Animationen, umgesetzt mit React, TypeScript & Framer Motion.
@@ -7,9 +7,9 @@
 
 ## Über das Projekt
 
-Animationen in modernen User Interfaces werden überwiegend intuitiv oder rein ästhetisch eingesetzt. Große Design-Systeme wie Material Design 3, Apple HIG oder IBM Carbon beschreiben *welche* Animationen verwendet werden sollen — liefern aber keine theoretisch begründete Antwort darauf, *warum* eine bestimmte Bewegung eine bestimmte Bedeutung transportiert.
+Animationen in modernen User Interfaces werden überwiegend intuitiv oder rein ästhetisch eingesetzt. Große Design-Systeme wie Material Design 3, Apple HIG oder IBM Carbon beschreiben *welche* Animationen verwendet werden sollen, liefern aber keine theoretisch begründete Antwort darauf, *warum* eine bestimmte Bewegung eine bestimmte Bedeutung transportiert.
 
-Diese Arbeit entwickelt ein theorie-gestütztes Framework, das UI-Animationen nach ihrer **semantischen Bedeutung** klassifiziert — und demonstriert dieses Framework in einem interaktiven Prototyp: dem **Semantic Motion Editor**.
+Diese Arbeit entwickelt ein theorie-gestütztes Framework, das UI-Animationen nach ihrer **semantischen Bedeutung** klassifiziert, und demonstriert dieses Framework in einem interaktiven Prototyp: dem **Semantic Motion Editor**.
 
 ---
 
