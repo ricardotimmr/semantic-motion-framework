@@ -1,7 +1,7 @@
 # semantic-motion-framework
 
 > **Bachelor Arbeit · HfG / FH · 2026**  
-> heoriegestütztes Framework und interaktiver Editor zur semantischen Klassifikation von UI-Animationen, umgesetzt mit React, TypeScript & Framer Motion.
+> Theoriegestütztes Framework und interaktiver Editor zur semantischen Klassifikation von UI-Animationen, umgesetzt mit React, TypeScript & Framer Motion.
 
 ---
 
