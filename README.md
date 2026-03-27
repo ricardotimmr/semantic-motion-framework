@@ -74,7 +74,7 @@ Diese Arbeit führt **keine empirische Nutzerstudie** durch. Der wissenschaftlic
 
 ## Status
 
-🚧 **In Entwicklung** — Bachelor Thesis, voraussichtlicher Abschluss: 2025
+🚧 **In Entwicklung** — Bachelor Thesis, voraussichtlicher Abschluss: 2026
 
 ---
 
