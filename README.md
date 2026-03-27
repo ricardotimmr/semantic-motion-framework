@@ -7,9 +7,13 @@
 
 ## Über das Projekt
 
-Animationen in modernen User Interfaces werden überwiegend intuitiv oder rein ästhetisch eingesetzt. Große Design-Systeme wie Material Design 3, Apple HIG oder IBM Carbon beschreiben *welche* Animationen verwendet werden sollen, liefern aber keine theoretisch begründete Antwort darauf, *warum* eine bestimmte Bewegung eine bestimmte Bedeutung transportiert.
+Animationen werden überwiegend intuitiv oder auf Basis ästhetischer Konventionen eingesetzt, anstatt auf einer theoretischen Grundlage zu beruhen. Große Design-Systeme wie Material Design 3, Apple HIG oder IBM Carbon beschreiben *welche* Animationen verwendet werden sollen, liefern aber keine theoretisch begründete Antwort darauf, *warum* eine bestimmte Bewegung eine bestimmte Bedeutung transportiert.
 
 Diese Arbeit entwickelt ein theorie-gestütztes Framework, das UI-Animationen nach ihrer **semantischen Bedeutung** klassifiziert, und demonstriert dieses Framework in einem interaktiven Prototyp: dem **Semantic Motion Editor**.
+
+## Wissenschaftlicher Beitrag
+
+Diese Arbeit liefert einen systematischen Ansatz zur Betrachtung von UI-Animationen als Bedeutungsträger, indem Motion Design, Semiotik und Wahrnehmungspsychologie in einem gemeinsamen Framework zusammengeführt werden.
 
 ---
 
@@ -52,7 +56,7 @@ Kern des Tools ist eine strukturierte **Mapping-Datenbank**, die Animationsparam
 ## Projektstruktur
 
 ```
-semantic-motion-ui/
+semantic-motion-framework/
 ├── src/
 │   ├── framework/          # Mapping-Datenbank & Klassifikationslogik
 │   ├── components/         # UI-Komponenten (Button, Modal, Toast, …)
@@ -62,7 +66,7 @@ semantic-motion-ui/
 └── README.md
 ```
 
->  Struktur vorläufig — wird im Verlauf der Arbeit angepasst.
+>  Struktur vorläufig, wird im Verlauf der Arbeit angepasst.
 
 ---
 
