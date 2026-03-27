@@ -62,7 +62,7 @@ semantic-motion-ui/
 └── README.md
 ```
 
-> ⚠️ Struktur vorläufig — wird im Verlauf der Arbeit angepasst.
+>  Struktur vorläufig — wird im Verlauf der Arbeit angepasst.
 
 ---
 
@@ -74,7 +74,7 @@ Diese Arbeit führt **keine empirische Nutzerstudie** durch. Der wissenschaftlic
 
 ## Status
 
-🚧 **In Entwicklung** — Bachelor Thesis, voraussichtlicher Abschluss: 2026
+**In Entwicklung** — Bachelor Thesis, voraussichtlicher Abschluss: 2026
 
 ---
 
