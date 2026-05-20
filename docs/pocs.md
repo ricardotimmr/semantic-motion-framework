@@ -13,7 +13,7 @@ Die POCs bauen aufeinander auf. POC 2 setzt POC 1 voraus, POC 3 setzt POC 2 vora
 ## POC 1: Basis-Animationssystem
 
 **Ordner:** `/pocs/poc-01-animation-system/`  
-**Geplant:** Woche 4 (19.-25. Mai 2026)
+**Geplant:** Woche 4 
 
 ### Ziel
 
@@ -49,7 +49,7 @@ Kein Mapping-System, keine Datenbankanbindung, keine dynamische Auswahl. Nur har
 ## POC 2: Mapping-Datenbank
 
 **Ordner:** `/pocs/poc-02-mapping-db/`  
-**Geplant:** Woche 5 (26. Mai-1. Juni 2026)
+**Geplant:** Woche 5
 
 ### Ziel
 
@@ -117,7 +117,7 @@ Keine UI, keine Preview. Nur die Datenstruktur und Lookup-Logik. Toggle und Moda
 ## POC 3: Echtzeit-Preview-Komponente
 
 **Ordner:** `/pocs/poc-03-preview/`  
-**Geplant:** Woche 5 (26. Mai-1. Juni 2026)
+**Geplant:** Woche 5
 
 ### Ziel
 
@@ -153,7 +153,7 @@ Kein Code-Export, kein vollständiges Editor-UI, keine Begründungstexte im UI (
 ## POC 4: Code-Export
 
 **Ordner:** `/pocs/poc-04-export/`  
-**Geplant:** Woche 6 (2.-8. Juni 2026)
+**Geplant:** Woche 6
 
 ### Ziel
 
@@ -230,7 +230,7 @@ Kein vollständiges Editor-UI. Der Export wird als isolierte Funktion validiert,
 ## POC 5: Minimale End-to-End-Integration
 
 **Ordner:** `/pocs/poc-05-integration/`  
-**Geplant:** Woche 6 (2.-8. Juni 2026, parallel zu POC 4)
+**Geplant:** Woche 6
 
 ### Ziel
 
