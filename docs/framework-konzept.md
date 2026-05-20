@@ -498,6 +498,62 @@ Diese Besonderheit hat eine direkte Konsequenz für die Animationsparameter: Ani
 
 ---
 
+### Komponente: Skeleton Loader
+
+Der Skeleton Loader nimmt im Framework eine Sonderstellung ein: Er ist die einzige Komponente, deren primäre Animation als symbolisches Zeichen nach Peirce klassifiziert wird. Alle anderen Komponenten erzeugen überwiegend ikonische oder indexikalische Zeichen. Der Skeleton Loader schließt damit die Peirce-Trichotomie im Framework vollständig ab.
+
+**Semiotische Begründung der Sonderstellung:** Die Shimmer-Animation hat keine ikonische Ähnlichkeit mit einem Ladeprozess und keine indexikalische (kausale oder assoziative) Beziehung zu ihm. Die Verbindung zwischen Bewegung und Bedeutung ist rein konventionell, entstanden durch jahrelangen Einsatz in digitalen Interfaces (Facebook, LinkedIn, iOS). Chandler (2007, S. 36): „A symbol is a sign which refers to the object that it denotes by virtue of a law, usually an association of general ideas." Der Skeleton-Shimmer ist ein Symbol im Peirce'schen Sinne.
+
+**Konsequenz für den Easing-Parameter:** Lineares Easing ist im Framework sonst ein Ausnahmefall, der aus Mangel an wahrnehmungspsychologischer Plausibilität vermieden wird. Beim Skeleton Loader ist Linear die semantisch korrekte Wahl: Konstante Geschwindigkeit ohne erkennbare Anfangs- oder Endphase signalisiert einen kontinuierlichen, phasenlosen Prozess ohne definierten Abschluss. Das entspricht genau dem Ladezustand. Linear ist der einzige Eintrag im Framework, bei dem dieser Preset positiv begründet wird.
+
+**Gilt für Dimensionen:** Aufmerksamkeit (Laden, Aufgelöst)
+
+---
+
+#### Skeleton Loader / Aufmerksamkeit / Laden
+
+**Bedeutung:** Der Platzhalter ist aktiv und signalisiert, dass Inhalte geladen werden. Das Signal ist dauerhaft aktiv, bis die Daten eingetroffen sind.
+
+**Leitprinzip:** Gleichmäßige, endlose Bewegung ohne Anfang und Ende. Die Konstanz der Bewegung kommuniziert einen laufenden Prozess. Keine Beschleunigung, keine Pause, kein Abklingen.
+
+| Parameter | Wert | Begründung |
+|---|---|---|
+| Easing | Linear `[0.0, 0.0, 1.0, 1.0]` | Konstante Geschwindigkeit signalisiert phasenlosen Dauerprozess (Zacks & Tversky 2001) |
+| Duration | 1400–1600ms pro Zyklus | Langsam genug, um nicht störend zu wirken; schnell genug, um Aktivität zu signalisieren |
+| Direction | x (von links nach rechts) | Leserichtungskonvention; nicht bedeutungstragend, sondern konventionell |
+| Amplitude | Volle Breite des Elements | Vollständige Überstreifung des Platzhalters |
+| Iterations | Endlos (bis Daten eingetroffen) | Persistenz ist das semantische Ziel |
+| Zeichentyp | Symbol | Rein konventionelle Bedeutungsbeziehung ohne ikonische oder indexikalische Grundlage |
+
+**Implementierungshinweis:** Die Shimmer-Animation wird als Gradient-Translation implementiert: Ein heller Lichtstreifen bewegt sich mit konstanter Geschwindigkeit horizontal über den Platzhalter. In Framer Motion über `backgroundPosition` oder ein absolut positioniertes Pseudo-Element mit `translateX`. In CSS über `@keyframes` mit `background-position` auf einem `linear-gradient`. Die Iteration muss programmatisch gestoppt werden, wenn die Daten eingetroffen sind.
+
+**Für Editor-Begründungstext:** Der gleichmäßige Shimmer bewegt sich mit konstanter Geschwindigkeit über den Platzhalter. Es besteht keine natürliche Verbindung zwischen dieser Bewegung und dem Ladevorgang. Die Bedeutung entsteht ausschließlich durch Konvention, die sich durch den verbreiteten Einsatz in digitalen Interfaces etabliert hat.
+
+**Accessibility-Hinweis:** Der Skeleton Loader muss bei aktivierter `prefers-reduced-motion` Media Query die Shimmer-Animation deaktivieren. Der statische Platzhalter allein ist ausreichend, um den Ladezustand zu kommunizieren, da seine Form bereits einen Hinweis auf den erwarteten Inhalt gibt.
+
+---
+
+#### Skeleton Loader / Aufmerksamkeit / Aufgelöst
+
+**Bedeutung:** Die Inhalte sind eingetroffen. Der Platzhalter verschwindet und macht dem tatsächlichen Inhalt Platz.
+
+**Leitprinzip:** Das Ausblenden des Skeletons und das Einblenden des Inhalts laufen gleichzeitig mit leichter Überlappung. Das Ausblenden ähnelt dem physischen Verblassen eines Objekts und ist deshalb als ikonisches Zeichen klassifiziert, nicht als Symbol wie der Shimmer.
+
+| Parameter | Wert | Begründung |
+|---|---|---|
+| Easing | Ease-Out `[0.0, 0.0, 0.2, 1.0]` | Abklingen als Signal für Abschluss des Ladeprozesses (Zacks & Tversky 2001) |
+| Duration | 300–400ms | Wahrnehmbar als Zustandswechsel, nicht abrupt |
+| Direction | none | Keine translatorische Bewegung; nur Opazitätsänderung |
+| Amplitude | Opacity 1 → 0 | Vollständiges Ausblenden |
+| Iterations | 1 | |
+| Zeichentyp | Ikon | Opazitätsreduktion ähnelt physikalischem Verblassen und Verschwinden |
+
+**Konsistenzprinzip:** Der Resolved-Eintrag wird bewusst als Ikon klassifiziert, obwohl der Loading-Eintrag ein Symbol ist. Der Shimmer hat keine natürliche Grundlage, das Ausblenden hat sie. Diese Asymmetrie ist theoretisch korrekt und muss im Theoriekapitel explizit benannt werden, um nicht als Inkonsistenz des Frameworks zu wirken.
+
+**Für Editor-Begründungstext:** Der Skeleton blendet aus, sobald der Inhalt eingetroffen ist. Das Ausblenden ähnelt dem physischen Verschwinden eines Platzhalters und signalisiert, dass der Ladeprozess abgeschlossen ist.
+
+---
+
 ## 4. Klassifikationslogik: Entscheidungsbaum
 
 Für jeden Animationsfall wird die Bedeutungsdimension nach folgendem Schema bestimmt:
@@ -541,10 +597,12 @@ Die folgende Tabelle gibt einen Überblick aller geplanten Mappings. Die vollst�
 | Modal | Direction | Exit | Ease-In | 280ms | y (nach unten) | Volle Höhe | Index |
 | Input Field | Feedback | Success | Ease-Out | 175ms | none | Scale 1.0→1.02→1.0 | Ikon/Index |
 | Input Field | Feedback | Error | Sharp | 275ms | x (Shake) | ±5px | Index |
-| Input Field | Feedback | Warning | Ease-In-Out | 300ms | none | Opacity-Transition | Symbol |
+| Input Field | Feedback | Warning | Ease-In-Out | 300ms | none | Opacity-Transition | Ikon |
 | Input Field | State Change | Focus | Ease-Out | 175ms | none | Border-Transition + Label | Ikon |
 | Input Field | State Change | Blur | Ease-In | 150ms | none | Border-Rücktransition | Ikon |
 | Input Field | Aufmerksamkeit | Pflichtfeld-Hinweis | Sharp | 325ms | x (Shake) | ±6px | Index |
+| Skeleton Loader | Aufmerksamkeit | Laden | Linear | 1500ms | x (Shimmer) | Volle Breite | **Symbol** |
+| Skeleton Loader | Aufmerksamkeit | Aufgelöst | Ease-Out | 350ms | none | Opacity 1→0 | Ikon |
 
 ---
 
@@ -556,4 +614,4 @@ Die folgende Tabelle gibt einen Überblick aller geplanten Mappings. Die vollst�
 
 **Accessibility:** Alle Animationen müssen `prefers-reduced-motion` respektieren. Das Framework definiert keine statischen Alternativzustände; diese sind in der Editor-Implementierung zu ergänzen.
 
-**Scope:** Das Framework deckt fünf Komponenten und fünf Bedeutungsdimensionen ab. Es erhebt keinen Anspruch auf Vollständigkeit für alle UI-Komponenten oder alle denkbaren Bedeutungsdimensionen.
+**Scope:** Das Framework deckt sechs Komponenten und fünf Bedeutungsdimensionen ab. Es erhebt keinen Anspruch auf Vollständigkeit für alle UI-Komponenten oder alle denkbaren Bedeutungsdimensionen. Mit dem Skeleton Loader sind alle drei Peirce-Zeichentypen (Ikon, Index, Symbol) im Framework vertreten.
