@@ -148,7 +148,7 @@ Aus dieser Analyse ergeben sich folgende Prioritäten für den Editor:
 
 **Code-Export als First-Class-Feature:** Profil B wird das Tool nur nutzen, wenn der Export direkt verwertbaren Code liefert. Framer Motion hat Priorität vor CSS.
 
-**Schmale Komponentenauswahl:** Vier Komponenten (Button, Toggle, Toast, Modal) decken die relevantesten Anwendungsfälle ab und halten den Scope realistisch. Keine Erweiterung für den Prototyp geplant.
+**Schmale Komponentenauswahl:** Sechs Komponenten (Button, Toggle, Toast, Modal, Input, Skeleton Loader) decken die relevantesten Anwendungsfälle ab und halten den Scope realistisch. Input ergänzt Validierungs- und Fokusfälle, Skeleton Loader ergänzt den symbolischen Zeichentyp nach Peirce. Keine Erweiterung über diese sechs Komponenten hinaus ist für den Prototyp geplant.
 
 **Keine Nutzerregistrierung, kein Persistenz-Layer:** Das Tool wird als statische Applikation betrieben. Beide Primärprofile erwarten keine Account-Funktionalität.
 

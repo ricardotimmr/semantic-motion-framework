@@ -69,8 +69,8 @@ Feedback (Success, Error, Warning), State Change, Direction (Forward, Backward),
 ### 3.3 Die Mapping-Datenbank
 Animationsparameter als Kodierungsebene: Easing, Duration, Direction, Amplitude. Herleitung jedes Parameters aus dem theoretischen Rahmen. Datenstruktur: TypeScript-Typen und Schema. Zwei Textebenen je Eintrag: interne Quellenangabe (Peirce-Zeichentyp) und nutzergerichteter Begründungstext (Norman-Sprache) — nur die zweite Ebene wird im Editor angezeigt. Wissenschaftliche Nachvollziehbarkeit: Keine Zuordnung ohne Quellenverankerung.
 
-### 3.4 Die fünf UI-Komponenten
-Auswahlprinzip: Button, Toggle, Toast und Modal decken die vier häufigsten Interaktionskategorien ab (Aktion, Zustand, Benachrichtigung, Fokusunterbrechung). Der Skeleton Loader ergänzt als fünfte Komponente den Symbol-Typ der Peirce-Trichotomie, der in den anderen vier Komponenten nicht dominant vertreten ist — seine rotierende Animation hat keine ikonische oder indexikalische Grundlage, sondern ist reine Konvention. Damit wird die vollständige Trichotomie (Ikon, Index, Symbol) in der praktischen Demonstration des Frameworks abgedeckt. Tabellarische Darstellung: je Komponente relevante Bedeutungsdimensionen und ein exemplarisches Mapping-Pattern mit Parameterwerten.
+### 3.4 Die sechs UI-Komponenten
+Auswahlprinzip: Button, Toggle, Toast und Modal decken zentrale Interaktionskategorien ab (Aktion, Zustand, Benachrichtigung, Fokusunterbrechung). Input ergänzt Validierungs- und Fokuszustände während laufender Eingabe. Der Skeleton Loader ergänzt den Symbol-Typ der Peirce-Trichotomie, der in den anderen Komponenten nicht dominant vertreten ist — seine Shimmer-Animation hat keine ikonische oder indexikalische Grundlage, sondern ist reine Konvention. Damit wird die vollständige Trichotomie (Ikon, Index, Symbol) in der praktischen Demonstration des Frameworks abgedeckt. Tabellarische Darstellung: je Komponente relevante Bedeutungsdimensionen und ein exemplarisches Mapping-Pattern mit Parameterwerten.
 
 ### 3.5 Scope-Abgrenzung
 Was das Framework explizit nicht leistet: keine empirische Validierung, keine kulturelle Universalität, keine Vollständigkeit der Komponentenabdeckung.
@@ -113,7 +113,7 @@ Animationsbedeutungen sind nicht universell. Eco: kulturelle Konventionalität v
 WCAG 2.1 SC 2.3.3 und `prefers-reduced-motion` als offene Anforderung an das Framework.
 
 #### 5.2.4 Scope-Begrenzung des Prototyps
-Vier Komponenten, fünf Bedeutungsdimensionen. Was bewusst ausgelassen wurde und warum.
+Sechs Komponenten, fünf Bedeutungsdimensionen. Was bewusst ausgelassen wurde und warum.
 
 ### 5.3 Ausblick
 

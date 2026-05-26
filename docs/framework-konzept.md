@@ -374,7 +374,7 @@ Das Framework behandelt folgende Parameter als bedeutungstragende Einheiten:
 
 ### Komponente: Input Field
 
-Das Input Field ist die einzige Komponente im Framework, bei der der Nutzer aktiv im Element ist, während Animationen ausgelöst werden können. Das unterscheidet sie fundamental von den anderen vier Komponenten: Beim Button, Toggle oder Modal ist die Nutzeraktion abgeschlossen, bevor die Animation beginnt. Beim Input Field kann die Animation während der laufenden Interaktion stattfinden, etwa wenn eine Validierung in Echtzeit ausgelöst wird.
+Das Input Field ist die einzige Komponente im Framework, bei der der Nutzer aktiv im Element ist, während Animationen ausgelöst werden können. Das unterscheidet sie fundamental von den anderen interaktiven Komponenten: Beim Button, Toggle, Toast oder Modal ist die Nutzeraktion abgeschlossen oder das Element systeminitiiert, bevor die Animation beginnt. Beim Input Field kann die Animation während der laufenden Interaktion stattfinden, etwa wenn eine Validierung in Echtzeit ausgelöst wird.
 
 Diese Besonderheit hat eine direkte Konsequenz für die Animationsparameter: Animationen am Input Field müssen kürzer und subtiler sein als an anderen Komponenten, weil sie den laufenden Eingabefluss nicht unterbrechen dürfen. Hochamplitudige oder langandauernde Animationen (wie der volle Button-Error-Shake) wären während aktiver Eingabe störend. Der Error-Shake wird deshalb für das Input Field in Duration und Amplitude reduziert.
 
