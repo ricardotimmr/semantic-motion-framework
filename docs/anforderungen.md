@@ -30,16 +30,16 @@ Jede Anforderung ist mit Priorität (hoch / mittel) und der Quelle aus der Stake
 
 **FA-01: Komponentenauswahl**
 
-Der Editor ermöglicht die Auswahl einer UI-Komponente aus einer vordefinierten Liste: Button, Toggle, Toast, Modal, Input und Skeleton Loader. Die Auswahl bestimmt, welche Motion-Pattern und Bedeutungsdimensionen angezeigt werden.
+Der Editor ermöglicht die Auswahl einer UI-Komponente aus einer vordefinierten Liste: Button, Toggle, Toast, Modal, Input und Skeleton Loader. Die Auswahl bestimmt, welche semantischen Mappings und Bedeutungsdimensionen angezeigt werden.
 
 Priorität: hoch  
 Quelle: Profil A (Designer), Profil B (Entwickler)
 
 ---
 
-**FA-02: Motion-Pattern-Auswahl**
+**FA-02: Semantische Mapping-Auswahl**
 
-Für jede Komponente stehen mehrere Motion-Pattern zur Auswahl, die aus der Mapping-Datenbank des Frameworks stammen. Die Auswahl ist auf semantisch sinnvolle Kombinationen beschränkt. Nicht passende Kombinationen werden nicht angeboten.
+Für jede Komponente stehen die semantisch unterstützten Kombinationen aus Bedeutungsdimension und Subkategorie zur Auswahl. Jede Kombination verweist auf genau ein theoretisch hergeleitetes Mapping aus der Mapping-Datenbank. Nicht passende Kombinationen werden nicht angeboten.
 
 Priorität: hoch  
 Quelle: Profil A, Profil B
@@ -57,7 +57,7 @@ Quelle: Profil A, Profil B
 
 **FA-04: Semantische Begründung**
 
-Zu jeder Kombination aus Komponente und Motion-Pattern wird eine verständliche Begründung angezeigt. Die Begründung benennt den theoretischen Ursprung der Semantik, beispielsweise Direction Bias, Peirce-Zeichentyp oder Disney-Prinzip. Sie ist ohne Fachkenntnis in Semiotik lesbar und kontextualisiert Fachbegriffe beim ersten Auftreten.
+Zu jeder Kombination aus Komponente, Bedeutungsdimension und Subkategorie wird eine verständliche Begründung angezeigt. Die Begründung benennt den theoretischen Ursprung der Semantik, beispielsweise Direction Bias, Peirce-Zeichentyp oder Disney-Prinzip. Sie ist ohne Fachkenntnis in Semiotik lesbar und kontextualisiert Fachbegriffe beim ersten Auftreten.
 
 Priorität: hoch  
 Quelle: Profil A, Design-System-Verantwortliche, Betreuer
@@ -205,12 +205,11 @@ Use Cases beschreiben konkrete Handlungsszenarien aus Nutzerperspektive. Sie sin
 **Ablauf:**
 1. Nutzerin wählt die Komponente Toast.
 2. Nutzerin wählt die Bedeutungsdimension Feedback / Error.
-3. Der Editor zeigt die verfügbaren Motion-Pattern für diese Kombination.
-4. Nutzerin wählt ein Pattern (z.B. Horizontal Shake).
-5. Die Animationsvorschau spielt die Animation am Toast ab.
-6. Die semantische Begründung erklärt: Direction Bias nach Peirce (Index), horizontale Bewegung als kulturell kodiertes Ablehnungssignal.
-7. Nutzerin wiederholt die Vorschau, um die Animation einzuprägen.
-8. Nutzerin notiert die Begründung für das Design-Review.
+3. Der Editor zeigt das semantisch hergeleitete Mapping für diese Kombination.
+4. Die Animationsvorschau spielt die abgeleitete Animation am Toast ab.
+5. Die semantische Begründung erklärt: Direction Bias nach Peirce (Index), horizontale Bewegung als kulturell kodiertes Ablehnungssignal.
+6. Nutzerin wiederholt die Vorschau, um die Animation einzuprägen.
+7. Nutzerin notiert die Begründung für das Design-Review.
 
 **Ergebnis:** Nutzerin hat eine semantisch begründete Animation und die Sprache, sie zu erklären.
 
@@ -225,8 +224,8 @@ Use Cases beschreiben konkrete Handlungsszenarien aus Nutzerperspektive. Sie sin
 **Ablauf:**
 1. Entwickler wählt die Komponente Button.
 2. Entwickler wählt die Bedeutungsdimension Feedback / Success.
-3. Der Editor zeigt die verfügbaren Motion-Pattern (z.B. Scale Up + Ease Out).
-4. Entwickler wählt das Pattern und prüft die Vorschau.
+3. Der Editor zeigt das semantisch hergeleitete Mapping (z.B. Scale Up + Ease Out).
+4. Entwickler prüft die Vorschau.
 5. Entwickler öffnet den Code-Export-Bereich.
 6. Der Editor zeigt den Framer-Motion-Code mit inline Kommentaren.
 7. Entwickler kopiert den Code per Copy-to-Clipboard.
@@ -245,10 +244,10 @@ Use Cases beschreiben konkrete Handlungsszenarien aus Nutzerperspektive. Sie sin
 **Ablauf:**
 1. Nutzerin wählt die Komponente Toggle.
 2. Nutzerin wählt die Bedeutungsdimension State Change.
-3. Der Editor zeigt Pattern für den Wechsel zwischen on und off.
-4. Nutzerin vergleicht zwei Pattern durch abwechselnde Auswahl und Vorschau.
-5. Die Begründung erklärt den Unterschied: Ease-In-Out als Signal für physische Trägheit (Object Continuity), Ease-Out als Signal für Zielorientierung.
-6. Nutzerin entscheidet sich für das semantisch passendere Pattern.
+3. Der Editor zeigt die unterstützten Subkategorien Toggle On und Toggle Off.
+4. Nutzerin wechselt zwischen On und Off und prüft die jeweilige Vorschau.
+5. Die Begründung erklärt, warum beide Zustände symmetrische Parameter verwenden und dadurch keine irreführende Hierarchie zwischen On und Off erzeugen.
+6. Nutzerin versteht die semantische Begründung der Zustandswechsel.
 
 **Ergebnis:** Nutzerin trifft eine informierte Entscheidung und kann sie im Team begründen.
 
@@ -263,10 +262,10 @@ Use Cases beschreiben konkrete Handlungsszenarien aus Nutzerperspektive. Sie sin
 **Ablauf:**
 1. Entwickler wählt die Komponente Modal.
 2. Entwickler wählt die Bedeutungsdimension Direction / Enter.
-3. Der Editor zeigt Pattern für das Einblenden (z.B. Scale + Fade In, Ease Out).
+3. Der Editor zeigt das Mapping für das Einblenden (z.B. Scale + Fade In, Ease Out).
 4. Entwickler exportiert den Framer-Motion-Code.
 5. Entwickler wählt anschliessend Direction / Exit.
-6. Der Editor zeigt das semantisch spiegelbildliche Pattern (Scale + Fade Out, Ease In).
+6. Der Editor zeigt das semantisch komplementäre Mapping (Scale + Fade Out, Ease In).
 7. Entwickler exportiert auch diesen Code.
 
 **Ergebnis:** Entwickler hat semantisch konsistente Enter- und Exit-Animationen, die eine klare Richtungssprache etablieren.
@@ -297,10 +296,7 @@ Bedeutungsdimension auswählen
   +-- Unterkategorie auswählen (z.B. Feedback -> Error / Success / Warning)
   |
   v
-Verfügbare Motion-Pattern werden angezeigt
-  |
-  v
-Pattern auswählen
+Semantisch hergeleitetes Mapping wird angezeigt
   |
   v
 Animationsvorschau spielt automatisch ab
@@ -319,7 +315,7 @@ Ende (oder: weiter zu Code-Export -> UF-02)
 ### UF-02: Erweiterungsflow – Code exportieren
 
 ```
-[Fortsetzung aus UF-01 nach Pattern-Auswahl]
+[Fortsetzung aus UF-01 nach Mapping-Anzeige]
   |
   v
 Code-Export-Bereich öffnen
@@ -341,13 +337,13 @@ Ende
 
 ---
 
-### UF-03: Vergleichsflow – Zwei Pattern gegenüberstellen
+### UF-03: Vergleichsflow – Zwei semantische Mappings gegenüberstellen
 
 ```
-[Fortsetzung aus UF-01 nach erstem Pattern]
+[Fortsetzung aus UF-01 nach erstem Mapping]
   |
   v
-Anderes Pattern in derselben Kategorie auswählen
+Andere Komponente, Dimension oder Subkategorie auswählen
   |
   v
 Vorschau spielt ab
@@ -355,10 +351,10 @@ Vorschau spielt ab
   v
 Begründung aktualisiert sich
   |
-  +-- Zurück zum vorherigen Pattern (Auswahl wechseln)
+  +-- Zurück zum vorherigen Mapping (Auswahl wechseln)
   |
   v
-Entscheidung für ein Pattern
+Semantischen Unterschied nachvollziehen
   |
   v
 Weiter zu Code-Export (UF-02) oder Ende
@@ -373,7 +369,7 @@ Die folgende Tabelle zeigt, welche Anforderungen welche Use Cases und User Flows
 | Anforderung | UC-01 | UC-02 | UC-03 | UC-04 | UF-01 | UF-02 | UF-03 |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | FA-01: Komponentenauswahl | x | x | x | x | x | | |
-| FA-02: Motion-Pattern-Auswahl | x | x | x | x | x | | x |
+| FA-02: Semantische Mapping-Auswahl | x | x | x | x | x | | x |
 | FA-03: Echtzeit-Animationsvorschau | x | x | x | x | x | | x |
 | FA-04: Semantische Begründung | x | | x | | x | | x |
 | FA-05: Code-Export (Framer Motion) | | x | | x | | x | |

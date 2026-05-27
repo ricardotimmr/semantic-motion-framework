@@ -100,7 +100,7 @@ Für den Semantic Motion Editor werden folgende Nutzerprofile als primäre Zielg
 
 **Technisches Niveau:** Versteht CSS-Transitions und kennt Framer Motion dem Namen nach, implementiert aber selbst nicht.
 
-**Nutzungsszenario:** Sie öffnet den Editor, wählt "Toast" als Komponente und sucht nach einem Pattern für eine Fehlermeldung. Der Editor zeigt eine Animation, erklärt, warum Shake/Horizontal eine Ablehnungssemantik transportiert (Direction Bias, Peirce Index), und gibt ihr die Sprache, das im nächsten Design-Review zu begründen.
+**Nutzungsszenario:** Sie öffnet den Editor, wählt "Toast" als Komponente und sucht nach einer semantisch begründeten Animation für eine Fehlermeldung. Der Editor zeigt das abgeleitete Mapping, erklärt, warum Shake/Horizontal eine Ablehnungssemantik transportiert (Direction Bias, Peirce Index), und gibt ihr die Sprache, das im nächsten Design-Review zu begründen.
 
 **Erwartungen an das Tool:**
 - Schnell navigierbar ohne Einleitung oder Onboarding

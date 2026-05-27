@@ -70,7 +70,7 @@ Feedback (Success, Error, Warning), State Change, Direction (Forward, Backward),
 Animationsparameter als Kodierungsebene: Easing, Duration, Direction, Amplitude. Herleitung jedes Parameters aus dem theoretischen Rahmen. Datenstruktur: TypeScript-Typen und Schema. Zwei Textebenen je Eintrag: interne Quellenangabe (Peirce-Zeichentyp) und nutzergerichteter Begründungstext (Norman-Sprache) — nur die zweite Ebene wird im Editor angezeigt. Wissenschaftliche Nachvollziehbarkeit: Keine Zuordnung ohne Quellenverankerung.
 
 ### 3.4 Die sechs UI-Komponenten
-Auswahlprinzip: Button, Toggle, Toast und Modal decken zentrale Interaktionskategorien ab (Aktion, Zustand, Benachrichtigung, Fokusunterbrechung). Input ergänzt Validierungs- und Fokuszustände während laufender Eingabe. Der Skeleton Loader ergänzt den Symbol-Typ der Peirce-Trichotomie, der in den anderen Komponenten nicht dominant vertreten ist — seine Shimmer-Animation hat keine ikonische oder indexikalische Grundlage, sondern ist reine Konvention. Damit wird die vollständige Trichotomie (Ikon, Index, Symbol) in der praktischen Demonstration des Frameworks abgedeckt. Tabellarische Darstellung: je Komponente relevante Bedeutungsdimensionen und ein exemplarisches Mapping-Pattern mit Parameterwerten.
+Auswahlprinzip: Button, Toggle, Toast und Modal decken zentrale Interaktionskategorien ab (Aktion, Zustand, Benachrichtigung, Fokusunterbrechung). Input ergänzt Validierungs- und Fokuszustände während laufender Eingabe. Der Skeleton Loader ergänzt den Symbol-Typ der Peirce-Trichotomie, der in den anderen Komponenten nicht dominant vertreten ist — seine Shimmer-Animation hat keine ikonische oder indexikalische Grundlage, sondern ist reine Konvention. Damit wird die vollständige Trichotomie (Ikon, Index, Symbol) in der praktischen Demonstration des Frameworks abgedeckt. Tabellarische Darstellung: je Komponente relevante Bedeutungsdimensionen und ein exemplarisches Mapping mit Parameterwerten.
 
 ### 3.5 Scope-Abgrenzung
 Was das Framework explizit nicht leistet: keine empirische Validierung, keine kulturelle Universalität, keine Vollständigkeit der Komponentenabdeckung.
@@ -89,7 +89,7 @@ Zusammenfassung der funktionalen und nicht-funktionalen Anforderungen. Verweis a
 React, TypeScript, Framer Motion als Tech-Stack mit Begründung. Komponentenarchitektur: Auswahl, Preview, Begründung, Export. Integration der Mapping-Datenbank als operative Umsetzung des Frameworks.
 
 ### 4.4 Implementierung der Kernfunktionen
-Komponentenauswahl und Pattern-Auswahl (FA-01, FA-02). Echtzeit-Animationsvorschau (FA-03). Semantische Begründung im Editor: Wie die Norman-Sprache als Übersetzungsschicht funktioniert (FA-04). Code-Export als Framer Motion oder CSS (FA-05, FA-06).
+Komponentenauswahl und semantische Mapping-Auswahl (FA-01, FA-02). Echtzeit-Animationsvorschau (FA-03). Semantische Begründung im Editor: Wie die Norman-Sprache als Übersetzungsschicht funktioniert (FA-04). Code-Export als Framer Motion oder CSS (FA-05, FA-06).
 
 ### 4.5 Deployment
 Live-Demo URL. Technische Voraussetzungen.

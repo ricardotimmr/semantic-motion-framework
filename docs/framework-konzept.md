@@ -14,6 +14,8 @@ Das Framework besteht aus drei Ebenen:
 
 **Mapping:** Die Zuordnung von Animationsparametern zu Bedeutungsdimensionen. Jeder Eintrag in der Mapping-Datenbank ist eine begründete Zuordnung, die auf semiotischen und wahrnehmungspsychologischen Prinzipien basiert.
 
+Das Framework modelliert keine austauschbaren Stilvarianten. Für eine Kombination aus Komponente, Bedeutungsdimension und Subkategorie gibt es genau ein theoretisch hergeleitetes Mapping. Die Eindeutigkeit ist Teil der Framework-Logik: Die Parameterentscheidung soll nicht als Geschmacksoption, sondern als Konsequenz der semantischen Herleitung verstanden werden.
+
 ---
 
 ## 2. Theoretische Grundlage der Klassifikationslogik
