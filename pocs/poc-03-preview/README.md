@@ -1,21 +1,29 @@
 # POC 03 - Echtzeit-Preview-Komponente
 
-Setup fuer den dritten Proof of Concept aus `docs/pocs.md`.
+Setup für den dritten Proof of Concept aus `docs/pocs.md`.
 
 ## Ziel
 
-Dieses Verzeichnis ist vorbereitet fuer die Validierung einer Preview-Komponente, die Mapping-Eintraege als Animationsquelle nutzt.
+Dieses Verzeichnis validiert eine Preview-Komponente, die Mapping-Einträge als Animationsquelle nutzt.
 
 ## Scope
 
-Aktueller Stand: nur Projekt-Setup.
+Aktueller Stand: implementierter Preview-POC mit Button-, Modal- und Toast-Preview.
 
-Noch nicht enthalten:
+Enthalten:
 
 - Preview-Komponenten
 - Auswahl-UI
 - Wiederholungslogik
-- Anbindung an Mapping-Daten aus POC 02
+- direkte Anbindung an die aktuelle Mapping-Datenbank aus `prototyp/src/data/mappings.ts`
+- Motion-Adapter zur Übersetzung von `AnimationParams` in Framer-Motion-Controls
+- Sonderbehandlung für die zweiphasige `toast-feedback-error` Animation
+
+Bewusst nicht enthalten:
+
+- Code-Export
+- vollständiges Editor-UI
+- Begründungstexte als eigener UI-Bereich
 
 ## Befehle
 
@@ -54,3 +62,13 @@ Validieren, dass die Mapping-Datenbank aus POC 2 direkt als Animationsquelle fü
 ### Abgrenzung
 
 Kein Code-Export, kein vollständiges Editor-UI, keine Begründungstexte im UI (nur die Animation und die Auswahl). Das ist bewusst: Die Preview-Logik wird isoliert validiert, bevor sie in einen größeren Kontext eingebettet wird.
+
+### Ergebnis
+
+- Auswahloptionen werden aus der Mapping-Datenbank generiert.
+- Button, Modal und Toast erhalten jeweils einen `MappingEntry` als Animationsquelle.
+- Bei jeder Auswahländerung wird die laufende Animation gestoppt, zurückgesetzt und neu abgespielt.
+- Der Replay-Button spielt dieselbe Mapping-Animation erneut ab, ohne Seitenreload.
+- Die Preview nutzt imperative Framer-Motion-Controls statt React-Remount per `key`.
+- Spring-Easing wird über `springConfig` behandelt.
+- `toast-feedback-error` wird als zweiphasige Sequenz gerendert: y-Einfahrt, danach x-Shake.
