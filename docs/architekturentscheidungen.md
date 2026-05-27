@@ -117,3 +117,41 @@ Diese Trennung erlaubt eine UI, in der nicht abgedeckte Dimensionen oder Subkate
 ### Abgrenzung
 
 Die Editor-Auswahl bleibt datenbankgetrieben. `getOutOfScopeCombinations` ist ein Analyse- und Dokumentationswerkzeug, nicht die primäre Grundlage der normalen Nutzerführung. Für die UI sind vor allem die definierten Runtime-Optionen und die datenbankbasierten Funktionen wie `getDimensionsForComponent`, `getSubcategoriesForDimension` und `isSupportedCombination` relevant.
+
+---
+
+## ADR-06: Lesbare Quellenbegründung plus strukturierte Referenzkeys
+
+### Entscheidung
+
+Jeder Mapping-Eintrag enthält weiterhin einen lesbaren wissenschaftlichen Begründungstext in `rationale.source`. Zusätzlich enthält jeder Eintrag eine maschinenlesbare Quellenliste in `rationale.references`.
+
+### Begründung
+
+`source` erklärt, wie die jeweilige Parameterentscheidung theoretisch hergeleitet ist. Diese Ebene ist für akademische Nachvollziehbarkeit und spätere Dokumentation wichtig, lässt sich aber nur schwer konsistent prüfen.
+
+`references` ergänzt deshalb strukturierte Referenzkeys wie `Ware2012`, `ZacksTversky2001` oder `Peirce1931`. Dadurch lässt sich nachvollziehen, welche theoretischen Quellen ein Mapping stützen, ohne die lesbare Begründung zu ersetzen.
+
+Diese Trennung stärkt NFA-07: Die Mapping-Datenbank bleibt verständlich, wird aber zugleich besser prüfbar und konsistenter dokumentierbar.
+
+### Abgrenzung
+
+Die Referenzkeys modellieren keine vollständige Bibliografie und keine parameterweise Quellenmatrix. Sie markieren die für den Mapping-Eintrag relevanten Quellen. Die detaillierte Argumentation bleibt im `source`-Text und im Theoriekapitel.
+
+---
+
+## ADR-07: Zweistufige Begründungsanzeige im Editor
+
+### Entscheidung
+
+Der Editor zeigt `rationale.short` als standardmäßige Begründung an. `rationale.source` bleibt im Datenmodell erhalten und kann optional über eine Detail- oder Tooltip-Ansicht zugänglich gemacht werden, etwa über ein kleines Info-Icon neben der Kurzbegründung.
+
+### Begründung
+
+Die Standardansicht soll ohne Semiotik-Vorwissen verständlich bleiben. Deshalb ist `short` auf der Ebene von Normans Signifier-Begriff formuliert und vermeidet unnötige Fachterminologie.
+
+Gleichzeitig soll die wissenschaftliche Nachvollziehbarkeit nicht nur im Code verborgen bleiben. Eine optionale Detailansicht erlaubt es, Peirce-Zeichentyp, Wahrnehmungsgrundlage und Quellenbezug sichtbar zu machen, ohne die Hauptoberfläche zu überladen.
+
+### Abgrenzung
+
+`source` ist nicht die primäre Erklärung für normale Nutzer. Es ist eine vertiefende Ebene für wissenschaftliche Nachvollziehbarkeit, Design-Reviews, Export-Kommentare oder interessierte Nutzer.

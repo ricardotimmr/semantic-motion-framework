@@ -346,21 +346,47 @@ export interface AnimationParams {
 export type SignType = "icon" | "index" | "symbol" | "icon/index";
 
 /**
+ * Maschinenlesbare Referenzschlüssel für wissenschaftliche und technische Quellen.
+ * Der lesbare Begründungstext bleibt in rationale.source; diese Keys ermöglichen
+ * zusätzlich eine konsistente Nachvollziehbarkeit über alle Mapping-Einträge.
+ */
+export type ReferenceKey =
+  | "Peirce1931"
+  | "Chandler2007"
+  | "Norman2013"
+  | "Ware2012"
+  | "ZacksTversky2001"
+  | "BartramWareCalvert2003"
+  | "ThomasJohnston1981"
+  | "ChangUngar1993"
+  | "HeerRobertson2007"
+  | "Head2016"
+  | "MaterialDesign3"
+  | "AppleHIG"
+  | "WCAG21";
+
+/**
  * Die zweischichtige Begründung für jeden Mapping-Eintrag.
  *
  * short:    Nutzergerichtete Erklärung, die in der Editor-Oberfläche angezeigt wird.
  *           Auf Normans Signifier-Ebene formuliert – keine Peirce-Terminologie.
  *           Muss ohne semiotisches Vorwissen verständlich sein.
  *
- * source:   Interne wissenschaftliche Dokumentation.
+ * source:   Wissenschaftliche Detailbegründung.
  *           Gibt die theoretische Quelle für jede Parameterentscheidung an.
- *           Wird im Editor nicht angezeigt. Dient der akademischen Nachvollziehbarkeit (NFA-07).
+ *           Wird nicht als Standardtext angezeigt, kann aber in Details-/Tooltip-
+ *           Ansichten sichtbar gemacht werden. Dient der akademischen Nachvollziehbarkeit (NFA-07).
+ *
+ * references:
+ *           Maschinenlesbare Quellenliste für Konsistenzprüfungen, Dokumentation
+ *           und spätere Export-/Details-Ansichten.
  *
  * signType: Der dominante Peirce'sche Zeichentyp für dieses Mapping.
  */
 export interface Rationale {
   short: string;
   source: string;
+  references: ReferenceKey[];
   signType: SignType;
 }
 

@@ -33,6 +33,7 @@ export const mappings: MappingDatabase = [
         "Aufwärtsbewegung als kultureller Index für Positives (Ware 2012). " +
         "Ease-Out: Abklingen als Signal für Abschluss (Zacks & Tversky 2001). " +
         "Duration 250ms: Standard für primäres Feedback (Head 2016).",
+      references: ["Peirce1931", "Ware2012", "ZacksTversky2001", "Head2016"],
       signType: "icon/index",
     },
   },
@@ -64,6 +65,7 @@ export const mappings: MappingDatabase = [
         "kodiert Ablehnung. Sharp easing: Abruptheit verstärkt Fehlercharakter " +
         "(Chang & Ungar 1993). translatePx ±8px: mittelgroß, klar wahrnehmbar " +
         "ohne visuell aggressiv zu wirken (Bartram et al. 2003).",
+      references: ["Peirce1931", "Ware2012", "ChangUngar1993", "BartramWareCalvert2003"],
       signType: "index",
     },
   },
@@ -91,6 +93,7 @@ export const mappings: MappingDatabase = [
         "Persistenz (Bartram et al. 2003). Ease-In-Out: symmetrische Kurve, " +
         "keine Abruptheit. Iterations 3: endet von selbst, abgegrenzt von " +
         "button-attention-persistent (Infinity).",
+      references: ["Peirce1931", "BartramWareCalvert2003"],
       signType: "index",
     },
   },
@@ -117,6 +120,7 @@ export const mappings: MappingDatabase = [
         "langsam genug, um periphere Wahrnehmung zu aktivieren ohne " +
         "Hauptaufgabe zu stören (Bartram et al. 2003). Iterations Infinity: " +
         "Persistenz als semantisches Ziel.",
+      references: ["Peirce1931", "BartramWareCalvert2003"],
       signType: "index",
     },
   },
@@ -146,6 +150,7 @@ export const mappings: MappingDatabase = [
         "(Thomas & Johnston 1981, physical analogy). Ease-In-Out: symmetrische " +
         "Kurve für symmetrischen Zustandswechsel (Zacks & Tversky 2001). " +
         "Duration 220ms: schnell genug für direkte Reaktion (Head 2016).",
+      references: ["Peirce1931", "ThomasJohnston1981", "ZacksTversky2001", "Head2016"],
       signType: "icon",
     },
   },
@@ -172,6 +177,7 @@ export const mappings: MappingDatabase = [
         "Duration identisch zu toggleOn: Konsistenzprinzip – asymmetrische " +
         "Parameter würden eine semantisch falsche Gewichtung der Zustände " +
         "erzeugen (Norman 2013, signifier consistency).",
+      references: ["Peirce1931", "Norman2013"],
       signType: "icon",
     },
   },
@@ -209,6 +215,7 @@ export const mappings: MappingDatabase = [
         "(Thomas & Johnston 1981) kommuniziert physikalische Substanz und " +
         "positive Energie. Duration 300ms, stiffness 320: schnelle, federnde " +
         "Einfahrt als Positivsignal (Head 2016).",
+      references: ["Peirce1931", "ThomasJohnston1981", "Head2016"],
       signType: "index",
     },
   },
@@ -244,6 +251,7 @@ export const mappings: MappingDatabase = [
         "Fehlercharakter – kein Follow-Through, keine Freudigkeit. " +
         "Zweiphasige Animation: Staging-Prinzip (Heer & Robertson 2007). " +
         "Duration 320ms: kürzer als warning, betont Unmittelbarkeit.",
+      references: ["Peirce1931", "Ware2012", "HeerRobertson2007"],
       signType: "index",
     },
   },
@@ -274,6 +282,7 @@ export const mappings: MappingDatabase = [
         "emotionale Valenz. Duration 420ms + delay 80ms: langsamer als " +
         "success (300ms) und error (320ms), kommuniziert Gewicht ohne " +
         "Dringlichkeit (Head 2016).",
+      references: ["Peirce1931", "Head2016"],
       signType: "index",
     },
   },
@@ -310,6 +319,7 @@ export const mappings: MappingDatabase = [
         "(300ms), kommuniziert Neutralität. Sekundärer Opacity-Pulse nach " +
         "Einfahrt als Aufmerksamkeitssignal: sequentielle Animation, kein " +
         "paralleles Feld, um translatePx-Mutex einzuhalten (Bartram et al. 2003).",
+      references: ["Peirce1931", "BartramWareCalvert2003"],
       signType: "index",
     },
   },
@@ -341,6 +351,7 @@ export const mappings: MappingDatabase = [
         "Ease-Out: Ankommen als Abklingsignal (Zacks & Tversky 2001). " +
         "scaleFactor 0.05 + Opacity 0→1: kombinierter Übergang für " +
         "wahrgenommene Tiefe (Material Design 3).",
+      references: ["Peirce1931", "ZacksTversky2001", "MaterialDesign3"],
       signType: "icon",
     },
   },
@@ -367,6 +378,7 @@ export const mappings: MappingDatabase = [
         "Ease-In: Zurücktreten als Aufbaukurve (Zacks & Tversky 2001). " +
         "Duration 250ms: kürzer als toForeground, Hintergrundprozess " +
         "ist weniger bedeutsam.",
+      references: ["Peirce1931", "ZacksTversky2001", "Head2016"],
       signType: "icon",
     },
   },
@@ -395,6 +407,7 @@ export const mappings: MappingDatabase = [
         "(Ware 2012, Direction Bias). Ease-Out: Ankommen (Zacks & Tversky 2001). " +
         "Direction y von unten: Sheet-Konvention (Apple HIG, Material Design 3). " +
         "Duration 350ms: komplex genug für bewusste Richtungswahrnehmung.",
+      references: ["Peirce1931", "Ware2012", "ZacksTversky2001", "AppleHIG", "MaterialDesign3"],
       signType: "index",
     },
   },
@@ -422,6 +435,7 @@ export const mappings: MappingDatabase = [
         "Ease-In: Verlassen als Aufbaukurve (Zacks & Tversky 2001). " +
         "Duration 280ms: kürzer als Enter – das Verlassende ist nicht " +
         "mehr der Fokus (Head 2016).",
+      references: ["Peirce1931", "ZacksTversky2001", "Head2016"],
       signType: "index",
     },
   },
@@ -450,6 +464,7 @@ export const mappings: MappingDatabase = [
         "(Ware 2012). Ease-Out: Ankommen (Zacks & Tversky 2001). " +
         "Komplementäres Paar zu modal-direction-backExit. " +
         "Duration 350ms: identisch zu enter, Richtung trägt die Bedeutung.",
+      references: ["Peirce1931", "Ware2012", "ZacksTversky2001"],
       signType: "index",
     },
   },
@@ -474,10 +489,11 @@ export const mappings: MappingDatabase = [
         "kommuniziert, dass die aktuelle Ebene verlassen wird und " +
         "der Nutzer zur vorherigen Ebene zurückkehrt.",
       source:
-        "Index (Peirce): Direction Bias – Bewegung nach rechts kodiert " +
+        "Index (Peirce): Direction Bias - Bewegung nach rechts kodiert " +
         "Rückwärtsbewegung (komplementär zu backEnter von links). " +
         "Ware (2012). Ease-In: Verlassen als Aufbaukurve " +
         "(Zacks & Tversky 2001). Duration 280ms: identisch zu exit.",
+      references: ["Peirce1931", "Ware2012", "ZacksTversky2001"],
       signType: "index",
     },
   },
@@ -507,6 +523,7 @@ export const mappings: MappingDatabase = [
         "Ease-Out: Abklingen (Zacks & Tversky 2001). Duration 175ms: " +
         "kürzer als button-feedback-success (250ms), weil Eingabe aktiv " +
         "sein kann (Head 2016). scaleFactor 0.02: minimal, subtiler als Button.",
+      references: ["Peirce1931", "ZacksTversky2001", "Head2016"],
       signType: "icon/index",
     },
   },
@@ -537,6 +554,7 @@ export const mappings: MappingDatabase = [
         "translatePx ±5px statt ±8px (Button): Eingabefeld ist breiter, " +
         "reagiert empfindlicher. Duration 275ms statt 350ms: aktive Eingabe " +
         "darf nicht blockiert wirken (Head 2016).",
+      references: ["Peirce1931", "Ware2012", "Head2016"],
       signType: "index",
     },
   },
@@ -558,10 +576,11 @@ export const mappings: MappingDatabase = [
         "macht aber deutlich, dass die Eingabe überarbeitet werden sollte.",
       source:
         "Ikon (Peirce): Opacity-Transition ähnelt physikalischem Erscheinen " +
-        "eines Objekts – ikonische Beziehung. Die Farbkonvention (Orange/Gelb) " +
+        "eines Objekts - ikonische Beziehung. Die Farbkonvention (Orange/Gelb) " +
         "des Warnhinweises ist symbolisch, klassifiziert aber die Farbe, " +
         "nicht die Animation. Ease-In-Out: sanfte, nicht dringende Einblendung. " +
         "Duration 300ms: Eingabefluss nicht unterbrechen (Head 2016).",
+      references: ["Peirce1931", "Head2016"],
       signType: "icon",
     },
   },
@@ -588,6 +607,7 @@ export const mappings: MappingDatabase = [
         "Duration 175ms: Nutzer möchte sofort tippen (Head 2016). " +
         "Accessibility: Fokuszustand muss auch ohne Animation erkennbar " +
         "sein (WCAG 2.1, 2.4.7).",
+      references: ["Peirce1931", "ZacksTversky2001", "Head2016", "WCAG21"],
       signType: "icon",
     },
   },
@@ -614,6 +634,7 @@ export const mappings: MappingDatabase = [
         "Bewusste Asymmetrie zu input-stateChange-focus (Ease-Out): " +
         "Focus ist aktives Ankommen, Blur ist passives Zurücktreten – " +
         "keine gleichwertigen Zustände (Norman 2013).",
+      references: ["Peirce1931", "ZacksTversky2001", "Norman2013"],
       signType: "icon",
     },
   },
@@ -645,6 +666,7 @@ export const mappings: MappingDatabase = [
         "weil dieser Shake von einer Submit-Aktion ausgelöst wird. " +
         "Duration 325ms: zwischen input-feedback-error (275ms) und " +
         "button-feedback-error (350ms).",
+      references: ["Peirce1931", "Ware2012"],
       signType: "index",
     },
   },
@@ -680,6 +702,7 @@ export const mappings: MappingDatabase = [
         "kontinuierlichen Prozess ohne identifizierbare Phasenstruktur " +
         "(Zacks & Tversky 2001). Linear ist der einzige semantisch " +
         "begründete Einsatz dieses Presets im Framework.",
+      references: ["Peirce1931", "Chandler2007", "ZacksTversky2001"],
       signType: "symbol",
     },
   },
@@ -706,6 +729,7 @@ export const mappings: MappingDatabase = [
         "Signal für Abschluss (Zacks & Tversky 2001). Duration 350ms: " +
         "wahrnehmbar, nicht abrupt. Als Ikon klassifiziert, nicht als Symbol: " +
         "Das Ausblenden hat eine natürliche, nicht-konventionelle Grundlage.",
+      references: ["Peirce1931", "Chandler2007", "ZacksTversky2001"],
       signType: "icon",
     },
   },

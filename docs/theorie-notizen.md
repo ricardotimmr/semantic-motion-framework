@@ -132,7 +132,7 @@ Das Framework verbindet damit Norman (praktische Designtheorie) mit Peirce (semi
 
 Forschungsfrage 2 fragt, wie das Framework für Nutzer ohne Semiotik-Kenntnisse zugänglich gemacht werden kann. Die Antwort liegt im Signifier-Begriff als Übersetzungsschicht.
 
-Im Editor wird Peirce'sche Terminologie nicht direkt sichtbar. Die Begründungstexte operieren auf dem Abstraktionsniveau von Normans Signifier-Begriff, weil dieser dem Designvokabular der Zielgruppe entspricht. Die semiotische Herleitung bleibt im Hintergrund als wissenschaftliche Grundlage, tritt aber in der Nutzeroberfläche nicht explizit auf.
+Im Editor wird Peirce'sche Terminologie nicht als primäre Erklärungsebene sichtbar. Die Standard-Begründungstexte operieren auf dem Abstraktionsniveau von Normans Signifier-Begriff, weil dieser dem Designvokabular der Zielgruppe entspricht. Die semiotische Herleitung bleibt als wissenschaftliche Detailbegründung erhalten und kann optional über eine Detail- oder Tooltip-Ansicht zugänglich gemacht werden.
 
 Die Übersetzungslogik funktioniert wie folgt:
 
@@ -145,7 +145,7 @@ Die Übersetzungslogik funktioniert wie folgt:
 
 Diese Übersetzungstabelle ist das operative Bindeglied zwischen FF1 (theoretische Fundierung des Frameworks) und FF2 (Operationalisierung im Editor). Sie zeigt, dass die semantische Begründung im Editor nicht beliebig formuliert ist, sondern aus der Peirce'schen Klassifikation abgeleitet wird, dabei aber auf das Vorwissen der Zielgruppe (Signifier als bekanntes UX-Konzept) zurückgreift.
 
-**Konsequenz für die Implementierung:** Jeder Eintrag in der Mapping-Datenbank enthält neben den Animationsparametern zwei Textebenen: eine interne Quellenangabe (Peirce-Zeichentyp + Wahrnehmungsgrundlage) und einen nutzergerichteten Begründungstext (Norman-Sprache). Nur die zweite Ebene wird im Editor angezeigt. Die erste Ebene ist die wissenschaftliche Dokumentation des Eintrags.
+**Konsequenz für die Implementierung:** Jeder Eintrag in der Mapping-Datenbank enthält neben den Animationsparametern zwei Textebenen: eine wissenschaftliche Detailbegründung (Peirce-Zeichentyp + Wahrnehmungsgrundlage) und einen nutzergerichteten Begründungstext (Norman-Sprache). Die nutzergerichtete Ebene wird standardmäßig angezeigt; die wissenschaftliche Ebene kann optional als Detailinformation zugänglich gemacht werden.
 
 ---
 
