@@ -189,7 +189,8 @@ export const mappings: MappingDatabase = [
       easing: { preset: "spring" },
       duration: 300,
       direction: "y",
-      translatePx: -1, // Platzhalter: volle Höhe; in Pixel aufgelöst durch Komponente
+      translateDistance: "self",
+      translateFrom: "bottom",
       iterations: 1,
       opacity: [0, 1],
       springConfig: {
@@ -221,7 +222,8 @@ export const mappings: MappingDatabase = [
       easing: { preset: "sharp" },
       duration: 320,
       direction: "y",
-      translatePx: -1, // Platzhalter: volle Höhe
+      translateDistance: "self",
+      translateFrom: "bottom",
       iterations: 1,
       opacity: [0, 1],
       keyframes: {
@@ -256,7 +258,8 @@ export const mappings: MappingDatabase = [
       duration: 420,
       delay: 80,
       direction: "y",
-      translatePx: -1, // Platzhalter: volle Höhe
+      translateDistance: "self",
+      translateFrom: "bottom",
       iterations: 1,
       opacity: [0, 1],
     },
@@ -284,13 +287,14 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeOut" },
       duration: 380,
       direction: "y",
-      translatePx: -1, // Platzhalter: volle Höhe; in Pixel aufgelöst durch Komponente
+      translateDistance: "self",
+      translateFrom: "bottom",
       iterations: 1,
-      // Zweiphasige Animation: Phase 1 = y-Einfahrt (translatePx), Phase 2 = kurzes
+      // Zweiphasige Animation: Phase 1 = y-Einfahrt (translateDistance), Phase 2 = kurzes
       // Opacity-Pulsieren [1.0 → 0.85 → 1.0] nach Ankunft als sekundäres Signal.
       // Der Opacity-Pulse wird im Komponenten-Rendering als sequentielle Animation
       // nach Abschluss der Einfahrt ausgelöst, nicht als paralleles keyframe-Feld,
-      // um die Mutex-Regel (translatePx XOR scaleFactor XOR trackFactor) einzuhalten.
+      // um die Mutex-Regel (Translation XOR scaleFactor XOR trackFactor) einzuhalten.
       opacity: [0, 1],
     },
     rationale: {
@@ -376,7 +380,8 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeOut" },
       duration: 350,
       direction: "y",
-      translatePx: -1, // Platzhalter: volle Höhe von unten
+      translateDistance: "self",
+      translateFrom: "bottom",
       iterations: 1,
       opacity: [0, 1],
     },
@@ -403,7 +408,8 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeIn" },
       duration: 280,
       direction: "y",
-      translatePx: 1, // Platzhalter: volle Höhe nach unten
+      translateDistance: "self",
+      translateTo: "bottom",
       iterations: 1,
       opacity: [1, 0],
     },
@@ -429,7 +435,8 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeOut" },
       duration: 350,
       direction: "x",
-      translatePx: -1, // Platzhalter: volle Breite von links
+      translateDistance: "self",
+      translateFrom: "left",
       iterations: 1,
       opacity: [0, 1],
     },
@@ -456,7 +463,8 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeIn" },
       duration: 280,
       direction: "x",
-      translatePx: 1, // Platzhalter: volle Breite nach rechts
+      translateDistance: "self",
+      translateTo: "right",
       iterations: 1,
       opacity: [1, 0],
     },

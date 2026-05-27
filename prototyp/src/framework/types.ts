@@ -167,6 +167,19 @@ export interface KeyframeSequence {
   times: number[];
 }
 
+/**
+ * Kante, von der eine größenabhängige Translation startet oder zu der sie führt.
+ * Wird nur für Enter-/Exit-Bewegungen verwendet, bei denen der konkrete Pixelwert
+ * erst im Komponenten-Rendering bekannt ist.
+ */
+export type TranslationEdge = "left" | "right" | "top" | "bottom";
+
+/**
+ * Distanz einer größenabhängigen Translation.
+ * "self" bedeutet: volle Breite oder Höhe des animierten Elements, abhängig von direction.
+ */
+export type TranslationDistance = "self";
+
 // ---------------------------------------------------------------------------
 // Animationsparameter
 // ---------------------------------------------------------------------------
@@ -179,11 +192,13 @@ export interface KeyframeSequence {
  * erforderlich sind. Parameter, die auf eine bestimmte Animation nicht zutreffen,
  * werden weggelassen statt auf null gesetzt.
  *
- * BEWEGUNGSAUSMASS – genau eines der drei typisierten Felder unten verwenden:
+ * BEWEGUNGSAUSMASS – genau eine der drei Bewegungsgruppen unten verwenden:
  *
- *   translatePx   Pixel-Versatz für translatorische Bewegungen (Shake, Slide).
- *                 Beispiel: 8 bedeutet, die Animation bewegt sich ±8 px auf der gegebenen Achse.
- *                 Wird zusammen mit direction und (optional) keyframes verwendet.
+ *   Translation   Pixel-Versatz oder größenabhängige Translation.
+ *                 translatePx beschreibt feste Pixelwerte, z. B. Shake ±8 px.
+ *                 translateDistance beschreibt größenabhängige Bewegungen, z. B.
+ *                 "self" für volle Elementhöhe/-breite bei Enter-/Exit-Animationen.
+ *                 Wird zusammen mit direction und optional translateFrom/translateTo verwendet.
  *
  *   scaleFactor   Bruchteilsdelta, das auf die Basisskala des Elements angewendet wird.
  *                 Beispiel: 0.05 bedeutet, das Element skaliert zwischen 0.95 und 1.05.
@@ -194,7 +209,7 @@ export interface KeyframeSequence {
  *                 Pixelabstand zur Renderzeit von der Komponente aufgelöst wird.
  *                 Vorzeichen kodiert Richtung: +1.0 = vorwärts, -1.0 = rückwärts.
  *
- * Mehr als eines dieser drei Felder in einem einzelnen Eintrag zu verwenden ist ein Typfehler.
+ * Mehr als eine dieser Bewegungsgruppen in einem einzelnen Eintrag zu verwenden ist fachlich ungültig.
  */
 export interface AnimationParams {
   /** Beschleunigungskurve – der semantisch bedeutsamste Parameter */
@@ -204,28 +219,51 @@ export interface AnimationParams {
   duration: number;
 
   /**
-   * Achse der translatorischen Bewegung.
-   * Erforderlich wenn translatePx oder trackFactor gesetzt ist.
+   * Semantisch relevante Achse der translatorischen Bewegung.
+   * Erforderlich wenn translatePx, translateDistance oder trackFactor gesetzt ist.
    * Bei Skalierungs- und Deckkraft-Animationen weglassen.
+   * Die konkrete Herkunft/Zielrichtung wird bei größenabhängigen Bewegungen
+   * über translateFrom und translateTo angegeben.
    */
   direction?: "x" | "y";
 
   /**
    * Pixel-Versatz für translatorische Animationen (Shake, Slide).
    * Schließt sich gegenseitig mit scaleFactor und trackFactor aus.
+   * Nicht gemeinsam mit translateDistance verwenden.
    */
   translatePx?: number;
 
   /**
+   * Größenabhängige Translationsdistanz.
+   * "self" bedeutet volle Breite oder Höhe des animierten Elements.
+   * Wird für Enter-/Exit-Bewegungen verwendet, bei denen der Pixelwert
+   * erst im Komponenten-Rendering aufgelöst werden kann.
+   */
+  translateDistance?: TranslationDistance;
+
+  /**
+   * Startkante einer größenabhängigen Enter-Translation.
+   * Beispiel: translateFrom "bottom" + direction "y" = Element kommt von unten.
+   */
+  translateFrom?: TranslationEdge;
+
+  /**
+   * Zielkante einer größenabhängigen Exit-Translation.
+   * Beispiel: translateTo "bottom" + direction "y" = Element verlässt nach unten.
+   */
+  translateTo?: TranslationEdge;
+
+  /**
    * Bruchteilsdelta der Skalierung (z. B. 0.05 → Element skaliert auf 1.05).
-   * Schließt sich gegenseitig mit translatePx und trackFactor aus.
+   * Schließt sich gegenseitig mit Translation-Feldern und trackFactor aus.
    */
   scaleFactor?: number;
 
   /**
    * Normalisierter Toggle-Track-Anteil [0..1].
    * Vorzeichen kodiert Richtung: +1.0 vorwärts, -1.0 rückwärts.
-   * Schließt sich gegenseitig mit translatePx und scaleFactor aus.
+   * Schließt sich gegenseitig mit Translation-Feldern und scaleFactor aus.
    */
   trackFactor?: number;
 
