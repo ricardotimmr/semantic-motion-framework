@@ -1,21 +1,29 @@
 # POC 01 - Basis-Animationssystem
 
-Setup fuer den ersten Proof of Concept aus `docs/pocs.md`.
+Setup für den ersten Proof of Concept aus `docs/pocs.md`.
 
 ## Ziel
 
-Dieses Verzeichnis ist vorbereitet fuer die Validierung eines einfachen semantischen Animationssystems mit React, Vite, TypeScript und Framer Motion.
+Dieses Verzeichnis validiert ein einfaches semantisches Animationssystem mit React, Vite, TypeScript und Framer Motion.
 
 ## Scope
 
-Aktueller Stand: nur Projekt-Setup.
+Aktueller Stand: implementierter POC mit zwei hartcodierten semantischen Button-Animationen.
 
-Noch nicht enthalten:
+Enthalten:
 
 - React-Komponenten
 - Animationslogik
-- semantische Begruendungstexte
+- semantische Begründungstexte
 - Preview-UI
+- explizite cubicBezier-Easing-Kurven
+- wiederholbares Auslösen per Klick
+
+Bewusst nicht enthalten:
+
+- Mapping-System
+- Datenbankanbindung
+- dynamische Auswahl aus `mappings.ts`
 
 ## Befehle
 
@@ -53,3 +61,10 @@ Validieren, dass Framer Motion sich als Animationssystem für semantisch differe
 ### Abgrenzung
 
 Kein Mapping-System, keine Datenbankanbindung, keine dynamische Auswahl. Nur hardcodierte Animationswerte und hardcodierte Begründungstexte.
+
+### Ergebnis
+
+- Success-Feedback: Scale Up mit explizitem Ease-Out `[0, 0, 0.2, 1]`
+- Error-Feedback: horizontaler Shake mit explizitem Sharp-Easing `[0.4, 0, 0.6, 1]`
+- Framer Motion wird über direkte `animate`-Controls angesteuert, nicht über Varianten.
+- Die Animationen können wiederholt abgespielt werden, ohne die Komponente neu zu mounten.
