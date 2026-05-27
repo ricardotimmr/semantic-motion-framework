@@ -2,14 +2,19 @@
  * Semantic Motion Framework – Classifier
  *
  * Funktionen zur Abfrage der Mapping-Datenbank.
- * Alle Zugriffe auf mappings.ts laufen über dieses Modul.
+ * Alle Zugriffe auf mapping.ts laufen über dieses Modul.
  *
  * Der Classifier erzwingt die Unterscheidung zwischen dem, was das Typsystem
- * erlaubt (types.ts), und dem, was das Framework tatsächlich unterstützt (mappings.ts).
- * Nicht unterstützte Kombinationen geben null zurück statt einen Fehler zu werfen.
+ * benennt (types.ts), und dem, was das Framework tatsächlich abdeckt (mapping.ts).
+ * Out-of-Scope-Kombinationen geben null zurück statt einen Fehler zu werfen.
  */
 
 import { mappings } from "../data/mapping";
+import {
+  COMPONENT_IDS,
+  DIMENSIONS,
+  SUBCATEGORIES_BY_DIMENSION,
+} from "./types";
 import type {
   ComponentId,
   Dimension,
@@ -69,6 +74,31 @@ export function getMappingFor(
 // ---------------------------------------------------------------------------
 
 /**
+ * Gibt alle theoretisch definierten Komponenten zurück.
+ * Der Editor kann diese Liste verwenden, um auch Out-of-Scope-Optionen sichtbar,
+ * aber deaktiviert darzustellen.
+ */
+export function getDefinedComponents(): readonly ComponentId[] {
+  return COMPONENT_IDS;
+}
+
+/**
+ * Gibt alle theoretisch definierten Bedeutungsdimensionen zurück.
+ */
+export function getDefinedDimensions(): readonly Dimension[] {
+  return DIMENSIONS;
+}
+
+/**
+ * Gibt alle theoretisch definierten Subkategorien einer Dimension zurück.
+ */
+export function getDefinedSubcategoriesForDimension(
+  dimension: Dimension
+): readonly Subcategory[] {
+  return SUBCATEGORIES_BY_DIMENSION[dimension];
+}
+
+/**
  * Gibt alle Mapping-Einträge für eine gegebene Komponente zurück.
  * Wird verwendet, um die Dimensions-/Subkategorie-Auswahlfelder in der Editor-Oberfläche zu befüllen.
  */
@@ -76,6 +106,16 @@ export function getMappingsForComponent(
   component: ComponentId
 ): MappingDatabase {
   return mappings.filter((m) => m.component === component);
+}
+
+/**
+ * Gibt alle Komponenten zurück, die mindestens einen Mapping-Eintrag besitzen.
+ * Erhält die Reihenfolge der theoretischen Komponentenliste.
+ */
+export function getSupportedComponents(): ComponentId[] {
+  return COMPONENT_IDS.filter((component) =>
+    mappings.some((m) => m.component === component)
+  );
 }
 
 /**
@@ -142,34 +182,28 @@ export function isSupportedCombination(
 }
 
 /**
- * Gibt alle nicht unterstützten Kombinationen zurück, die das Typsystem erlauben würde,
- * die aber nicht in der Mapping-Datenbank vorhanden sind.
+ * Gibt alle Kombinationen zurück, die theoretisch benennbar sind,
+ * aber bewusst nicht Teil der Mapping-Datenbank sind.
  *
- * Wird in Unit-Tests verwendet, um bewusste Lücken im Framework-Scope zu dokumentieren.
- * Wird nicht im Produktionscode verwendet.
+ * Diese Funktion ist ein Analyse-/Dokumentationswerkzeug, nicht die Grundlage
+ * der Editor-Auswahl. Die Editor-UI sollte verfügbare Optionen datenbankgetrieben
+ * aktivieren und Out-of-Scope-Optionen höchstens ausgegraut darstellen.
  */
-export function getUnsupportedCombinations(): MappingQuery[] {
-  const allComponents: ComponentId[] = ["button", "toggle", "toast", "modal", "input", "skeleton"];
-  const allDimensions: Dimension[] = ["feedback", "stateChange", "direction", "hierarchy", "attention"];
+export function getOutOfScopeCombinations(): MappingQuery[] {
+  const outOfScope: MappingQuery[] = [];
 
-  const unsupported: MappingQuery[] = [];
-
-  for (const component of allComponents) {
-    for (const dimension of allDimensions) {
-      const entries = getMappingsForDimension(component, dimension);
-      if (entries.length === 0) {
-        // Diese Komponenten-/Dimensions-Kombination hat überhaupt keine Einträge.
-        // Das subcategory-Feld dient als Platzhalter.
-        unsupported.push({
-          component,
-          dimension,
-          subcategory: "success", // Platzhalter; jede Subkategorie würde null zurückgeben
-        });
+  for (const component of COMPONENT_IDS) {
+    for (const dimension of DIMENSIONS) {
+      for (const subcategory of SUBCATEGORIES_BY_DIMENSION[dimension]) {
+        const query = { component, dimension, subcategory };
+        if (!isSupportedCombination(component, dimension, subcategory)) {
+          outOfScope.push(query);
+        }
       }
     }
   }
 
-  return unsupported;
+  return outOfScope;
 }
 
 // ---------------------------------------------------------------------------

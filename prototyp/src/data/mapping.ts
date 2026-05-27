@@ -134,7 +134,7 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeInOut" },
       duration: 220,
       direction: "x",
-      trackFactor: 1.0, // volle Track-Breite vorwärts; in Pixel aufgelöst durch Komponente
+      trackFactor: 1.0, // volle komponenteneigene Track-Breite vorwärts
       iterations: 1,
     },
     rationale: {
@@ -159,7 +159,7 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeInOut" },
       duration: 220,
       direction: "x",
-      trackFactor: -1.0, // volle Track-Breite rückwärts
+      trackFactor: -1.0, // volle komponenteneigene Track-Breite rückwärts
       iterations: 1,
     },
     rationale: {
@@ -662,7 +662,7 @@ export const mappings: MappingDatabase = [
       easing: { preset: "linear" },
       duration: 1500,
       direction: "x",
-      trackFactor: 1.0, // volle Breite des Skeleton-Elements
+      trackFactor: 1.0, // volle komponenteneigene Shimmer-Strecke
       iterations: Infinity,
     },
     rationale: {

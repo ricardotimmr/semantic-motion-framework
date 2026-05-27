@@ -23,13 +23,16 @@
  *            nach Peirce. Die Shimmer-Animation ist rein konventionell,
  *            ohne ikonische oder indexikalische Grundlage (Chandler 2007, S. 36).
  */
-export type ComponentId =
-  | "button"
-  | "toggle"
-  | "toast"
-  | "modal"
-  | "input"
-  | "skeleton";
+export const COMPONENT_IDS = [
+  "button",
+  "toggle",
+  "toast",
+  "modal",
+  "input",
+  "skeleton",
+] as const;
+
+export type ComponentId = (typeof COMPONENT_IDS)[number];
 
 // ---------------------------------------------------------------------------
 // Bedeutungsdimensionen
@@ -44,42 +47,55 @@ export type ComponentId =
  * hierarchy   – Element tritt in den visuellen Vordergrund oder tritt zurück
  * attention   – Element lenkt Aufmerksamkeit ohne vorherige Nutzeraktion
  */
-export type Dimension =
-  | "feedback"
-  | "stateChange"
-  | "direction"
-  | "hierarchy"
-  | "attention";
+export const DIMENSIONS = [
+  "feedback",
+  "stateChange",
+  "direction",
+  "hierarchy",
+  "attention",
+] as const;
+
+export type Dimension = (typeof DIMENSIONS)[number];
 
 // ---------------------------------------------------------------------------
 // Subkategorien je Dimension
 // ---------------------------------------------------------------------------
 
-export type FeedbackSubcategory = "success" | "error" | "warning";
+export const FEEDBACK_SUBCATEGORIES = ["success", "error", "warning"] as const;
+export type FeedbackSubcategory = (typeof FEEDBACK_SUBCATEGORIES)[number];
 
+export const STATE_CHANGE_SUBCATEGORIES = [
+  "toggleOn",
+  "toggleOff",
+  "focus",
+  "blur",
+] as const;
 export type StateChangeSubcategory =
-  | "toggleOn"
-  | "toggleOff"
-  | "focus"
-  | "blur";
+  (typeof STATE_CHANGE_SUBCATEGORIES)[number];
 
-export type DirectionSubcategory =
-  | "enter"       // Element kommt von rechts, impliziert Vorwärtsnavigation
-  | "exit"        // Element verlässt nach links, impliziert Vorwärtsnavigation
-  | "backEnter"   // Element kommt von links, impliziert Rückwärtsnavigation
-  | "backExit";   // Element verlässt nach rechts, impliziert Rückwärtsnavigation
+export const DIRECTION_SUBCATEGORIES = [
+  "enter",      // Element kommt von rechts, impliziert Vorwärtsnavigation
+  "exit",       // Element verlässt nach links, impliziert Vorwärtsnavigation
+  "backEnter",  // Element kommt von links, impliziert Rückwärtsnavigation
+  "backExit",   // Element verlässt nach rechts, impliziert Rückwärtsnavigation
+] as const;
+export type DirectionSubcategory = (typeof DIRECTION_SUBCATEGORIES)[number];
 
-export type HierarchySubcategory =
-  | "toForeground"   // Element wird zum primären Inhalt
-  | "toBackground";  // Element tritt zurück, bleibt aber sichtbar
+export const HIERARCHY_SUBCATEGORIES = [
+  "toForeground", // Element wird zum primären Inhalt
+  "toBackground", // Element tritt zurück, bleibt aber sichtbar
+] as const;
+export type HierarchySubcategory = (typeof HIERARCHY_SUBCATEGORIES)[number];
 
-export type AttentionSubcategory =
-  | "oneShot"        // Einmaliges Aufmerksamkeitssignal, endet automatisch
-  | "persistent"     // Wiederholendes Signal bis zur Nutzeraktion (unendliche Iterationen)
-  | "warning"        // Systeminitiiertes Warnsignal, endet nach N Iterationen
-  | "requiredField"  // Pflichtfeld fordert Aufmerksamkeit nach fehlgeschlagenem Absenden
-  | "loading"        // Skeleton-Shimmer: kontinuierliches Prozesssignal (Symbol)
-  | "resolved";      // Skeleton-Ausblenden: Inhalt ist angekommen (Ikon)
+export const ATTENTION_SUBCATEGORIES = [
+  "oneShot",       // Einmaliges Aufmerksamkeitssignal, endet automatisch
+  "persistent",    // Wiederholendes Signal bis zur Nutzeraktion (unendliche Iterationen)
+  "warning",       // Systeminitiiertes Warnsignal, endet nach N Iterationen
+  "requiredField", // Pflichtfeld fordert Aufmerksamkeit nach fehlgeschlagenem Absenden
+  "loading",       // Skeleton-Shimmer: kontinuierliches Prozesssignal (Symbol)
+  "resolved",      // Skeleton-Ausblenden: Inhalt ist angekommen (Ikon)
+] as const;
+export type AttentionSubcategory = (typeof ATTENTION_SUBCATEGORIES)[number];
 
 /**
  * Vereinigung aller Subkategorie-Typen.
@@ -91,6 +107,19 @@ export type Subcategory =
   | DirectionSubcategory
   | HierarchySubcategory
   | AttentionSubcategory;
+
+/**
+ * Runtime-Abbildung aller theoretisch benennbaren Subkategorien je Dimension.
+ * Der Editor kann diese Liste verwenden, um alle Optionen anzuzeigen und
+ * nicht im Mapping vorhandene Kombinationen als Out-of-Scope zu markieren.
+ */
+export const SUBCATEGORIES_BY_DIMENSION = {
+  feedback: FEEDBACK_SUBCATEGORIES,
+  stateChange: STATE_CHANGE_SUBCATEGORIES,
+  direction: DIRECTION_SUBCATEGORIES,
+  hierarchy: HIERARCHY_SUBCATEGORIES,
+  attention: ATTENTION_SUBCATEGORIES,
+} satisfies Record<Dimension, readonly Subcategory[]>;
 
 // ---------------------------------------------------------------------------
 // Easing
@@ -204,9 +233,9 @@ export type TranslationDistance = "self";
  *                 Beispiel: 0.05 bedeutet, das Element skaliert zwischen 0.95 und 1.05.
  *                 Niemals zusammen mit direction verwenden.
  *
- *   trackFactor   Normalisierter Anteil der komponenteneigenen Track-Breite [0..1].
- *                 Ausschließlich für die Toggle-Komponente verwendet, bei der der
- *                 Pixelabstand zur Renderzeit von der Komponente aufgelöst wird.
+ *   trackFactor   Normalisierter Anteil einer komponenteneigenen Bewegungsstrecke.
+ *                 Beispiel: Toggle-Track-Breite oder Skeleton-Shimmer-Fläche.
+ *                 Der Pixelabstand wird zur Renderzeit von der jeweiligen Komponente aufgelöst.
  *                 Vorzeichen kodiert Richtung: +1.0 = vorwärts, -1.0 = rückwärts.
  *
  * Mehr als eine dieser Bewegungsgruppen in einem einzelnen Eintrag zu verwenden ist fachlich ungültig.
@@ -261,7 +290,8 @@ export interface AnimationParams {
   scaleFactor?: number;
 
   /**
-   * Normalisierter Toggle-Track-Anteil [0..1].
+   * Normalisierter Anteil einer komponenteneigenen Bewegungsstrecke [0..1].
+   * Wird z. B. für Toggle-Thumb-Bewegung oder Skeleton-Shimmer verwendet.
    * Vorzeichen kodiert Richtung: +1.0 vorwärts, -1.0 rückwärts.
    * Schließt sich gegenseitig mit Translation-Feldern und scaleFactor aus.
    */

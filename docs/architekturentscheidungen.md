@@ -73,3 +73,47 @@ Die neue Modellierung trennt deshalb die Ebenen, ohne ein großes Render-Modell 
 ### Abgrenzung
 
 Feste Pixelbewegungen wie Shake bleiben weiterhin über `translatePx` modelliert. Komponentenbezogene Track-Bewegungen wie Toggle oder Skeleton bleiben vorerst über `trackFactor` modelliert. Mehrphasige Animationen werden durch diese Entscheidung noch nicht vollständig gelöst; sie bleiben ein separater Modellierungspunkt.
+
+---
+
+## ADR-04: `trackFactor` als komponenteneigene Bewegungsstrecke
+
+### Entscheidung
+
+`trackFactor` bleibt als Feldname erhalten, wird aber nicht mehr ausschließlich als Toggle-spezifischer Track verstanden. Das Feld beschreibt allgemein einen normalisierten Anteil einer komponenteneigenen Bewegungsstrecke.
+
+### Begründung
+
+Sowohl Toggle als auch Skeleton benötigen eine Bewegung, deren konkrete Pixelstrecke erst im Komponenten-Rendering bekannt ist:
+
+- Beim Toggle ist es die Breite des Toggle-Tracks.
+- Beim Skeleton Loader ist es die Strecke des Shimmer-Effekts über die Skeleton-Fläche.
+
+Beide Fälle folgen derselben Logik: Das Mapping definiert einen normalisierten Faktor, die Komponente löst ihn zur Renderzeit in konkrete Pixelwerte oder CSS-Transformationen auf.
+
+### Abgrenzung
+
+`trackFactor` wird nicht für freie Enter-/Exit-Translationen verwendet. Diese werden über `translateDistance`, `translateFrom` und `translateTo` modelliert. Feste Pixelbewegungen wie Shake bleiben `translatePx`.
+
+---
+
+## ADR-05: Zentrale Runtime-Optionen und Out-of-Scope-Kombinationen
+
+### Entscheidung
+
+Die theoretisch benennbaren Komponenten, Bedeutungsdimensionen und Subkategorien werden als Runtime-Konstanten in `types.ts` definiert. Der Classifier verwendet diese Konstanten, statt eigene Listen zu pflegen.
+
+Die frühere Analysefunktion `getUnsupportedCombinations` wird konzeptuell als `getOutOfScopeCombinations` verstanden: Sie beschreibt Kombinationen, die zwar durch das allgemeine Framework-Vokabular benennbar sind, aber bewusst nicht Teil der Mapping-Datenbank sind.
+
+### Begründung
+
+Der Editor soll nicht nur verfügbare Mappings anzeigen, sondern bei Bedarf auch Scope-Grenzen sichtbar machen können. Dafür braucht er zwei Informationsquellen:
+
+- alle theoretisch definierten Optionen aus dem Framework-Vokabular
+- die tatsächlich vorhandenen Mappings aus der Mapping-Datenbank
+
+Diese Trennung erlaubt eine UI, in der nicht abgedeckte Dimensionen oder Subkategorien ausgegraut werden. Eine ausgegraute Option ist dabei kein Fehler, sondern ein Hinweis darauf, dass diese Kombination außerhalb des definierten Prototyp-Scopes liegt.
+
+### Abgrenzung
+
+Die Editor-Auswahl bleibt datenbankgetrieben. `getOutOfScopeCombinations` ist ein Analyse- und Dokumentationswerkzeug, nicht die primäre Grundlage der normalen Nutzerführung. Für die UI sind vor allem die definierten Runtime-Optionen und die datenbankbasierten Funktionen wie `getDimensionsForComponent`, `getSubcategoriesForDimension` und `isSupportedCombination` relevant.
