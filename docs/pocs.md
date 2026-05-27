@@ -58,19 +58,19 @@ Validieren, dass die theoretisch hergeleitete Taxonomie in eine typsichere TypeS
 ### Aufgaben
 
 - TypeScript-Interfaces für alle Datenebenen definieren: Komponente, Bedeutungsdimension, Subkategorie, Animationsparameter, Begründungstext
-- Vollständige Mapping-Einträge für Button (alle Bedeutungsdimensionen) und Toast (alle Bedeutungsdimensionen) befüllen
+- Erste vollständige Mapping-Einträge für den späteren Framework-Scope befüllen
 - Lookup-Funktion implementieren: `getMapping(component, dimension, subcategory)` gibt einen Mapping-Eintrag zurück
 - Unit-Tests für die Lookup-Funktion schreiben: alle gültigen Kombinationen testen, ungültige Kombinationen abfangen
 
 ### Datenstruktur (Entwurf)
 
 ```typescript
-type ComponentId = 'button' | 'toggle' | 'toast' | 'modal'
+type ComponentId = 'button' | 'toggle' | 'toast' | 'modal' | 'input' | 'skeleton'
 
 type Dimension = 'feedback' | 'stateChange' | 'direction' | 'hierarchy' | 'attention'
 
 type FeedbackSubcategory = 'success' | 'error' | 'warning'
-type DirectionSubcategory = 'enter' | 'exit' | 'forward' | 'backward'
+type DirectionSubcategory = 'enter' | 'exit' | 'backEnter' | 'backExit'
 
 interface AnimationParams {
   easing: number[]       // cubicBezier [x1, y1, x2, y2]
@@ -88,7 +88,8 @@ interface MappingEntry {
   params: AnimationParams
   rationale: {
     short: string        // Nutzergerichteter Begründungstext (Editor-Sprache)
-    source: string       // Wissenschaftliche Grundlage (interne Dokumentation)
+    source: string       // Wissenschaftliche Detailbegründung
+    references: string[] // Maschinenlesbare Quellenreferenzen
     signType: 'icon' | 'index' | 'symbol'  // Peirce-Zeichentyp
   }
 }
@@ -103,14 +104,14 @@ interface MappingEntry {
 ### Erfolgskriterien
 
 - Alle TypeScript-Interfaces sind vollständig und fehlerfrei typisiert
-- Button und Toast haben vollständige Einträge für alle fünf Bedeutungsdimensionen
+- Die Mapping-Datenbank enthält konsistente Einträge für den definierten Framework-Scope
 - Alle Unit-Tests laufen durch
 - Eine ungültige Kombination (z.B. nicht existierende Dimension) wird sauber abgefangen
-- Jeder Mapping-Eintrag enthält `rationale.source` mit Quellenangabe
+- Jeder Mapping-Eintrag enthält `rationale.source` und `rationale.references` zur wissenschaftlichen Nachvollziehbarkeit
 
 ### Abgrenzung
 
-Keine UI, keine Preview. Nur die Datenstruktur und Lookup-Logik. Toggle und Modal werden noch nicht vollständig befüllt.
+Keine UI, keine Preview. Nur die Datenstruktur und Lookup-Logik. Nicht alle Komponenten müssen in diesem POC bereits final ausgearbeitet sein.
 
 ---
 
@@ -135,7 +136,7 @@ Validieren, dass die Mapping-Datenbank aus POC 2 direkt als Animationsquelle fü
 
 - Wie wird der Animation-State zurückgesetzt, damit sie erneut abgespielt werden kann? (`key`-Trick in React vs. imperative Framer Motion Controls)
 - Wie wird sichergestellt, dass bei sehr schnellen Auswahländerungen keine Animationen übereinander laufen?
-- Müssen die Preview-Komponenten für alle vier Komponenten (Button, Toggle, Toast, Modal) identisch strukturiert sein, oder gibt es komponentenspezifische Besonderheiten?
+- Müssen die Preview-Komponenten für die sechs Framework-Komponenten identisch strukturiert sein, oder gibt es komponentenspezifische Besonderheiten?
 
 ### Erfolgskriterien
 
@@ -234,13 +235,13 @@ Kein vollständiges Editor-UI. Der Export wird als isolierte Funktion validiert,
 
 ### Ziel
 
-Validieren, dass Mapping-Datenbank, Preview-Komponente und Code-Export als zusammenhängendes System funktionieren. Das ist der erste Moment, in dem die vollständige Nutzungskette (Auswahl → Begründung → Preview → Export) durchläuft, auch wenn nur für eine einzige Komponente und zwei Patterns.
+Validieren, dass Mapping-Datenbank, Preview-Komponente und Code-Export als zusammenhängendes System funktionieren. Das ist der erste Moment, in dem die vollständige Nutzungskette (Auswahl → Begründung → Preview → Export) durchläuft, auch wenn nur für eine einzige Komponente und zwei semantische Mappings.
 
 Dieser POC beantwortet die Frage, die keiner der anderen POCs beantwortet: Funktioniert das Konzept als Ganzes?
 
 ### Aufgaben
 
-- Einfaches Single-Page-Layout bauen mit: Komponentenauswahl (nur Button), Pattern-Auswahl (nur Feedback/Success und Feedback/Error), Echtzeit-Preview aus POC 3, Semantische Begründung aus `rationale.short`, Code-Export (Framer Motion) aus POC 4 mit Copy-to-Clipboard
+- Einfaches Single-Page-Layout bauen mit: Komponentenauswahl (nur Button), semantische Mapping-Auswahl (nur Feedback/Success und Feedback/Error), Echtzeit-Preview aus POC 3, Semantische Begründung aus `rationale.short`, Code-Export (Framer Motion) aus POC 4 mit Copy-to-Clipboard
 - Alle Teile kommen aus den bestehenden POC-Implementierungen, kein neuer Code außer dem Layout-Wrapper
 - Das Layout muss nicht schön sein, aber es muss die Nutzungskette vollständig abbilden
 
@@ -259,7 +260,7 @@ Dieser POC beantwortet die Frage, die keiner der anderen POCs beantwortet: Funkt
 
 ### Abgrenzung
 
-Nur Button, nur zwei Patterns (Success und Error). Keine Toggle, kein Modal, kein Toast in diesem POC. Keine CSS-Export-Option. Kein responsives Layout. Ziel ist Funktionsnachweis, nicht Vollständigkeit.
+Nur Button, nur zwei semantische Mappings (Success und Error). Keine Toggle, kein Modal, kein Toast in diesem POC. Keine CSS-Export-Option. Kein responsives Layout. Ziel ist Funktionsnachweis, nicht Vollständigkeit.
 
 ---
 

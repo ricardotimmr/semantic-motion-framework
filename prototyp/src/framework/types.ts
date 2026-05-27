@@ -74,10 +74,10 @@ export type StateChangeSubcategory =
   (typeof STATE_CHANGE_SUBCATEGORIES)[number];
 
 export const DIRECTION_SUBCATEGORIES = [
-  "enter",      // Element kommt von rechts, impliziert Vorwärtsnavigation
-  "exit",       // Element verlässt nach links, impliziert Vorwärtsnavigation
-  "backEnter",  // Element kommt von links, impliziert Rückwärtsnavigation
-  "backExit",   // Element verlässt nach rechts, impliziert Rückwärtsnavigation
+  "enter",      // Element erscheint als neue/vorwärts gerichtete Ebene
+  "exit",       // Aktuelle Ebene wird in Vorwärtsnavigation verlassen
+  "backEnter",  // Vorherige Ebene erscheint bei Rückwärtsnavigation
+  "backExit",   // Aktuelle Ebene wird in Rückwärtsnavigation verlassen
 ] as const;
 export type DirectionSubcategory = (typeof DIRECTION_SUBCATEGORIES)[number];
 

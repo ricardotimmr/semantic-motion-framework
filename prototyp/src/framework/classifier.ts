@@ -2,14 +2,14 @@
  * Semantic Motion Framework – Classifier
  *
  * Funktionen zur Abfrage der Mapping-Datenbank.
- * Alle Zugriffe auf mapping.ts laufen über dieses Modul.
+ * Alle Zugriffe auf mappings.ts laufen über dieses Modul.
  *
  * Der Classifier erzwingt die Unterscheidung zwischen dem, was das Typsystem
- * benennt (types.ts), und dem, was das Framework tatsächlich abdeckt (mapping.ts).
+ * benennt (types.ts), und dem, was das Framework tatsächlich abdeckt (mappings.ts).
  * Out-of-Scope-Kombinationen geben null zurück statt einen Fehler zu werfen.
  */
 
-import { mappings } from "../data/mapping";
+import { mappings } from "../data/mappings";
 import {
   COMPONENT_IDS,
   DIMENSIONS,

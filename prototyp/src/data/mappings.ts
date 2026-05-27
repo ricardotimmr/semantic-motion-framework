@@ -318,7 +318,8 @@ export const mappings: MappingDatabase = [
         "ohne positive Energie. Duration 380ms: langsamer als feedback-success " +
         "(300ms), kommuniziert Neutralität. Sekundärer Opacity-Pulse nach " +
         "Einfahrt als Aufmerksamkeitssignal: sequentielle Animation, kein " +
-        "paralleles Feld, um translatePx-Mutex einzuhalten (Bartram et al. 2003).",
+        "paralleles Feld, um die Translation-Mutex-Regel einzuhalten " +
+        "(Bartram et al. 2003).",
       references: ["Peirce1931", "BartramWareCalvert2003"],
       signType: "index",
     },

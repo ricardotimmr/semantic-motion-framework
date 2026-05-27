@@ -579,7 +579,7 @@ Ist die Animation eine Reaktion auf eine Nutzeraktion?
 
 ## 5. Vollständige Mapping-Tabelle
 
-Die folgende Tabelle gibt einen Überblick aller geplanten Mappings. Die vollständige Implementierung erfolgt in POC 2 und wird in der Mapping-Datenbank unter `/src/data/mappings/` hinterlegt.
+Die folgende Tabelle gibt einen Überblick aller geplanten Mappings. Die vollständige Implementierung liegt in der Mapping-Datenbank unter `prototyp/src/data/mappings.ts`.
 
 | Komponente | Dimension | Subkategorie | Easing | Duration | Direction | Amplitude | Zeichentyp |
 |---|---|---|---|---|---|---|---|
