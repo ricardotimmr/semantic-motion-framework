@@ -21,5 +21,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "../../prototyp/src/data/*.ts",
+    "../../prototyp/src/framework/*.ts",
+    "../poc-03-preview/src/motionAdapter.ts",
+    "../poc-03-preview/src/previewChoreography.ts",
+    "../poc-04-export/src/exportGenerators.ts"
+  ]
 }
