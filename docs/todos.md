@@ -2,6 +2,45 @@
 
 Diese Datei sammelt offene technische Punkte, die beim späteren Einbinden des Frameworks in den Editor relevant werden.
 
+## Empfohlene Bearbeitungsreihenfolge
+
+<!-- 1. Kleine Modell- und Text-Unsauberkeiten bereinigen (TODO 4, TODO 5, TODO 7):
+   - TODO 4: `button-feedback-success` Begründung ohne Aufwärtsbewegung (erledigt)
+   - TODO 5: `hierarchy-toBackground` Kommentar präzisieren (erledigt)
+   - TODO 7: Spring-Kommentar in `types.ts` präzisieren (erledigt) -->
+
+2. `toast-attention-oneShot` klären (TODO 3):
+   - Entweder Pulse wirklich rendern
+   - Oder Begründung/Kommentar vereinfachen
+
+3. Renderer-Regeln sauber festlegen (TODO 6):
+   - `scaleFactor` je Kontext bewusst behandeln
+   - Pulse, Scale-In, Scale-Out und Hierarchie getrennt interpretieren
+
+4. POC 03 auf alle 24 Mapping-Einträge erweitern (neuer TODO 8):
+   - Erstes Ziel: Jeder Mapping-Eintrag ist auswählbar und crasht nicht
+   - Zusätzliche Preview-Darstellungen für `toggle`, `input` und `skeleton`
+
+5. Systematischer Mapping-Review in POC 03 durchführen (neuer TODO 9):
+   - Button
+   - Toggle
+   - Input
+   - Toast
+   - Modal
+   - Skeleton
+   - Prüfen, ob jede Animation die intendierte Bedeutung wirklich vermittelt
+   - Auffälligkeiten in `docs/mapping-review-notizen.md` dokumentieren
+
+6. Parameter-Tuning und Begründungen synchronisieren (neuer TODO 10):
+   - Änderungen an Duration, Easing, Amplitude oder Direction immer mit `rationale.short/source` abgleichen
+
+7. Export nachziehen (abhängig von TODO 8 bis TODO 10):
+   - POC 04 und POC 05 prüfen, wenn POC 03 neue Sonderfälle oder Interpretationen braucht
+
+8. Bereits gelöste POC-Sonderfälle später in den Hauptprototyp übertragen (TODO 1, TODO 2):
+   - Spring-Handling
+   - `toast-feedback-error` als zweiphasige Animation
+
 ## 1. Spring-Easing gesondert behandeln
 
 Status: In POC 04 prototypisch gelöst, später in den Hauptprototyp übernehmen.
@@ -99,33 +138,37 @@ TODO:
 - Entweder den sekundären Pulse als bewussten Sonderfall für den Toast-Renderer dokumentieren.
 - Oder den Pulse aus Kommentar und Begründung entfernen, wenn er im Prototyp nicht umgesetzt wird.
 
-## 4. Button-Feedback-Success-Begründung schärfen
+<!-- ## 4. Button-Feedback-Success-Begründung schärfen
 
-button-feedback-success erwähnt in source eine „Aufwärtsbewegung“, aber das Mapping nutzt nur scaleFactor, keine y-Bewegung. Für wissenschaftliche Sauberkeit würde ich die Aufwärtsbewegung aus der Begründung entfernen oder bewusst eine y-Komponente modellieren. Ich würde eher die Begründung schärfen.
+Status: Erledigt.
+
+`button-feedback-success` erwähnte in `rationale.source` eine „Aufwärtsbewegung“, obwohl das Mapping nur `scaleFactor` und keine y-Bewegung nutzt. Die Begründung wurde geschärft, die Parameter bleiben unverändert.
 
 Aktueller Zustand:
 
 - `button-feedback-success` nutzt nur `scaleFactor`.
-- In `rationale.source` wird aber eine Aufwärtsbewegung erwähnt.
+- In `rationale.source` wird keine Aufwärtsbewegung mehr erwähnt.
 
 TODO:
 
-- Die Aufwärtsbewegung aus der Begründung entfernen oder präzisieren.
-- Keine y-Bewegung ergänzen, solange das Mapping bewusst als Scale-Feedback gedacht ist.
+- Erledigt: Die Begründung beschreibt jetzt die leichte Expansion als physische Reaktion auf die erfolgreiche Aktion.
+- Keine y-Bewegung ergänzt, weil das Mapping bewusst als fokussiertes Scale-Feedback gedacht ist. -->
 
-## 5. Hierarchy-toBackground-Kommentar präzisieren
+<!-- ## 5. Hierarchy-toBackground-Kommentar präzisieren
 
-toBackground ist im Typkommentar als „tritt zurück, bleibt aber sichtbar“ beschrieben, das Modal-Mapping blendet aber vollständig aus (opacity: [1, 0]). Kein Codefehler, aber konzeptionell unsauber. Kleine Kommentar-/Begründungsanpassung reicht.
+Status: Erledigt.
+
+`toBackground` war im Typkommentar als „tritt zurück, bleibt aber sichtbar“ beschrieben, das Modal-Mapping blendet aber vollständig aus (`opacity: [1, 0]`). Das war kein Codefehler, aber konzeptionell zu eng formuliert.
 
 Aktueller Zustand:
 
-- `HierarchySubcategory.toBackground` ist in `types.ts` sinngemäß als „tritt zurück, bleibt aber sichtbar“ beschrieben.
+- `HierarchySubcategory.toBackground` ist in `types.ts` jetzt als Verlust der Vordergrundpriorität und Rücktritt aus dem Fokus beschrieben.
 - `modal-hierarchy-toBackground` blendet das Modal mit `opacity: [1, 0]` vollständig aus.
 
 TODO:
 
-- Kommentar oder Mapping-Begründung so anpassen, dass `toBackground` auch ein Zurücktreten bis zum Ausblenden abdecken kann.
-- Kein neues Modell nötig.
+- Erledigt: Kommentar und Mapping-Begründung decken jetzt ein Zurücktreten bis zum Ausblenden ab.
+- Kein neues Modell nötig. -->
 
 ## 6. ScaleFactor-Interpretation im Renderer bewusst behandeln
 
@@ -142,16 +185,18 @@ TODO:
 - Beispiele: Pulse `1.0 → 1.05 → 1.0`, Eintritt `0.95 → 1.0`, Austritt `1.0 → 0.96`.
 - Kein neues Datenmodell nötig, solange diese Regel im Renderer sauber umgesetzt wird.
 
-## 7. Easing-Kommentar zu Spring präzisieren
+<!-- ## 7. Easing-Kommentar zu Spring präzisieren
 
-Der Kommentar sagt, jedes Easing-Preset entspreche einer cubicBezier-Kurve. spring ist aber ausdrücklich ein Platzhalter. Das ist durch docs/todos.md fachlich abgefangen, aber der Kommentar könnte später noch präziser werden.
+Status: Erledigt.
+
+Der Kommentar sagte ursprünglich, jedes Easing-Preset entspreche einer cubicBezier-Kurve. `spring` ist aber ausdrücklich ein Platzhalter für CSS-/Fallback-Fälle und muss in Framer Motion über `springConfig` behandelt werden.
 
 Aktueller Zustand:
 
-- In `types.ts` steht, dass jedes Easing-Preset einer `cubicBezier`-Kurve entspricht.
+- In `types.ts` steht jetzt, dass alle Presets außer `spring` direkt einer `cubicBezier`-Kurve entsprechen.
 - `spring` ist aber ein Framer-Motion-Spring und nur als Platzhalter in `EASING_CURVES` enthalten.
 
 TODO:
 
-- Kommentar in `types.ts` später präzisieren: Alle Presets außer `spring` entsprechen direkt einer `cubicBezier`-Kurve.
-- `spring` muss über `springConfig` behandelt werden.
+- Erledigt: Kommentar in `types.ts` präzisiert.
+- `spring` muss über `springConfig` behandelt werden; die Code-Logik bleibt unverändert. -->

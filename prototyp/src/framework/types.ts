@@ -83,7 +83,7 @@ export type DirectionSubcategory = (typeof DIRECTION_SUBCATEGORIES)[number];
 
 export const HIERARCHY_SUBCATEGORIES = [
   "toForeground", // Element wird zum primären Inhalt
-  "toBackground", // Element tritt zurück, bleibt aber sichtbar
+  "toBackground", // Element verliert Vordergrundpriorität und tritt aus dem Fokus zurück
 ] as const;
 export type HierarchySubcategory = (typeof HIERARCHY_SUBCATEGORIES)[number];
 
@@ -127,7 +127,9 @@ export const SUBCATEGORIES_BY_DIMENSION = {
 
 /**
  * Benannte Easing-Presets, die im Framework verwendet werden.
- * Jedes Preset entspricht einer cubicBezier-Kurve und trägt semantische Bedeutung.
+ * Alle Presets außer "spring" entsprechen direkt einer cubicBezier-Kurve.
+ * "spring" beschreibt eine physikalische Framer-Motion-Transition und muss
+ * über springConfig gerendert oder exportiert werden.
  *
  * easeOut      [0.0, 0.0, 0.2, 1.0]  – Ankommen, Abschluss, positives Feedback
  * easeIn       [0.4, 0.0, 1.0, 1.0]  – Verlassen, Aufbau, Ausfahrt
@@ -158,6 +160,8 @@ export type EasingValue =
 /**
  * Nachschlagetabelle von Preset-Namen zu cubicBezier-Werten.
  * Wird vom Code-Export-Generator verwendet, um konkrete Werte zu erzeugen.
+ * Für "spring" ist der Wert nur ein CSS-/Fallback-Platzhalter.
+ * Framer Motion muss stattdessen springConfig verwenden.
  */
 export const EASING_CURVES: Record<EasingPreset, [number, number, number, number]> = {
   easeOut:   [0.0, 0.0, 0.2, 1.0],

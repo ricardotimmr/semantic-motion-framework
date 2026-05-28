@@ -29,11 +29,11 @@ export const mappings: MappingDatabase = [
         "Die sanfte Ausdehnung und das schnelle Abklingen signalisieren, " +
         "dass eine Aktion erfolgreich abgeschlossen wurde.",
       source:
-        "Ikon/Index (Peirce): leichte Expansion ähnelt physikalischem Öffnen; " +
-        "Aufwärtsbewegung als kultureller Index für Positives (Ware 2012). " +
+        "Ikon/Index (Peirce): leichte Expansion ähnelt einer physischen " +
+        "Reaktion auf die erfolgreiche Aktion und verweist damit auf deren Abschluss. " +
         "Ease-Out: Abklingen als Signal für Abschluss (Zacks & Tversky 2001). " +
         "Duration 250ms: Standard für primäres Feedback (Head 2016).",
-      references: ["Peirce1931", "Ware2012", "ZacksTversky2001", "Head2016"],
+      references: ["Peirce1931", "ZacksTversky2001", "Head2016"],
       signType: "icon/index",
     },
   },
@@ -371,9 +371,9 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        "Das Modal schrumpft leicht und wird ausgeblendet. Die minimale " +
-        "Verkleinerung signalisiert Rückzug ohne vollständiges Verschwinden " +
-        "zu implizieren.",
+        "Das Modal schrumpft leicht und wird ausgeblendet. Die Verkleinerung " +
+        "kommuniziert, dass die Ebene ihre Vordergrundpriorität verliert " +
+        "und aus dem aktiven Fokus zurücktritt.",
       source:
         "Ikon (Peirce): Verkleinerung ähnelt physikalischem Entfernen. " +
         "Ease-In: Zurücktreten als Aufbaukurve (Zacks & Tversky 2001). " +
