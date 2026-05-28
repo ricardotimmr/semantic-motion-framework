@@ -1,0 +1,276 @@
+:root {
+  --bg: #f7f1e3;
+  --ink: #1c1c1e;
+  --red: #8b2e2e;
+  --line: rgba(28, 28, 30, 0.14);
+  --muted: rgba(28, 28, 30, 0.55);
+  --faint: rgba(28, 28, 30, 0.045);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+button {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 2rem;
+  align-items: end;
+  padding: 2.5rem 3rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.eyebrow,
+.panel-label {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1 {
+  max-width: 860px;
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4.1rem);
+  font-weight: 520;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.hero-copy {
+  max-width: 720px;
+  margin: 1.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.decision-box {
+  border: 1px solid var(--line);
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.decision-box p:last-child {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr) 290px;
+  min-height: 620px;
+}
+
+.selector-panel,
+.export-panel,
+.meta-panel {
+  min-width: 0;
+  padding: 1.25rem;
+}
+
+.selector-panel,
+.export-panel {
+  border-right: 1px solid var(--line);
+}
+
+.mapping-list {
+  max-height: calc(100vh - 230px);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.mapping-button {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  padding: 0.65rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mapping-button:hover,
+.mapping-button.active {
+  color: var(--ink);
+  background: var(--faint);
+  border-color: rgba(28, 28, 30, 0.36);
+}
+
+.mapping-button strong,
+.mapping-button span {
+  display: block;
+}
+
+.mapping-button strong {
+  overflow-wrap: anywhere;
+  font-size: 0.78rem;
+  margin-bottom: 0.25rem;
+}
+
+.mapping-button span {
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.export-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.toolbar h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.tab,
+.copy-button {
+  height: 32px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  padding: 0 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.tab.active,
+.tab:hover,
+.copy-button:hover {
+  color: var(--bg);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.code-block {
+  flex: 1;
+  min-height: 460px;
+  max-height: calc(100vh - 250px);
+  overflow: auto;
+  margin: 0;
+  border: 1px solid var(--line);
+  background: rgba(28, 28, 30, 0.055);
+  padding: 1rem;
+  color: rgba(28, 28, 30, 0.78);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.74rem;
+  line-height: 1.65;
+}
+
+.badge {
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  border: 1px solid var(--red);
+  color: var(--red);
+  padding: 0.2rem 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.rationale {
+  margin: 0 0 1rem;
+  color: rgba(28, 28, 30, 0.68);
+  font-size: 0.84rem;
+  line-height: 1.75;
+}
+
+.params {
+  margin: 0;
+  border: 1px solid var(--line);
+}
+
+.params div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.params div:last-child {
+  border-bottom: 0;
+}
+
+.params dt,
+.params dd {
+  margin: 0;
+  min-width: 0;
+  font-size: 0.76rem;
+}
+
+.params dt {
+  color: var(--muted);
+  font-weight: 650;
+}
+
+.params dd {
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+@media (max-width: 1040px) {
+  .hero,
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding: 2rem 1.25rem;
+  }
+
+  .selector-panel,
+  .export-panel {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mapping-list {
+    max-height: 320px;
+  }
+}

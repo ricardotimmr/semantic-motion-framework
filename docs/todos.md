@@ -1,13 +1,22 @@
-# TODOs fuer Preview und Code-Export
+# TODOs für Preview und Code-Export
 
-Diese Datei sammelt offene technische Punkte, die beim spaeteren Einbinden des Frameworks in den Editor relevant werden.
+Diese Datei sammelt offene technische Punkte, die beim späteren Einbinden des Frameworks in den Editor relevant werden.
 
 ## 1. Spring-Easing gesondert behandeln
 
-Aktueller Zustand:
+Status: In POC 04 prototypisch gelöst, später in den Hauptprototyp übernehmen.
+
+Ursprünglicher Zustand:
 
 - In `types.ts` existiert `EASING_CURVES.spring` nur als Platzhalter.
-- Spring darf spaeter nicht wie eine normale `cubic-bezier`-Kurve exportiert oder gerendert werden.
+- Spring darf später nicht wie eine normale `cubic-bezier`-Kurve exportiert oder gerendert werden.
+
+Umsetzung in den POCs:
+
+- POC 04 exportiert Spring für Framer Motion als `transition.type = "spring"`.
+- `springConfig` aus dem Mapping wird verwendet.
+- CSS-Export erzeugt einen Hinweis, dass CSS keine echte Spring-Physik unterstützt.
+- CSS nutzt aktuell eine bewusste Approximation über `cubic-bezier`.
 
 Framer-Motion-Preview und Framer-Motion-Export:
 
@@ -29,30 +38,39 @@ transition: {
 
 CSS-Export:
 
-- CSS unterstuetzt keine echte Spring-Physik nativ.
-- Moegliche Loesungen:
-  - Spring-Mappings im CSS-Export als eingeschraenkt markieren.
-  - Spring naeherungsweise mit `cubic-bezier` approximieren.
+- CSS unterstützt keine echte Spring-Physik nativ.
+- Mögliche Lösungen:
+  - Spring-Mappings im CSS-Export als eingeschränkt markieren.
+  - Spring näherungsweise mit `cubic-bezier` approximieren.
   - Keyframes erzeugen, die den Overshoot grob nachbilden.
 
-Empfehlung fuer den Prototyp:
+Entscheidung für den Hauptprototyp:
 
 - Framer Motion korrekt mit `springConfig` exportieren.
-- CSS-Export bei Spring entweder mit Hinweis versehen oder bewusst approximieren.
+- CSS-Export bei Spring mit Hinweis versehen und bewusst approximieren.
+- Kein neues Datenmodell nötig.
 
 ## 2. Mehrphasige Toast-Error-Animation behandeln
 
-Aktueller Zustand:
+Status: In POC 03 und POC 04 prototypisch als Sonderfall gelöst, später in den Hauptprototyp übernehmen.
+
+Ursprünglicher Zustand:
 
 - `toast-feedback-error` ist zweiphasig:
   - y-Einfahrt von unten
   - x-Shake nach Ankunft
-- Ein naiver `direction`/`keyframes`-Renderer reicht dafuer nicht aus, weil `direction: "y"` die Einfahrt beschreibt, die Keyframes aber den anschliessenden x-Shake.
+- Ein naiver `direction`/`keyframes`-Renderer reicht dafür nicht aus, weil `direction: "y"` die Einfahrt beschreibt, die Keyframes aber den anschließenden x-Shake.
 
-Moegliche Loesungen:
+Umsetzung in den POCs:
 
-- Sonderfall im Toast-Renderer fuer `toast-feedback-error`.
-- Oder spaeter ein `stages`-Modell einfuehren, zum Beispiel:
+- POC 03 rendert `toast-feedback-error` als zweiphasige Preview-Sequenz.
+- POC 04 exportiert `toast-feedback-error` als zweiphasige Framer-Motion-Sequenz.
+- POC 04 erzeugt für CSS kombinierte Keyframes mit y-Einfahrt und anschließendem x-Shake.
+
+Mögliche Lösungen:
+
+- Sonderfall im Toast-Renderer für `toast-feedback-error`.
+- Oder später ein `stages`-Modell einführen, zum Beispiel:
 
 ```ts
 stages: [
@@ -61,10 +79,11 @@ stages: [
 ]
 ```
 
-Empfehlung fuer den Prototyp:
+Entscheidung für den Hauptprototyp:
 
-- Fuer die erste Editor-Implementierung reicht ein gezielter Sonderfall im Toast-Renderer.
-- Das `stages`-Modell ist sauberer, aber erst sinnvoll, wenn mehrere mehrphasige Mappings entstehen.
+- Für die erste Editor-Implementierung reicht ein gezielter Sonderfall im Toast-Renderer und Export.
+- Kein `stages`-Modell vor dem Hauptprototyp einführen.
+- `stages` erst prüfen, wenn mehrere mehrphasige Mappings entstehen.
 
 ## 3. Toast-Attention-OneShot mit modellierten Parametern abgleichen
 
