@@ -22,6 +22,19 @@ type PlaybackControls = {
   stop: () => void;
 };
 
+type ScaleAnimation =
+  | {
+      type: "pulse";
+      initial: number;
+      animate: number[];
+      times: number[];
+    }
+  | {
+      type: "scaleIn" | "scaleOut";
+      initial: number;
+      animate: number;
+    };
+
 const previewSizes: Record<PreviewComponent, PreviewSize> = {
   button: { width: 168, height: 42 },
   modal: { width: 340, height: 210 },
@@ -40,8 +53,12 @@ function wait(milliseconds: number) {
   });
 }
 
-function isPreviewComponent(component: ComponentId): component is PreviewComponent {
-  return component === "button" || component === "modal" || component === "toast";
+function isPreviewComponent(
+  component: ComponentId,
+): component is PreviewComponent {
+  return (
+    component === "button" || component === "modal" || component === "toast"
+  );
 }
 
 function getPreviewSize(component: ComponentId): PreviewSize {
@@ -67,6 +84,37 @@ function edgeToValue(edge: TranslationEdge, size: PreviewSize) {
     case "bottom":
       return size.height;
   }
+}
+
+function getScaleAnimation(entry: MappingEntry): ScaleAnimation | null {
+  const { scaleFactor } = entry.params;
+
+  if (scaleFactor === undefined) {
+    return null;
+  }
+
+  if (entry.dimension === "hierarchy" && scaleFactor > 0) {
+    return {
+      type: "scaleIn",
+      initial: 1 - scaleFactor,
+      animate: 1,
+    };
+  }
+
+  if (entry.dimension === "hierarchy" && scaleFactor < 0) {
+    return {
+      type: "scaleOut",
+      initial: 1,
+      animate: 1 + scaleFactor,
+    };
+  }
+
+  return {
+    type: "pulse",
+    initial: 1,
+    animate: [1, 1 + scaleFactor, 1],
+    times: [0, 0.45, 1],
+  };
 }
 
 function getTransition(entry: MappingEntry): Transition {
@@ -109,17 +157,14 @@ function getInitialTarget(entry: MappingEntry): TargetAndTransition {
   const axis = getAxis(entry);
   const size = getPreviewSize(entry.component);
   const target = getBaseTarget(entry);
+  const scaleAnimation = getScaleAnimation(entry);
 
   if (params.opacity !== undefined) {
     target.opacity = params.opacity[0];
   }
 
-  if (params.scaleFactor !== undefined) {
-    if (entry.dimension === "hierarchy" && params.scaleFactor > 0) {
-      target.scale = 1 - params.scaleFactor;
-    } else {
-      target.scale = 1;
-    }
+  if (scaleAnimation !== null) {
+    target.scale = scaleAnimation.initial;
   }
 
   if (params.translateFrom !== undefined) {
@@ -136,6 +181,31 @@ function getSingleStageAnimation(entry: MappingEntry): TargetAndTransition {
   const target = getBaseTarget(entry);
   const transition = getTransition(entry);
 
+  if (params.opacityKeyframes !== undefined) {
+    target.opacity = params.opacityKeyframes.values;
+
+    if (params.translateFrom !== undefined) {
+      const startValue = edgeToValue(params.translateFrom, size);
+      target[axis] = params.opacityKeyframes.values.map((_, index) =>
+        index === 0 ? startValue : 0,
+      );
+    }
+
+    if (params.translateTo !== undefined) {
+      const endValue = edgeToValue(params.translateTo, size);
+      const lastIndex = params.opacityKeyframes.values.length - 1;
+      target[axis] = params.opacityKeyframes.values.map((_, index) =>
+        index === lastIndex ? endValue : 0,
+      );
+    }
+
+    target.transition = {
+      ...transition,
+      times: params.opacityKeyframes.times,
+    };
+    return target;
+  }
+
   if (params.keyframes !== undefined) {
     target[axis] = params.keyframes.values;
     target.transition = {
@@ -145,14 +215,15 @@ function getSingleStageAnimation(entry: MappingEntry): TargetAndTransition {
     return target;
   }
 
-  if (params.scaleFactor !== undefined) {
-    if (entry.dimension === "hierarchy") {
-      target.scale = params.scaleFactor < 0 ? 1 + params.scaleFactor : 1;
-    } else {
-      target.scale = [1, 1 + params.scaleFactor, 1];
+  const scaleAnimation = getScaleAnimation(entry);
+
+  if (scaleAnimation !== null) {
+    target.scale = scaleAnimation.animate;
+
+    if (scaleAnimation.type === "pulse") {
       target.transition = {
         ...transition,
-        times: [0, 0.45, 1],
+        times: scaleAnimation.times,
       };
       return target;
     }

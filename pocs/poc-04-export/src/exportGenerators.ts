@@ -13,6 +13,19 @@ type TransformParts = {
   scale?: string;
 };
 
+type ScaleAnimation =
+  | {
+      type: "pulse";
+      initial: number;
+      animate: number[];
+      times: number[];
+    }
+  | {
+      type: "scaleIn" | "scaleOut";
+      initial: number;
+      animate: number;
+    };
+
 function toPascalCase(value: string) {
   return value
     .split(/[-\s]/)
@@ -28,6 +41,16 @@ function toCamelCase(value: string) {
 
 function formatArray(values: readonly number[]) {
   return `[${values.join(", ")}]`;
+}
+
+function formatMotionArray(values: readonly (number | string)[]) {
+  return `[${values
+    .map((value) => (typeof value === "string" ? `"${value}"` : String(value)))
+    .join(", ")}]`;
+}
+
+function formatPercent(value: number) {
+  return Number(value.toFixed(4));
 }
 
 function formatEasingValue(easing: EasingValue) {
@@ -82,6 +105,37 @@ function transformString(parts: TransformParts) {
   return transforms.length > 0 ? transforms.join(" ") : "none";
 }
 
+function getScaleAnimation(entry: MappingEntry): ScaleAnimation | null {
+  const { scaleFactor } = entry.params;
+
+  if (scaleFactor === undefined) {
+    return null;
+  }
+
+  if (entry.dimension === "hierarchy" && scaleFactor > 0) {
+    return {
+      type: "scaleIn",
+      initial: 1 - scaleFactor,
+      animate: 1,
+    };
+  }
+
+  if (entry.dimension === "hierarchy" && scaleFactor < 0) {
+    return {
+      type: "scaleOut",
+      initial: 1,
+      animate: 1 + scaleFactor,
+    };
+  }
+
+  return {
+    type: "pulse",
+    initial: 1,
+    animate: [1, 1 + scaleFactor, 1],
+    times: [0, 0.45, 1],
+  };
+}
+
 function sourceComment(entry: MappingEntry, prefix: "//" | "/*") {
   if (prefix === "//") {
     return [
@@ -102,6 +156,7 @@ function sourceComment(entry: MappingEntry, prefix: "//" | "/*") {
 
 function framerTransition(entry: MappingEntry, indent = "    ") {
   const { params } = entry;
+  const times = params.keyframes?.times ?? params.opacityKeyframes?.times;
 
   if ("preset" in params.easing && params.easing.preset === "spring") {
     return [
@@ -118,9 +173,7 @@ function framerTransition(entry: MappingEntry, indent = "    ") {
     `${indent}transition: {`,
     `${indent}  duration: ${params.duration / 1000}, // ${params.duration}ms aus dem Mapping`,
     `${indent}  ease: ${formatFramerEase(params.easing)}, // explizite cubicBezier-Kurve`,
-    params.keyframes !== undefined
-      ? `${indent}  times: ${formatArray(params.keyframes.times)},`
-      : null,
+    times !== undefined ? `${indent}  times: ${formatArray(times)},` : null,
     `${indent}},`,
   ]
     .filter(Boolean)
@@ -171,26 +224,34 @@ export function generateFramerMotionCode(entry: MappingEntry): string {
   const axisProperty = getAxisProperty(axis);
   const initial: string[] = [];
   const animate: string[] = [];
+  const scaleAnimation = getScaleAnimation(entry);
 
-  if (params.opacity !== undefined) {
+  if (params.opacityKeyframes !== undefined) {
+    initial.push(
+      `opacity: ${params.opacityKeyframes.values[0]}, // Start-Deckkraft`,
+    );
+    animate.push(
+      `opacity: ${formatArray(params.opacityKeyframes.values)}, // mehrstufiges Opacity-Signal`,
+    );
+  } else if (params.opacity !== undefined) {
     initial.push(`opacity: ${params.opacity[0]}, // Start-Deckkraft`);
     animate.push(`opacity: ${params.opacity[1]}, // Ziel-Deckkraft`);
   }
 
-  if (params.scaleFactor !== undefined) {
-    if (entry.dimension === "hierarchy" && params.scaleFactor > 0) {
+  if (scaleAnimation !== null) {
+    if (scaleAnimation.type === "scaleIn") {
       initial.push(
-        `scale: ${1 - params.scaleFactor}, // Start kleiner: Element tritt in den Vordergrund`,
+        `scale: ${scaleAnimation.initial}, // Start kleiner: Element tritt in den Vordergrund`,
       );
-      animate.push("scale: 1, // Zielgröße");
-    } else if (entry.dimension === "hierarchy") {
-      initial.push("scale: 1, // Startgröße");
+      animate.push(`scale: ${scaleAnimation.animate}, // Zielgröße`);
+    } else if (scaleAnimation.type === "scaleOut") {
+      initial.push(`scale: ${scaleAnimation.initial}, // Startgröße`);
       animate.push(
-        `scale: ${1 + params.scaleFactor}, // Ziel kleiner: Element tritt zurück`,
+        `scale: ${scaleAnimation.animate}, // Ziel kleiner: Element tritt zurück`,
       );
-    } else {
+    } else if (scaleAnimation.type === "pulse") {
       animate.push(
-        `scale: [1, ${1 + params.scaleFactor}, 1], // Puls/Scale-Feedback`,
+        `scale: ${formatArray(scaleAnimation.animate)}, // Puls/Scale-Feedback`,
       );
     }
   }
@@ -206,14 +267,37 @@ export function generateFramerMotionCode(entry: MappingEntry): string {
     initial.push(
       `${axisProperty}: "${edgeToPercent(params.translateFrom)}", // Startkante: ${params.translateFrom}`,
     );
-    animate.push(`${axisProperty}: 0, // Element erreicht Zielposition`);
+
+    if (params.opacityKeyframes !== undefined) {
+      const startValue = edgeToPercent(params.translateFrom);
+      const values = params.opacityKeyframes.values.map((_, index) =>
+        index === 0 ? startValue : "0%",
+      );
+      animate.push(
+        `${axisProperty}: ${formatMotionArray(values)}, // Einfahrt vor Opacity-Pulse`,
+      );
+    } else {
+      animate.push(`${axisProperty}: 0, // Element erreicht Zielposition`);
+    }
   }
 
   if (params.translateTo !== undefined) {
     initial.push(`${axisProperty}: 0, // Startposition`);
-    animate.push(
-      `${axisProperty}: "${edgeToPercent(params.translateTo)}", // Zielkante: ${params.translateTo}`,
-    );
+
+    if (params.opacityKeyframes !== undefined) {
+      const endValue = edgeToPercent(params.translateTo);
+      const lastIndex = params.opacityKeyframes.values.length - 1;
+      const values = params.opacityKeyframes.values.map((_, index) =>
+        index === lastIndex ? endValue : "0%",
+      );
+      animate.push(
+        `${axisProperty}: ${formatMotionArray(values)}, // Ausfahrt mit Opacity-Keyframes`,
+      );
+    } else {
+      animate.push(
+        `${axisProperty}: "${edgeToPercent(params.translateTo)}", // Zielkante: ${params.translateTo}`,
+      );
+    }
   }
 
   if (params.trackFactor !== undefined) {
@@ -243,7 +327,7 @@ function cssKeyframes(entry: MappingEntry) {
   if (entry.id === "toast-feedback-error" && params.keyframes !== undefined) {
     const shakeFrames = params.keyframes.values
       .map((value, index) => {
-        const percent = 50 + params.keyframes!.times[index] * 50;
+        const percent = formatPercent(50 + params.keyframes!.times[index] * 50);
         return `  ${percent}% { opacity: 1; transform: translateY(0) translateX(${value}px); }`;
       })
       .join("\n");
@@ -255,10 +339,33 @@ ${shakeFrames}
 }`;
   }
 
+  if (params.opacityKeyframes !== undefined) {
+    const lastIndex = params.opacityKeyframes.values.length - 1;
+    const frames = params.opacityKeyframes.values.map((opacity, index) => {
+      const percent = formatPercent(params.opacityKeyframes!.times[index] * 100);
+      const parts: TransformParts = {};
+
+      if (params.translateFrom !== undefined) {
+        parts[axis] = index === 0 ? edgeToPercent(params.translateFrom) : "0";
+      }
+
+      if (params.translateTo !== undefined) {
+        parts[axis] =
+          index === lastIndex ? edgeToPercent(params.translateTo) : "0";
+      }
+
+      return `  ${percent}% { opacity: ${opacity}; transform: ${transformString(parts)}; }`;
+    });
+
+    return `@keyframes ${keyframesName} {
+${frames.join("\n")}
+}`;
+  }
+
   if (params.keyframes !== undefined) {
     const property = axis === "x" ? "translateX" : "translateY";
     const frames = params.keyframes.values.map((value, index) => {
-      const percent = params.keyframes!.times[index] * 100;
+      const percent = formatPercent(params.keyframes!.times[index] * 100);
       return `  ${percent}% { transform: ${property}(${value}px); }`;
     });
 
@@ -271,21 +378,19 @@ ${frames.join("\n")}
   const to: TransformParts = {};
   let fromOpacity = params.opacity?.[0];
   let toOpacity = params.opacity?.[1];
+  const scaleAnimation = getScaleAnimation(entry);
 
-  if (params.scaleFactor !== undefined) {
-    if (entry.dimension === "hierarchy" && params.scaleFactor > 0) {
-      from.scale = String(1 - params.scaleFactor);
-      to.scale = "1";
-    } else if (entry.dimension === "hierarchy") {
-      from.scale = "1";
-      to.scale = String(1 + params.scaleFactor);
-    } else {
+  if (scaleAnimation !== null) {
+    if (scaleAnimation.type === "pulse") {
       return `@keyframes ${keyframesName} {
-  0% { transform: scale(1); }
-  45% { transform: scale(${1 + params.scaleFactor}); }
-  100% { transform: scale(1); }
+  0% { transform: scale(${scaleAnimation.animate[0]}); }
+  45% { transform: scale(${scaleAnimation.animate[1]}); }
+  100% { transform: scale(${scaleAnimation.animate[2]}); }
 }`;
     }
+
+    from.scale = String(scaleAnimation.initial);
+    to.scale = String(scaleAnimation.animate);
   }
 
   if (params.translateFrom !== undefined) {

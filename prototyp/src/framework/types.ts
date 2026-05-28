@@ -332,6 +332,13 @@ export interface AnimationParams {
    * Bei Animationen ohne Deckkraft-Einfluss weglassen.
    */
   opacity?: [number, number];
+
+  /**
+   * Explizite Deckkraft-Keyframes für mehrstufige Opacity-Signale.
+   * Werte sind absolute Deckkraftwerte [0..1].
+   * Wenn vorhanden, präzisiert dieses Feld den einfachen opacity-Bereich.
+   */
+  opacityKeyframes?: KeyframeSequence;
 }
 
 // ---------------------------------------------------------------------------

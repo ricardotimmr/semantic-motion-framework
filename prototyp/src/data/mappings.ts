@@ -294,17 +294,17 @@ export const mappings: MappingDatabase = [
     subcategory: "oneShot",
     params: {
       easing: { preset: "easeOut" },
-      duration: 380,
+      duration: 760,
       direction: "y",
       translateDistance: "self",
       translateFrom: "bottom",
       iterations: 1,
-      // Zweiphasige Animation: Phase 1 = y-Einfahrt (translateDistance), Phase 2 = kurzes
-      // Opacity-Pulsieren [1.0 → 0.85 → 1.0] nach Ankunft als sekundäres Signal.
-      // Der Opacity-Pulse wird im Komponenten-Rendering als sequentielle Animation
-      // nach Abschluss der Einfahrt ausgelöst, nicht als paralleles keyframe-Feld,
-      // um die Mutex-Regel (Translation XOR scaleFactor XOR trackFactor) einzuhalten.
       opacity: [0, 1],
+      opacityKeyframes: {
+        // Phase 1: Einfahrt und Einblendung. Phase 2: zwei ruhige Opacity-Pulse nach Ankunft.
+        values: [0, 1, 0.86, 1, 0.86, 1],
+        times:  [0, 0.4, 0.55, 0.7, 0.85, 1.0],
+      },
     },
     rationale: {
       short:
@@ -315,9 +315,9 @@ export const mappings: MappingDatabase = [
         "Attention-Dimension: systeminitiiertes Signal ohne vorherige " +
         "Nutzeraktion – strukturell verschieden von toast-feedback-success. " +
         "Ease-Out statt Spring: kein Follow-Through, ruhigere Ankunft " +
-        "ohne positive Energie. Duration 380ms: langsamer als feedback-success " +
-        "(300ms), kommuniziert Neutralität. Sekundärer Opacity-Pulse nach " +
-        "Einfahrt als Aufmerksamkeitssignal: sequentielle Animation, kein " +
+        "ohne positive Energie. Duration 760ms: genug Zeit für Einfahrt und " +
+        "zwei ruhige Opacity-Pulse, ohne Dringlichkeit zu erzeugen. " +
+        "Sekundärer Opacity-Pulse nach Einfahrt als Aufmerksamkeitssignal: sequentielle Animation, kein " +
         "paralleles Feld, um die Translation-Mutex-Regel einzuhalten " +
         "(Bartram et al. 2003).",
       references: ["Peirce1931", "BartramWareCalvert2003"],

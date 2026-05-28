@@ -97,7 +97,9 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
     (params.translateFrom !== undefined || params.translateTo !== undefined) &&
     params.translateDistance === undefined
   ) {
-    errors.push(`${entry.id}: translateFrom/translateTo require translateDistance`);
+    errors.push(
+      `${entry.id}: translateFrom/translateTo require translateDistance`,
+    );
   }
 
   const usesSpring =
@@ -108,7 +110,9 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
   }
 
   if (!usesSpring && params.springConfig !== undefined) {
-    errors.push(`${entry.id}: springConfig must only be used with spring easing`);
+    errors.push(
+      `${entry.id}: springConfig must only be used with spring easing`,
+    );
   }
 
   if (params.keyframes !== undefined) {
@@ -125,6 +129,26 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
     for (let index = 1; index < times.length; index += 1) {
       if (times[index] < times[index - 1]) {
         errors.push(`${entry.id}: keyframe times must be monotonic`);
+      }
+    }
+  }
+
+  if (params.opacityKeyframes !== undefined) {
+    const { values, times } = params.opacityKeyframes;
+
+    if (values.length !== times.length) {
+      errors.push(`${entry.id}: opacity keyframe values/times length mismatch`);
+    }
+
+    if (times[0] !== 0 || times[times.length - 1] !== 1) {
+      errors.push(
+        `${entry.id}: opacity keyframe times must start at 0 and end at 1`,
+      );
+    }
+
+    for (let index = 1; index < times.length; index += 1) {
+      if (times[index] < times[index - 1]) {
+        errors.push(`${entry.id}: opacity keyframe times must be monotonic`);
       }
     }
   }

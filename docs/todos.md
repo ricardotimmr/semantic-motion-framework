@@ -9,13 +9,13 @@ Diese Datei sammelt offene technische Punkte, die beim späteren Einbinden des F
    - TODO 5: `hierarchy-toBackground` Kommentar präzisieren (erledigt)
    - TODO 7: Spring-Kommentar in `types.ts` präzisieren (erledigt) -->
 
-2. `toast-attention-oneShot` klären (TODO 3):
-   - Entweder Pulse wirklich rendern
-   - Oder Begründung/Kommentar vereinfachen
+<!-- 2. `toast-attention-oneShot` klären (TODO 3, erledigt):
+   - Pulse ist über `opacityKeyframes` modelliert
+   - Preview und Export werten das Feld aus -->
 
-3. Renderer-Regeln sauber festlegen (TODO 6):
-   - `scaleFactor` je Kontext bewusst behandeln
-   - Pulse, Scale-In, Scale-Out und Hierarchie getrennt interpretieren
+3. Renderer-Regeln sauber festlegen (TODO 6, erledigt):
+   - `scaleFactor` wird je Kontext bewusst behandelt
+   - Pulse, Scale-In, Scale-Out und Hierarchie werden getrennt interpretiert
 
 4. POC 03 auf alle 24 Mapping-Einträge erweitern (neuer TODO 8):
    - Erstes Ziel: Jeder Mapping-Eintrag ist auswählbar und crasht nicht
@@ -124,19 +124,22 @@ Entscheidung für den Hauptprototyp:
 - Kein `stages`-Modell vor dem Hauptprototyp einführen.
 - `stages` erst prüfen, wenn mehrere mehrphasige Mappings entstehen.
 
-## 3. Toast-Attention-OneShot mit modellierten Parametern abgleichen
+<!-- ## 3. Toast-Attention-OneShot mit modellierten Parametern abgleichen
 
-toast-attention-oneShot beschreibt im Kommentar und in source einen sekundären Opacity-Pulse nach der Einfahrt. In den Parametern ist aber nur opacity: [0, 1] modelliert. Für den späteren Renderer heißt das: entweder Sonderfall wie bei toast-feedback-error dokumentieren oder den Pulse aus Kommentar/Begründung streichen.
+Status: Erledigt.
+
+`toast-attention-oneShot` beschreibt einen sekundären Opacity-Pulse nach der Einfahrt. Dieser Pulse ist jetzt explizit über `opacityKeyframes` modelliert und wird in Preview und Export ausgewertet.
 
 Aktueller Zustand:
 
-- `toast-attention-oneShot` beschreibt im Kommentar und in `rationale.source` einen sekundären Opacity-Pulse nach der Einfahrt.
-- In den Parametern ist aber nur `opacity: [0, 1]` modelliert.
+- `toast-attention-oneShot` nutzt weiterhin `opacity: [0, 1]` als einfachen Deckkraftbereich.
+- Zusätzlich modelliert `opacityKeyframes` die Sequenz `0 → 1 → 0.86 → 1 → 0.86 → 1`.
 
 TODO:
 
-- Entweder den sekundären Pulse als bewussten Sonderfall für den Toast-Renderer dokumentieren.
-- Oder den Pulse aus Kommentar und Begründung entfernen, wenn er im Prototyp nicht umgesetzt wird.
+- Erledigt: `AnimationParams` besitzt ein `opacityKeyframes`-Feld.
+- Erledigt: POC 03 Preview rendert den Pulse.
+- Erledigt: POC 04/05 Export erzeugt Framer-Motion- und CSS-Code mit Opacity-Pulse. -->
 
 <!-- ## 4. Button-Feedback-Success-Begründung schärfen
 
@@ -172,18 +175,23 @@ TODO:
 
 ## 6. ScaleFactor-Interpretation im Renderer bewusst behandeln
 
-scaleFactor ist für Pulse, Scale-In und Scale-Out verwendbar, aber die konkrete Interpretation ist implizit. Für den POC reicht das, solange der Renderer nach Komponente/Dimension entscheidet. Kein neues Modell nötig, aber als Renderer-Regel bewusst einplanen.
+Status: Erledigt.
+
+`scaleFactor` ist für Pulse, Scale-In und Scale-Out verwendbar. Die konkrete Interpretation ist jetzt als Renderer-Regel in Preview und Export explizit umgesetzt.
 
 Aktueller Zustand:
 
 - `scaleFactor` wird für Pulse, Scale-In und Scale-Out verwendet.
 - Die konkrete Interpretation hängt vom jeweiligen Mapping-Kontext ab.
+- POC 03 nutzt dafür einen expliziten Scale-Helper im Motion-Adapter.
+- POC 04/05 nutzen dieselbe Regel im Export-Generator.
 
 TODO:
 
-- Im Preview-/Export-Renderer bewusst festlegen, wie `scaleFactor` je Kontext interpretiert wird.
-- Beispiele: Pulse `1.0 → 1.05 → 1.0`, Eintritt `0.95 → 1.0`, Austritt `1.0 → 0.96`.
-- Kein neues Datenmodell nötig, solange diese Regel im Renderer sauber umgesetzt wird.
+- Erledigt: Pulse werden als `1.0 → 1.05 → 1.0` interpretiert.
+- Erledigt: `hierarchy/toForeground` wird als Scale-In `0.95 → 1.0` interpretiert.
+- Erledigt: `hierarchy/toBackground` wird als Scale-Out `1.0 → 0.96` interpretiert.
+- Kein neues Datenmodell nötig.
 
 <!-- ## 7. Easing-Kommentar zu Spring präzisieren
 
