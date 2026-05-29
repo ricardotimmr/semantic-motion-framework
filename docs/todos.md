@@ -217,6 +217,30 @@ Offene Entscheidung:
   - `card-hierarchy-toBackground`
   - oder entsprechendes `panel-*`-Mapping.
 
+### Explizites Scale-Modell prüfen
+
+Status: Optional.
+
+`scaleFactor` wird aktuell bewusst kontextabhängig interpretiert:
+
+- Hierarchie mit positivem Wert: Scale-In
+- Hierarchie mit negativem Wert: Scale-Out
+- andere Dimensionen: Pulse
+
+Diese Regel reicht für den aktuellen Scope. Falls später weitere Scale-Bedeutungen entstehen, sollte das Datenmodell präzisiert werden.
+
+Mögliche Umsetzung:
+
+- `scaleMode: "pulse" | "scaleIn" | "scaleOut"`
+- oder explizite `scaleKeyframes`
+- oder ein generisches Phasen-/Target-Modell, falls Scale nur ein Teil komplexerer Sequenzen ist
+
+Prüfen, wenn:
+
+- Scale nicht mehr nur Pulse oder Hierarchie ausdrückt.
+- ein Mapping Squash, Pressed-State, Overshoot oder gestaffelte Skalierung braucht.
+- Preview und Export anfangen, unterschiedliche Scale-Regeln zu benötigen.
+
 ## Erledigt
 
 - `button-feedback-success` Begründung ohne Aufwärtsbewegung geschärft.
@@ -226,3 +250,4 @@ Offene Entscheidung:
 - `scaleFactor`-Interpretation in Preview und Export bewusst umgesetzt.
 - Preview-Replay-Hold für Modal-Enter/-Exit, Hierarchie, Skeleton-Resolved und Input-Blur vereinheitlicht.
 - Opacity als ergänzenden Sichtbarkeitsparameter theoretisch legitimiert.
+- Kontextabhängige `scaleFactor`-Interpretation dokumentiert.

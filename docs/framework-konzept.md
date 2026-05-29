@@ -242,6 +242,14 @@ modelliert.
 
 **Gilt für Komponenten:** Modal (Enter/Exit), Navigation, Drawer, Sheet
 
+**Kontextunterscheidung:** Direction umfasst im Framework zwei verwandte, aber
+unterschiedliche Richtungskontexte. Horizontale Direction beschreibt primär
+Navigationsrichtung, zum Beispiel Vorwärts- oder Rückwärtsbewegung in einer
+Hierarchie. Vertikale Direction beschreibt bei Modals und Sheets dagegen häufig
+das Erscheinen oder Schließen einer Oberfläche aus dem Bildschirmrand. Beide
+Fälle sind Direction-Mappings, aber ihre Rationale muss klar zwischen
+Navigationsrichtung und Sheet-/Surface-Öffnung unterscheiden.
+
 ---
 
 #### 3a. Direction / Enter (Vorwärts)
@@ -252,7 +260,7 @@ modelliert.
 |---|---|---|
 | Easing | Ease-Out `[0.0, 0.0, 0.2, 1.0]` | Ankommen: schnell einfahren, sanft zum Stillstand kommen |
 | Duration | 300–350ms | Komplex genug für bewusste Wahrnehmung der Richtung |
-| Direction | x (von rechts kommend) oder y (von unten kommend) | Rechts = vorwärts (Direction Bias); Unten = erscheinen aus dem Bildschirmrand |
+| Direction | x (von rechts kommend) oder y (von unten kommend) | Rechts = Vorwärtsnavigation; unten = Sheet-/Surface-Öffnung aus dem Bildschirmrand |
 | Amplitude | Volle Breite oder Höhe des Elements | Vollständige Einfahrt, kein Teileinblenden |
 | Iterations | 1 | |
 | Zeichentyp | Index | Richtung als kausaler Verweis auf Navigationstiefe |
@@ -302,7 +310,13 @@ modelliert.
 | Iterations | 1 | |
 | Zeichentyp | Index | |
 
-**Konsistenzprinzip:** Enter und Exit einer Navigationsrichtung müssen komplementär sein. Forward Enter (von rechts) und Forward Exit (nach links) bilden ein semantisch kohärentes Paar. Werden sie mit unterschiedlichen Easing-Kurven oder Richtungen gestaltet, bricht die räumliche Metapher.
+**Konsistenzprinzip:** Enter und Exit müssen innerhalb ihres jeweiligen
+Richtungskontexts komplementär sein. Bei horizontaler Navigation bilden
+Forward Enter und Forward Exit beziehungsweise Backward Enter und Backward Exit
+ein semantisch kohärentes Paar. Bei Sheet- oder Surface-Öffnungen bildet die
+vertikale Einfahrt von unten und die vertikale Ausfahrt nach unten das
+komplementäre Paar. Werden diese Kontexte vermischt, bricht die räumliche
+Metapher.
 
 ---
 

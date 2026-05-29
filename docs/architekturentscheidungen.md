@@ -179,3 +179,34 @@ Deshalb wird Opacity nicht als primärer Bewegungsparameter, sondern als ergänz
 Opacity darf nicht als Ersatz für fehlende Bewegung verwendet werden, wenn die Bedeutung eigentlich durch Richtung, Amplitude, Rhythmus oder Skalierung getragen werden müsste. Bei jedem Opacity-only-Mapping muss geprüft werden, ob Sichtbarkeit tatsächlich der Bedeutungsträger ist.
 
 Beispiele für legitime Opacity-only-Fälle sind das Ausblenden eines Skeleton Loaders nach abgeschlossenem Ladevorgang oder das Erscheinen eines Warnhinweises, wenn der Sichtbarkeitswechsel selbst die semantische Information trägt.
+
+---
+
+## ADR-09: Kontextabhängige Interpretation von `scaleFactor`
+
+### Entscheidung
+
+`scaleFactor` bleibt im aktuellen Datenmodell als relatives Skalierungsdelta erhalten. Es wird kein zusätzliches Feld wie `scaleMode` eingeführt.
+
+Die konkrete Interpretation erfolgt im Preview- und Export-Renderer anhand des semantischen Kontexts:
+
+- Hierarchie mit positivem `scaleFactor`: Scale-In, zum Beispiel `0.05` als `0.95 -> 1.0`
+- Hierarchie mit negativem `scaleFactor`: Scale-Out, zum Beispiel `-0.04` als `1.0 -> 0.96`
+- Andere Dimensionen: Pulse, zum Beispiel `0.05` als `1.0 -> 1.05 -> 1.0`
+
+### Begründung
+
+Ein explizites Feld wie `scaleMode: "pulse" | "fromBelow" | "toBelow"` wäre technisch eindeutiger. Für den aktuellen Scope wäre es aber zusätzlicher Modellierungsaufwand, weil Types, Mapping-Datenbank, Validierung, Preview, Export und Tests angepasst werden müssten.
+
+Aktuell gibt es nur zwei semantische Scale-Verwendungen:
+
+- Pulse für Feedback und Aufmerksamkeit
+- Scale-In/Scale-Out für Hierarchie
+
+Diese Unterscheidung ist stabil genug, um sie als Renderer-Regel zu behandeln. Sie ist in POC 03 und POC 04 explizit umgesetzt und getestet.
+
+### Abgrenzung
+
+Diese Entscheidung bedeutet nicht, dass `scaleFactor` beliebig interpretiert werden darf. Die Kontextregel ist Teil des Framework-Verhaltens und muss in Preview und Export konsistent bleiben.
+
+Wenn später weitere Scale-Bedeutungen entstehen, etwa Squash, Pressed-State, Overshoot, gestaffelte Skalierung oder komponentenspezifische Scale-Keyframes, sollte ein explizites Feld wie `scaleMode` oder `scaleKeyframes` eingeführt werden.

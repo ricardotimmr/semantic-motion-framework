@@ -293,7 +293,17 @@ export interface AnimationParams {
   translateTo?: TranslationEdge;
 
   /**
-   * Bruchteilsdelta der Skalierung (z. B. 0.05 → Element skaliert auf 1.05).
+   * Relatives Skalierungsdelta.
+   *
+   * Die konkrete Interpolation wird vom Renderer anhand des semantischen
+   * Kontexts entschieden:
+   * - hierarchy + positiver Wert: Scale-In, z. B. 0.05 = 0.95 → 1.0
+   * - hierarchy + negativer Wert: Scale-Out, z. B. -0.04 = 1.0 → 0.96
+   * - andere Dimensionen: Pulse, z. B. 0.05 = 1.0 → 1.05 → 1.0
+   *
+   * Wenn später weitere Scale-Bedeutungen entstehen, sollte ein explizites
+   * Feld wie scaleMode oder scaleKeyframes geprüft werden.
+   *
    * Schließt sich gegenseitig mit Translation-Feldern und trackFactor aus.
    */
   scaleFactor?: number;

@@ -413,13 +413,15 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        "Das Modal fährt von unten ein und signalisiert damit, dass eine " +
-        "neue Ebene geöffnet wird. Die aufwärtsgerichtete Bewegung folgt " +
-        "der Konvention mobiler Navigationsschichten.",
+        "Das Modal fährt wie ein Sheet von unten ein und signalisiert damit, " +
+        "dass eine neue Oberfläche geöffnet wird. Die vertikale Bewegung " +
+        "folgt der Konvention mobiler Sheet- und Dialogschichten.",
       source:
-        "Index (Peirce): Richtung als kausaler Verweis auf Navigationstiefe " +
-        "(Ware 2012, Direction Bias). Ease-Out: Ankommen (Zacks & Tversky 2001). " +
-        "Direction y von unten: Sheet-Konvention (Apple HIG, Material Design 3). " +
+        "Index (Peirce): Die Richtung verweist hier nicht auf horizontale " +
+        "Vorwärtsnavigation, sondern auf das Erscheinen einer neuen " +
+        "Oberfläche aus dem unteren Bildschirmrand. Direction y von unten: " +
+        "Sheet-Konvention (Apple HIG, Material Design 3). Ease-Out: Ankommen " +
+        "(Zacks & Tversky 2001). " +
         "Duration 350ms: komplex genug für bewusste Richtungswahrnehmung.",
       references: ["Peirce1931", "Ware2012", "ZacksTversky2001", "AppleHIG", "MaterialDesign3"],
       signType: "index",
@@ -442,10 +444,12 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        "Das Modal fährt nach unten aus. Die umgekehrte Richtung zur " +
-        "Einfahrt kommuniziert, dass die Ebene geschlossen wird.",
+        "Das Modal fährt wie ein Sheet nach unten aus. Die komplementäre " +
+        "Richtung zur Einfahrt kommuniziert, dass diese Oberfläche geschlossen wird.",
       source:
-        "Index (Peirce): komplementäre Richtung zu modal-direction-enter. " +
+        "Index (Peirce): komplementäre Sheet-Richtung zu modal-direction-enter. " +
+        "Die Bewegung beschreibt kein horizontales Vorwärts-/Rückwärtsnavigieren, " +
+        "sondern das Schließen einer vertikal eingeführten Oberfläche. " +
         "Ease-In: Verlassen als Aufbaukurve (Zacks & Tversky 2001). " +
         "Duration 280ms: kürzer als Enter – das Verlassende ist nicht " +
         "mehr der Fokus (Head 2016).",
@@ -470,13 +474,14 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        "Das Modal fährt von links ein und signalisiert, dass der Nutzer " +
-        "in der Navigationshierarchie zurückgegangen ist.",
+        "Das Modal fährt von links ein und signalisiert horizontale " +
+        "Rückwärtsnavigation. Es unterscheidet sich damit von der vertikalen " +
+        "Sheet-Öffnung des normalen Enter-Mappings.",
       source:
         "Index (Peirce): Direction Bias – Bewegung von links kodiert " +
         "Rückwärtsbewegung in Schriftkulturen mit Links-rechts-Leserichtung " +
         "(Ware 2012). Ease-Out: Ankommen (Zacks & Tversky 2001). " +
-        "Komplementäres Paar zu modal-direction-backExit. " +
+        "Komplementäres horizontales Navigationspaar zu modal-direction-backExit. " +
         "Duration 350ms: identisch zu enter, Richtung trägt die Bedeutung.",
       references: ["Peirce1931", "Ware2012", "ZacksTversky2001"],
       signType: "index",
@@ -499,12 +504,13 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        "Das Modal fährt nach rechts aus. Die Bewegung nach rechts " +
-        "kommuniziert, dass die aktuelle Ebene verlassen wird und " +
-        "der Nutzer zur vorherigen Ebene zurückkehrt.",
+        "Das Modal fährt nach rechts aus. Die horizontale Bewegung kommuniziert, " +
+        "dass die aktuelle Ebene im Rahmen einer Rückwärtsnavigation verlassen wird.",
       source:
         "Index (Peirce): Direction Bias - Bewegung nach rechts kodiert " +
         "Rückwärtsbewegung (komplementär zu backEnter von links). " +
+        "Anders als modal-direction-exit beschreibt dieses Mapping keine " +
+        "vertikale Sheet-Schließung, sondern eine horizontale Navigationsrichtung. " +
         "Ware (2012). Ease-In: Verlassen als Aufbaukurve " +
         "(Zacks & Tversky 2001). Duration 280ms: identisch zu exit.",
       references: ["Peirce1931", "Ware2012", "ZacksTversky2001"],
