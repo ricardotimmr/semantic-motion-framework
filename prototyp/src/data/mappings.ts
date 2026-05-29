@@ -80,6 +80,8 @@ export const mappings: MappingDatabase = [
       duration: 600,
       scaleFactor: 0.03, // 1.0 → 1.03 → 1.0
       iterations: 3,
+      // Bewusst Attention statt Feedback: Die Animation wird systeminitiiert
+      // ausgelöst und ist keine unmittelbare Reaktion auf einen Button-Klick.
     },
     rationale: {
       short:
@@ -200,9 +202,9 @@ export const mappings: MappingDatabase = [
       iterations: 1,
       opacity: [0, 1],
       springConfig: {
-        stiffness: 320,
-        damping: 26,
-        mass: 1,
+        stiffness: 360,
+        damping: 20,
+        mass: 0.9,
       },
     },
     rationale: {
@@ -213,7 +215,8 @@ export const mappings: MappingDatabase = [
         "Index (Peirce): Erscheinen aus dem Bildschirmrand als kausaler " +
         "Verweis auf Aktionsergebnis. Spring-Easing: Follow-Through-Prinzip " +
         "(Thomas & Johnston 1981) kommuniziert physikalische Substanz und " +
-        "positive Energie. Duration 300ms, stiffness 320: schnelle, federnde " +
+        "positive Energie. Duration 300ms, stiffness 360 und damping 20: schnelle, " +
+        "klar wahrnehmbare, aber kontrollierte federnde " +
         "Einfahrt als Positivsignal (Head 2016).",
       references: ["Peirce1931", "ThomasJohnston1981", "Head2016"],
       signType: "index",
@@ -236,6 +239,8 @@ export const mappings: MappingDatabase = [
       keyframes: {
         // Shake auf der x-Achse nach Einfahrt auf der y-Achse;
         // zweiphasige Animation: Phase 1 = y-Einfahrt, Phase 2 = x-Shake
+        // Aktuell als gezielter Renderer-Sonderfall umgesetzt;
+        // späterer Kandidat für ein generisches motionPhases-Modell.
         values: [0, -6, 6, -6, 6, 0],
         times:  [0, 0.2, 0.4, 0.6, 0.8, 1.0],
       },
@@ -270,18 +275,22 @@ export const mappings: MappingDatabase = [
       translateFrom: "bottom",
       iterations: 1,
       opacity: [0, 1],
+      // Mehrphasige Animation: y-Einfahrt plus sekundärer y-Nudge.
+      // Aktuell als gezielter Renderer-Sonderfall umgesetzt;
+      // späterer Kandidat für ein generisches motionPhases-Modell.
     },
     rationale: {
       short:
-        "Der Toast gleitet langsam und mit kurzem Verzug von unten herein. " +
-        "Die ruhigere, gewichtete Einfahrt signalisiert, dass Aufmerksamkeit " +
-        "erwünscht ist, aber keine sofortige Aktion erforderlich.",
+        "Der Toast gleitet langsam von unten herein und setzt nach der Ankunft " +
+        "einen moderaten vertikalen Nudge. Die Bewegung signalisiert, dass " +
+        "Aufmerksamkeit erwünscht ist, aber keine sofortige Aktion erforderlich.",
       source:
         "Index (Peirce): Erscheinen aus dem Bildschirmrand. Ease-In-Out: " +
         "keine Abruptheit, kein Follow-Through – ruhige Mitteilung ohne " +
         "emotionale Valenz. Duration 420ms + delay 80ms: langsamer als " +
-        "success (300ms) und error (320ms), kommuniziert Gewicht ohne " +
-        "Dringlichkeit (Head 2016).",
+        "success (300ms) und error (320ms). Der anschließende y-Nudge " +
+        "setzt ein moderates Warnsignal ohne Fehler-Shake oder positiven Spring " +
+        "(Head 2016).",
       references: ["Peirce1931", "Head2016"],
       signType: "index",
     },
@@ -300,15 +309,13 @@ export const mappings: MappingDatabase = [
       translateFrom: "bottom",
       iterations: 1,
       opacity: [0, 1],
-      opacityKeyframes: {
-        // Phase 1: Einfahrt und Einblendung. Phase 2: zwei ruhige Opacity-Pulse nach Ankunft.
-        values: [0, 1, 0.86, 1, 0.86, 1],
-        times:  [0, 0.4, 0.55, 0.7, 0.85, 1.0],
-      },
+      // Mehrphasige Animation: y-Einfahrt plus sekundäre Scale-Impulse.
+      // Aktuell als gezielter Renderer-Sonderfall umgesetzt;
+      // späterer Kandidat für ein generisches motionPhases-Modell.
     },
     rationale: {
       short:
-        "Der Toast fährt ruhig von unten ein und gibt einen kurzen Impuls. " +
+        "Der Toast fährt ruhig von unten ein und gibt zwei subtile Scale-Impulse. " +
         "Das Signal zeigt, dass neue Information angekommen ist, ohne " +
         "das Ergebnis einer Nutzeraktion zu kommunizieren.",
       source:
@@ -316,9 +323,9 @@ export const mappings: MappingDatabase = [
         "Nutzeraktion – strukturell verschieden von toast-feedback-success. " +
         "Ease-Out statt Spring: kein Follow-Through, ruhigere Ankunft " +
         "ohne positive Energie. Duration 760ms: genug Zeit für Einfahrt und " +
-        "zwei ruhige Opacity-Pulse, ohne Dringlichkeit zu erzeugen. " +
-        "Sekundärer Opacity-Pulse nach Einfahrt als Aufmerksamkeitssignal: sequentielle Animation, kein " +
-        "paralleles Feld, um die Translation-Mutex-Regel einzuhalten " +
+        "zwei subtile Scale-Impulse, ohne Dringlichkeit zu erzeugen. " +
+        "Der Scale-Pulse wirkt als Aufmerksamkeitssignal, ohne den warnenden " +
+        "y-Nudge oder den positiven Spring der Feedback-Mappings zu übernehmen " +
         "(Bartram et al. 2003).",
       references: ["Peirce1931", "BartramWareCalvert2003"],
       signType: "index",
@@ -367,6 +374,10 @@ export const mappings: MappingDatabase = [
       duration: 250,
       scaleFactor: -0.04, // 1.0 → 0.96
       iterations: 1,
+      // Für Modal bedeutet "toBackground" hier: verliert Vordergrundpriorität
+      // und wird aus dem aktiven Fokus entfernt. Ein halbtransparent sichtbares
+      // Hintergrund-Modal wäre UX-seitig missverständlich; dafür wäre ein
+      // eigenes Layer-/Panel-Mapping geeigneter.
       opacity: [1, 0],
     },
     rationale: {
@@ -377,6 +388,8 @@ export const mappings: MappingDatabase = [
       source:
         "Ikon (Peirce): Verkleinerung ähnelt physikalischem Entfernen. " +
         "Ease-In: Zurücktreten als Aufbaukurve (Zacks & Tversky 2001). " +
+        "Beim Modal wird der Hierarchieverlust als Entfernen aus dem aktiven " +
+        "Fokus operationalisiert, nicht als dauerhaft sichtbare Halbtransparenz. " +
         "Duration 250ms: kürzer als toForeground, Hintergrundprozess " +
         "ist weniger bedeutsam.",
       references: ["Peirce1931", "ZacksTversky2001", "Head2016"],
@@ -570,17 +583,23 @@ export const mappings: MappingDatabase = [
       duration: 300,
       opacity: [0, 1],
       iterations: 1,
+      // Der kleine y-Offset des Helper-Texts wird komponentenspezifisch
+      // im Input-Renderer umgesetzt, nicht als Bewegung des gesamten Felds.
     },
     rationale: {
       short:
-        "Die sanfte Einblendung des Warnhinweises vermeidet Unterbrechung, " +
-        "macht aber deutlich, dass die Eingabe überarbeitet werden sollte.",
+        "Der Warnhinweis erscheint sanft unterhalb des Felds und kommt mit " +
+        "einem kleinen vertikalen Offset zur Ruhe. So bleibt die Eingabe " +
+        "unterbrechungsarm, aber die Warnung wird wahrnehmbar.",
       source:
         "Ikon (Peirce): Opacity-Transition ähnelt physikalischem Erscheinen " +
-        "eines Objekts - ikonische Beziehung. Die Farbkonvention (Orange/Gelb) " +
-        "des Warnhinweises ist symbolisch, klassifiziert aber die Farbe, " +
-        "nicht die Animation. Ease-In-Out: sanfte, nicht dringende Einblendung. " +
-        "Duration 300ms: Eingabefluss nicht unterbrechen (Head 2016).",
+        "eines Objekts - ikonische Beziehung. Der kleine y-Offset des " +
+        "Helper-Texts verstärkt dieses Erscheinen als lokales Ankommen, " +
+        "ohne das Eingabefeld selbst zu verschieben. Die Farbkonvention " +
+        "(Orange/Gelb) des Warnhinweises ist symbolisch, klassifiziert aber " +
+        "die Farbe, nicht die Animation. Ease-In-Out: sanfte, nicht dringende " +
+        "Einblendung. Duration 300ms: Eingabefluss nicht unterbrechen " +
+        "(Head 2016).",
       references: ["Peirce1931", "Head2016"],
       signType: "icon",
     },
@@ -620,7 +639,7 @@ export const mappings: MappingDatabase = [
     subcategory: "blur",
     params: {
       easing: { preset: "easeIn" },
-      duration: 150,
+      duration: 210,
       iterations: 1,
       // Border-Rücktransition zum Ruhezustand; im Komponenten-Styling aufgelöst.
     },
@@ -632,6 +651,8 @@ export const mappings: MappingDatabase = [
       source:
         "Ikon (Peirce): Rücktransition des Fokusindikators. Ease-In: " +
         "Zurücktreten als Aufbaukurve (Zacks & Tversky 2001). " +
+        "Duration 210ms: langsam genug, damit die Rückbewegung in der Preview " +
+        "als Zustandswechsel lesbar bleibt, aber weiterhin passiver als Focus. " +
         "Bewusste Asymmetrie zu input-stateChange-focus (Ease-Out): " +
         "Focus ist aktives Ankommen, Blur ist passives Zurücktreten – " +
         "keine gleichwertigen Zustände (Norman 2013).",

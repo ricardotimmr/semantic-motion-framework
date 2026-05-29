@@ -225,7 +225,7 @@ export type TranslationDistance = "self";
  * erforderlich sind. Parameter, die auf eine bestimmte Animation nicht zutreffen,
  * werden weggelassen statt auf null gesetzt.
  *
- * BEWEGUNGSAUSMASS – genau eine der drei Bewegungsgruppen unten verwenden:
+ * BEWEGUNGSAUSMASS – genau eine der drei räumlichen Bewegungsgruppen unten verwenden:
  *
  *   Translation   Pixel-Versatz oder größenabhängige Translation.
  *                 translatePx beschreibt feste Pixelwerte, z. B. Shake ±8 px.
@@ -243,6 +243,11 @@ export type TranslationDistance = "self";
  *                 Vorzeichen kodiert Richtung: +1.0 = vorwärts, -1.0 = rückwärts.
  *
  * Mehr als eine dieser Bewegungsgruppen in einem einzelnen Eintrag zu verwenden ist fachlich ungültig.
+ *
+ * opacity ist davon ausgenommen: Deckkraft ist kein räumlicher Bewegungsparameter,
+ * sondern ein ergänzender Sichtbarkeitsparameter. Sie darf ergänzend oder alleine
+ * verwendet werden, muss dann aber semantisch als Erscheinen, Verschwinden,
+ * Abschluss, Fokusverlust oder Verfügbarkeit begründet sein.
  */
 export interface AnimationParams {
   /** Beschleunigungskurve – der semantisch bedeutsamste Parameter */
@@ -328,7 +333,10 @@ export interface AnimationParams {
   springConfig?: SpringConfig;
 
   /**
-   * Deckkraft-Bereich [von, bis] für Einblend-Animationen.
+   * Deckkraft-Bereich [von, bis] für Sichtbarkeitsübergänge.
+   * Kein räumlicher Bewegungsparameter, sondern semantischer
+   * Sichtbarkeitsparameter für Erscheinen, Verschwinden, Abschluss,
+   * Fokusverlust oder Verfügbarkeit.
    * Bei Animationen ohne Deckkraft-Einfluss weglassen.
    */
   opacity?: [number, number];

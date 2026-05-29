@@ -41,7 +41,8 @@ describe("POC 04 export generators", () => {
     const cssCode = generateCSSCode(entry!);
 
     expect(framerCode).toContain('type: "spring"');
-    expect(framerCode).toContain("stiffness: 320");
+    expect(framerCode).toContain("stiffness: 360");
+    expect(framerCode).toContain("damping: 20");
     expect(framerCode).not.toContain("ease: [0, 0, 0.2, 1]");
     expect(cssCode).toContain("CSS unterstützt keine echte Spring-Physik");
     expect(cssCode).toContain("cubic-bezier");
@@ -62,7 +63,23 @@ describe("POC 04 export generators", () => {
     expect(cssCode).toContain("translateY(0) translateX(-6px)");
   });
 
-  it("exports toast one-shot attention with opacity pulse", () => {
+  it("exports toast warning as enter plus y nudge", () => {
+    const entry = getMappingById("toast-feedback-warning");
+
+    expect(entry).not.toBeNull();
+
+    const framerCode = generateFramerMotionCode(entry!);
+    const cssCode = generateCSSCode(entry!);
+
+    expect(framerCode).toContain("async function toastFeedbackWarning");
+    expect(framerCode).toContain("zweite Phase: moderater y-Nudge");
+    expect(framerCode).toContain("y: [0, -5, 0]");
+    expect(cssCode).toContain(
+      "81% { opacity: 1; transform: translateY(-5px); }",
+    );
+  });
+
+  it("exports toast one-shot attention as enter plus scale pulses", () => {
     const entry = getMappingById("toast-attention-oneShot");
 
     expect(entry).not.toBeNull();
@@ -70,11 +87,48 @@ describe("POC 04 export generators", () => {
     const framerCode = generateFramerMotionCode(entry!);
     const cssCode = generateCSSCode(entry!);
 
-    expect(framerCode).toContain("opacity: [0, 1, 0.86, 1, 0.86, 1]");
-    expect(framerCode).toContain('y: ["100%", "0%", "0%", "0%", "0%", "0%"]');
-    expect(framerCode).toContain("times: [0, 0.4, 0.55, 0.7, 0.85, 1]");
-    expect(cssCode).toContain("55% { opacity: 0.86; transform: translateY(0); }");
-    expect(cssCode).toContain("85% { opacity: 0.86; transform: translateY(0); }");
+    expect(framerCode).toContain("async function toastAttentionOneShot");
+    expect(framerCode).toContain("scale: [1, 1.025, 1, 1.025, 1]");
+    expect(framerCode).toContain("zweite Phase: zwei subtile Scale-Impulse");
+    expect(cssCode).toContain(
+      "56.5% { opacity: 1; transform: translateY(0) scale(1.025); }",
+    );
+    expect(cssCode).toContain(
+      "85.5% { opacity: 1; transform: translateY(0) scale(1.025); }",
+    );
+  });
+
+  it("exports input warning as helper text motion", () => {
+    const entry = getMappingById("input-feedback-warning");
+
+    expect(entry).not.toBeNull();
+
+    const framerCode = generateFramerMotionCode(entry!);
+    const cssCode = generateCSSCode(entry!);
+
+    expect(framerCode).toContain("message");
+    expect(framerCode).toContain("y: 4");
+    expect(framerCode).toContain("y: 0");
+    expect(cssCode).toContain(".smf-input-feedback-warning .input-message");
+    expect(cssCode).toContain("transform: translateY(4px)");
+  });
+
+  it("exports input focus and blur as ring, field, and label transitions", () => {
+    const focus = getMappingById("input-stateChange-focus");
+    const blur = getMappingById("input-stateChange-blur");
+
+    expect(focus).not.toBeNull();
+    expect(blur).not.toBeNull();
+
+    const focusCode = generateFramerMotionCode(focus!);
+    const blurCSS = generateCSSCode(blur!);
+
+    expect(focusCode).toContain("scale: 1.01");
+    expect(focusCode).toContain("borderColor");
+    expect(focusCode).toContain("label");
+    expect(blurCSS).toContain("smf-input-stateChange-blur-ring");
+    expect(blurCSS).toContain("210ms");
+    expect(blurCSS).toContain("transform: scale(1);");
   });
 
   it("exports scaleFactor as pulse, scale-in, or scale-out by semantic context", () => {

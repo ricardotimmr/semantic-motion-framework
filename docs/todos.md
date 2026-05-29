@@ -1,45 +1,17 @@
 # TODOs für Preview und Code-Export
 
-Diese Datei sammelt offene technische Punkte, die beim späteren Einbinden des Frameworks in den Editor relevant werden.
+Diese Datei sammelt die noch relevanten technischen Punkte für POC 03, Export und den späteren Hauptprototyp.
 
-## Empfohlene Bearbeitungsreihenfolge
+## Offene Reihenfolge
 
-<!-- 1. Kleine Modell- und Text-Unsauberkeiten bereinigen (TODO 4, TODO 5, TODO 7):
-   - TODO 4: `button-feedback-success` Begründung ohne Aufwärtsbewegung (erledigt)
-   - TODO 5: `hierarchy-toBackground` Kommentar präzisieren (erledigt)
-   - TODO 7: Spring-Kommentar in `types.ts` präzisieren (erledigt) -->
-
-<!-- 2. `toast-attention-oneShot` klären (TODO 3, erledigt):
-   - Pulse ist über `opacityKeyframes` modelliert
-   - Preview und Export werten das Feld aus -->
-
-3. Renderer-Regeln sauber festlegen (TODO 6, erledigt):
-   - `scaleFactor` wird je Kontext bewusst behandelt
-   - Pulse, Scale-In, Scale-Out und Hierarchie werden getrennt interpretiert
-
-4. POC 03 auf alle 24 Mapping-Einträge erweitern (neuer TODO 8):
-   - Erstes Ziel: Jeder Mapping-Eintrag ist auswählbar und crasht nicht
-   - Zusätzliche Preview-Darstellungen für `toggle`, `input` und `skeleton`
-
-5. Systematischer Mapping-Review in POC 03 durchführen (neuer TODO 9):
-   - Button
-   - Toggle
-   - Input
-   - Toast
-   - Modal
-   - Skeleton
-   - Prüfen, ob jede Animation die intendierte Bedeutung wirklich vermittelt
-   - Auffälligkeiten in `docs/mapping-review-notizen.md` dokumentieren
-
-6. Parameter-Tuning und Begründungen synchronisieren (neuer TODO 10):
-   - Änderungen an Duration, Easing, Amplitude oder Direction immer mit `rationale.short/source` abgleichen
-
-7. Export nachziehen (abhängig von TODO 8 bis TODO 10):
-   - POC 04 und POC 05 prüfen, wenn POC 03 neue Sonderfälle oder Interpretationen braucht
-
-8. Bereits gelöste POC-Sonderfälle später in den Hauptprototyp übertragen (TODO 1, TODO 2):
-   - Spring-Handling
-   - `toast-feedback-error` als zweiphasige Animation
+1. Spring-Handling in den Hauptprototyp übernehmen.
+2. Mehrphasige Toast-Error-Animation in den Hauptprototyp übernehmen.
+3. POC 03 als vollständiges Mapping-Review-Werkzeug nutzen.
+4. Systematischen Mapping-Review durchführen.
+5. Parameter-Tuning und Begründungen synchronisieren.
+6. Export nachziehen, wenn POC 03 neue Sonderfälle oder Interpretationen braucht.
+7. Generisches Phasenmodell vor dem Hauptprototyp prüfen.
+8. Input-Focus/Blur später vollständig über Framer-Motion-Controls steuern.
 
 ## 1. Spring-Easing gesondert behandeln
 
@@ -57,33 +29,7 @@ Umsetzung in den POCs:
 - CSS-Export erzeugt einen Hinweis, dass CSS keine echte Spring-Physik unterstützt.
 - CSS nutzt aktuell eine bewusste Approximation über `cubic-bezier`.
 
-Framer-Motion-Preview und Framer-Motion-Export:
-
-- Wenn `easing.preset === "spring"`:
-  - nicht `EASING_CURVES.spring` verwenden
-  - stattdessen `transition.type = "spring"` setzen
-  - `springConfig` aus dem Mapping verwenden
-
-Beispiel:
-
-```ts
-transition: {
-  type: "spring",
-  stiffness: entry.params.springConfig.stiffness,
-  damping: entry.params.springConfig.damping,
-  mass: entry.params.springConfig.mass,
-}
-```
-
-CSS-Export:
-
-- CSS unterstützt keine echte Spring-Physik nativ.
-- Mögliche Lösungen:
-  - Spring-Mappings im CSS-Export als eingeschränkt markieren.
-  - Spring näherungsweise mit `cubic-bezier` approximieren.
-  - Keyframes erzeugen, die den Overshoot grob nachbilden.
-
-Entscheidung für den Hauptprototyp:
+TODO für den Hauptprototyp:
 
 - Framer Motion korrekt mit `springConfig` exportieren.
 - CSS-Export bei Spring mit Hinweis versehen und bewusst approximieren.
@@ -106,105 +52,177 @@ Umsetzung in den POCs:
 - POC 04 exportiert `toast-feedback-error` als zweiphasige Framer-Motion-Sequenz.
 - POC 04 erzeugt für CSS kombinierte Keyframes mit y-Einfahrt und anschließendem x-Shake.
 
-Mögliche Lösungen:
-
-- Sonderfall im Toast-Renderer für `toast-feedback-error`.
-- Oder später ein `stages`-Modell einführen, zum Beispiel:
-
-```ts
-stages: [
-  { direction: "y", translateFrom: "bottom", translateDistance: "self", duration: 160 },
-  { direction: "x", keyframes: { values: [0, -6, 6, -6, 6, 0], times: [...] }, duration: 160 },
-]
-```
-
-Entscheidung für den Hauptprototyp:
+TODO für den Hauptprototyp:
 
 - Für die erste Editor-Implementierung reicht ein gezielter Sonderfall im Toast-Renderer und Export.
 - Kein `stages`-Modell vor dem Hauptprototyp einführen.
-- `stages` erst prüfen, wenn mehrere mehrphasige Mappings entstehen.
+- `stages` oder ein allgemeines Phasenmodell erst prüfen, wenn mehrere mehrphasige Mappings entstehen.
 
-<!-- ## 3. Toast-Attention-OneShot mit modellierten Parametern abgleichen
+## 3. POC 03 als vollständiges Mapping-Review-Werkzeug nutzen
 
-Status: Erledigt.
+Status: In Arbeit.
 
-`toast-attention-oneShot` beschreibt einen sekundären Opacity-Pulse nach der Einfahrt. Dieser Pulse ist jetzt explizit über `opacityKeyframes` modelliert und wird in Preview und Export ausgewertet.
+POC 03 soll alle vorhandenen Mapping-Einträge darstellen, damit die Preview nicht nur mit einzelnen Testfällen arbeitet, sondern das vollständige Mapping abbildet.
 
-Aktueller Zustand:
+Ziel:
 
-- `toast-attention-oneShot` nutzt weiterhin `opacity: [0, 1]` als einfachen Deckkraftbereich.
-- Zusätzlich modelliert `opacityKeyframes` die Sequenz `0 → 1 → 0.86 → 1 → 0.86 → 1`.
+- POC 03 soll alle Mapping-Einträge darstellen können.
+- Jede Animation soll einzeln aufrufbar und sichtbar sein.
+- POC 03 soll als Grundlage dienen, um die semantische Qualität der einzelnen Animationen gezielt zu überprüfen und zu verbessern.
 
-TODO:
+Umsetzung:
 
-- Erledigt: `AnimationParams` besitzt ein `opacityKeyframes`-Feld.
-- Erledigt: POC 03 Preview rendert den Pulse.
-- Erledigt: POC 04/05 Export erzeugt Framer-Motion- und CSS-Code mit Opacity-Pulse. -->
+- Alle vorhandenen Mapping-Einträge in POC 03 einbinden.
+- Zusätzliche Preview-Darstellungen für `toggle`, `input` und `skeleton` ergänzen.
+- Sicherstellen, dass `trackFactor`, `iterations`, `delay`, Translationen und Scale-Animationen sichtbar abspielbar sind.
+- Danach jeden Eintrag einzeln durchgehen.
+- Prüfen, ob Animation, Bedeutung und Begründung zusammenpassen.
+- Auffällige Animationen markieren, die nicht stark genug oder missverständlich wirken.
+- Bei Bedarf Anpassungen an Dauer, Richtung, Skalierung, Intensität, Easing oder Wiederholung vornehmen.
 
-<!-- ## 4. Button-Feedback-Success-Begründung schärfen
+Akzeptanzkriterien:
 
-Status: Erledigt.
+- Alle 24 Mapping-Einträge sind in POC 03 integriert.
+- Jede Animation kann einzeln getestet werden.
+- Unklare oder schwache Animationen können dokumentiert werden.
+- POC 03 eignet sich danach als Review-Werkzeug für das gesamte semantische Mapping.
 
-`button-feedback-success` erwähnte in `rationale.source` eine „Aufwärtsbewegung“, obwohl das Mapping nur `scaleFactor` und keine y-Bewegung nutzt. Die Begründung wurde geschärft, die Parameter bleiben unverändert.
+## 4. Systematischen Mapping-Review durchführen
 
-Aktueller Zustand:
+Status: Offen.
 
-- `button-feedback-success` nutzt nur `scaleFactor`.
-- In `rationale.source` wird keine Aufwärtsbewegung mehr erwähnt.
+Alle Mapping-Einträge sollen einzeln geprüft werden:
 
-TODO:
+- Button
+- Toggle
+- Input
+- Toast
+- Modal
+- Skeleton
 
-- Erledigt: Die Begründung beschreibt jetzt die leichte Expansion als physische Reaktion auf die erfolgreiche Aktion.
-- Keine y-Bewegung ergänzt, weil das Mapping bewusst als fokussiertes Scale-Feedback gedacht ist. -->
+Prüffragen:
 
-<!-- ## 5. Hierarchy-toBackground-Kommentar präzisieren
+- Vermittelt die Animation die intendierte Bedeutung?
+- Passen Animation, Mapping-Parameter und Begründung zusammen?
+- Sind Dauer, Richtung, Skalierung, Intensität und Easing stark genug, aber nicht übertrieben?
+- Gibt es Mappings, die technisch funktionieren, semantisch aber noch zu schwach oder missverständlich sind?
 
-Status: Erledigt.
+Dokumentation:
 
-`toBackground` war im Typkommentar als „tritt zurück, bleibt aber sichtbar“ beschrieben, das Modal-Mapping blendet aber vollständig aus (`opacity: [1, 0]`). Das war kein Codefehler, aber konzeptionell zu eng formuliert.
+- Auffälligkeiten in der lokalen Review-Datei festhalten.
+- Änderungen entweder direkt im Mapping umsetzen oder als Folge-TODO dokumentieren.
 
-Aktueller Zustand:
+## 5. Parameter-Tuning und Begründungen synchronisieren
 
-- `HierarchySubcategory.toBackground` ist in `types.ts` jetzt als Verlust der Vordergrundpriorität und Rücktritt aus dem Fokus beschrieben.
-- `modal-hierarchy-toBackground` blendet das Modal mit `opacity: [1, 0]` vollständig aus.
+Status: Offen.
 
-TODO:
-
-- Erledigt: Kommentar und Mapping-Begründung decken jetzt ein Zurücktreten bis zum Ausblenden ab.
-- Kein neues Modell nötig. -->
-
-## 6. ScaleFactor-Interpretation im Renderer bewusst behandeln
-
-Status: Erledigt.
-
-`scaleFactor` ist für Pulse, Scale-In und Scale-Out verwendbar. Die konkrete Interpretation ist jetzt als Renderer-Regel in Preview und Export explizit umgesetzt.
-
-Aktueller Zustand:
-
-- `scaleFactor` wird für Pulse, Scale-In und Scale-Out verwendet.
-- Die konkrete Interpretation hängt vom jeweiligen Mapping-Kontext ab.
-- POC 03 nutzt dafür einen expliziten Scale-Helper im Motion-Adapter.
-- POC 04/05 nutzen dieselbe Regel im Export-Generator.
+Wenn Mapping-Parameter geändert werden, müssen die Begründungstexte mitgezogen werden.
 
 TODO:
 
-- Erledigt: Pulse werden als `1.0 → 1.05 → 1.0` interpretiert.
-- Erledigt: `hierarchy/toForeground` wird als Scale-In `0.95 → 1.0` interpretiert.
-- Erledigt: `hierarchy/toBackground` wird als Scale-Out `1.0 → 0.96` interpretiert.
-- Kein neues Datenmodell nötig.
+- Änderungen an `duration`, `easing`, `scaleFactor`, `translateDistance`, `translateFrom`, `keyframes`, `iterations` oder ähnlichen Feldern immer mit `rationale.short` und `rationale.source` abgleichen.
+- Sicherstellen, dass die wissenschaftliche Begründung nicht mehr beschreibt, als im Mapping tatsächlich modelliert ist.
+- Sicherstellen, dass neue visuelle Signale auch semantisch begründet sind.
+- Opacity-only-Mappings besonders prüfen:
+  - Trägt Sichtbarkeit wirklich die Bedeutung?
+  - Oder fehlt eigentlich ein räumlicher Bewegungsanteil?
+  - Wenn Opacity alleine bleibt, muss die Begründung Erscheinen, Verschwinden, Abschluss, Fokusverlust oder Verfügbarkeit explizit benennen.
 
-<!-- ## 7. Easing-Kommentar zu Spring präzisieren
+## 6. Export nachziehen
 
-Status: Erledigt.
+Status: Offen, abhängig vom Mapping-Review.
 
-Der Kommentar sagte ursprünglich, jedes Easing-Preset entspreche einer cubicBezier-Kurve. `spring` ist aber ausdrücklich ein Platzhalter für CSS-/Fallback-Fälle und muss in Framer Motion über `springConfig` behandelt werden.
-
-Aktueller Zustand:
-
-- In `types.ts` steht jetzt, dass alle Presets außer `spring` direkt einer `cubicBezier`-Kurve entsprechen.
-- `spring` ist aber ein Framer-Motion-Spring und nur als Platzhalter in `EASING_CURVES` enthalten.
+Wenn POC 03 neue Sonderfälle oder Interpretationsregeln braucht, müssen POC 04 und POC 05 entsprechend nachgezogen werden.
 
 TODO:
 
-- Erledigt: Kommentar in `types.ts` präzisiert.
-- `spring` muss über `springConfig` behandelt werden; die Code-Logik bleibt unverändert. -->
+- Framer-Motion-Export prüfen.
+- CSS-Export prüfen.
+- Tests für neue Sonderfälle ergänzen.
+- POC 05 prüfen, damit Integration, Preview und Export konsistent bleiben.
+
+## 7. Generisches Phasenmodell vor dem Hauptprototyp prüfen
+
+Status: Offen, vor dem Hauptprototyp entscheiden.
+
+Aktuell werden bereits mehrere Toast-Mappings als gezielte Renderer-Sonderfälle behandelt:
+
+- `toast-feedback-error`: y-Einfahrt plus x-Shake
+- `toast-feedback-warning`: y-Einfahrt plus y-Nudge
+- `toast-attention-oneShot`: y-Einfahrt plus Scale-Pulse
+
+Das ist für POC 03 vertretbar, weil die Fälle klar begrenzt sind und Preview sowie Export diese Sequenzen korrekt abbilden. Für den Hauptprototyp sollte aber bewusst entschieden werden, ob diese Sonderfälle im Renderer bleiben oder in ein generisches Datenmodell überführt werden.
+
+Warum nicht isoliert umbauen:
+
+- `toast-feedback-error` allein auf ein Phasenmodell umzustellen wäre inkonsistent, weil `toast-feedback-warning` und `toast-attention-oneShot` ebenfalls mehrphasig sind.
+- Ein echtes Phasenmodell würde `types.ts`, `mappings.ts`, Preview, Export, Integration und Validierung betreffen.
+- Deshalb bleibt der POC-Zustand bewusst bei gezielten Renderer-Sonderfällen.
+
+Mögliche Modellrichtungen:
+
+- `motionPhases`: explizite Sequenz aus mehreren Bewegungsphasen
+- `secondaryMotion`: zusätzliches sekundäres Signal nach der Hauptbewegung
+
+Entscheidung:
+
+- Für den aktuellen POC bleiben gezielte Sonderfälle zulässig.
+- Vor dem Hauptprototyp aktiv entscheiden, ob `motionPhases` oder `secondaryMotion` eingeführt wird.
+- Falls weitere mehrphasige Mappings entstehen, sollte ein generisches Modell bevorzugt werden.
+
+## 8. Input-Focus/Blur auf Framer-Motion-Controls umstellen
+
+Status: Offen.
+
+Aktuell werden `input-stateChange-focus` und `input-stateChange-blur` in POC 03 über CSS-Keyframes auf der Preview-Komponente visualisiert. Das ist für den POC ausreichend, aber für den späteren Editor nicht ideal, weil das Framework insgesamt mit Framer Motion arbeitet.
+
+TODO:
+
+- Focus- und Blur-Zustände später ebenfalls über Framer-Motion-Controls steuern.
+- Container, Input-Feld, Label und optional Helper-Text als getrennte Animationsziele modellieren.
+- Preview-Replay, Code-Export und tatsächliche Editor-Preview dadurch konsistenter machen.
+- Prüfen, ob dafür ein kleines komponentenspezifisches Renderer-Modell reicht oder ob ein allgemeineres Target-Modell nötig wird.
+
+## Optionale Erweiterungen
+
+Diese Punkte sind nicht notwendig für den aktuellen POC-Scope, wären aber sinnvolle Erweiterungen für ein größeres Framework oder einen produktiveren Editor.
+
+### Sichtbar zurückgestuftes Layer-Mapping
+
+Status: Optional.
+
+`modal-hierarchy-toBackground` blendet das Modal bewusst vollständig aus, weil ein halbtransparent sichtbares Modal nach dem Schließen UX-seitig missverständlich wäre. Ein echtes Mapping für „bleibt sichtbar, tritt aber visuell zurück“ wäre eher für Cards, Panels, Sidebars oder gestapelte Ebenen geeignet.
+
+Mögliche Umsetzung:
+
+- Neue Komponente oder neues Beispiel: `panel`, `card`, `sidebar` oder gestapeltes `layer`.
+- Hierarchie-Mapping mit `opacity: [1, 0.55]` oder `opacity: [1, 0.7]`.
+- Zusätzlich leichte Skalierung oder z-Offset, damit der Rücktritt als Hierarchiewechsel lesbar wird.
+- Semantische Abgrenzung zu `direction-exit`: Das Element verlässt nicht die UI, sondern bleibt als niedrig priorisierte Ebene sichtbar.
+
+Präzisierte Richtung:
+
+- Für den späteren Editor prüfen, ob `modal-hierarchy-toBackground` aus der auswählbaren Modal-UI entfernt wird.
+- `modal-hierarchy-toForeground` kann bleiben, weil ein Modal sinnvoll als Vordergrund-/Fokus-Ebene erscheint.
+- Ein echtes `toBackground`-Mapping sollte stattdessen an einer Komponente demonstriert werden, die sichtbar im Layout verbleiben darf.
+- Am plausibelsten wären `card` oder `panel`, zum Beispiel für Galerie-, Dashboard- oder Layer-Kontexte.
+- Beispiel: Eine aktive Card liegt vergrößert im Vordergrund; beim Zurücktreten skaliert sie leicht herunter, verliert Deckkraft oder Schattenintensität und ordnet sich wieder hinter/zwischen benachbarten Cards ein.
+- Dadurch wäre `hierarchy-toBackground` semantisch sauber von `direction-exit` getrennt: Die Card verschwindet nicht, sondern verliert nur visuelle Priorität.
+
+Offene Entscheidung:
+
+- Prüfen, ob `card` oder `panel` besser zum Editor-Scope passt.
+- Wenn eine dieser Komponenten aufgenommen wird, dazu ein eigenes Hierarchie-Paar modellieren:
+  - `card-hierarchy-toForeground`
+  - `card-hierarchy-toBackground`
+  - oder entsprechendes `panel-*`-Mapping.
+
+## Erledigt
+
+- `button-feedback-success` Begründung ohne Aufwärtsbewegung geschärft.
+- `hierarchy-toBackground` Kommentar und Begründung präzisiert.
+- Spring-Kommentar in `types.ts` präzisiert.
+- `toast-attention-oneShot` von Opacity-Pulse auf echte Scale-Impulse umgestellt.
+- `scaleFactor`-Interpretation in Preview und Export bewusst umgesetzt.
+- Preview-Replay-Hold für Modal-Enter/-Exit, Hierarchie, Skeleton-Resolved und Input-Blur vereinheitlicht.
+- Opacity als ergänzenden Sichtbarkeitsparameter theoretisch legitimiert.

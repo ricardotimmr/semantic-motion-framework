@@ -155,3 +155,27 @@ Gleichzeitig soll die wissenschaftliche Nachvollziehbarkeit nicht nur im Code ve
 ### Abgrenzung
 
 `source` ist nicht die primäre Erklärung für normale Nutzer. Es ist eine vertiefende Ebene für wissenschaftliche Nachvollziehbarkeit, Design-Reviews, Export-Kommentare oder interessierte Nutzer.
+
+---
+
+## ADR-08: Opacity als ergänzender Sichtbarkeitsparameter
+
+### Entscheidung
+
+`opacity` wird im Semantic Motion Framework als gültiger, aber ergänzender Animationsparameter behandelt. Opacity ist kein räumlicher Bewegungsparameter wie Translation, Scale oder Track-Bewegung. Sie beschreibt einen zeitbasierten Sichtbarkeitsübergang.
+
+Die Mutex-Regel für Bewegungsfelder bezieht sich deshalb nur auf die räumlichen Bewegungsgruppen `translatePx`/`translateDistance`, `scaleFactor` und `trackFactor`. `opacity` darf zusätzlich oder in begründeten Fällen alleine verwendet werden.
+
+### Begründung
+
+Das Framework ist ein Motion-Framework und soll nicht jede animierbare Eigenschaft beliebig als Motion deklarieren. Opacity verändert keine Position, Größe oder Bewegungsrichtung eines Elements. Trotzdem kann ein Deckkraftübergang in UI-Animationen semantisch tragfähig sein, wenn Sichtbarkeit selbst die Bedeutung trägt.
+
+Einblenden kann Erscheinen, Aktivwerden oder Verfügbarkeit kommunizieren. Ausblenden kann Verschwinden, Abschluss, Fokusverlust oder das Ende eines Ladezustands kommunizieren. Semiotisch lässt sich das als ikonische Beziehung begründen: Verblassen ähnelt physikalischem Verschwinden, Einblenden ähnelt dem Sichtbarwerden eines Objekts.
+
+Deshalb wird Opacity nicht als primärer Bewegungsparameter, sondern als ergänzender Sichtbarkeitsparameter modelliert. Opacity-only-Mappings sind zulässig, müssen aber besonders sorgfältig begründet werden.
+
+### Abgrenzung
+
+Opacity darf nicht als Ersatz für fehlende Bewegung verwendet werden, wenn die Bedeutung eigentlich durch Richtung, Amplitude, Rhythmus oder Skalierung getragen werden müsste. Bei jedem Opacity-only-Mapping muss geprüft werden, ob Sichtbarkeit tatsächlich der Bedeutungsträger ist.
+
+Beispiele für legitime Opacity-only-Fälle sind das Ausblenden eines Skeleton Loaders nach abgeschlossenem Ladevorgang oder das Erscheinen eines Warnhinweises, wenn der Sichtbarkeitswechsel selbst die semantische Information trägt.

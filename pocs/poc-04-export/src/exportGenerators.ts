@@ -213,9 +213,208 @@ export async function ${name}(controls) {
 }`;
 }
 
+function generateToastWarningFramerCode(entry: MappingEntry) {
+  const name = toCamelCase(entry.id);
+
+  return `${sourceComment(entry, "//")}
+
+export async function ${name}(controls) {
+  await controls.set({
+    x: 0,
+    y: "100%", // Einfahrt von unten
+    opacity: ${entry.params.opacity?.[0] ?? 1},
+  });
+
+  await controls.start({
+    y: 0,
+    opacity: ${entry.params.opacity?.[1] ?? 1},
+    transition: {
+      duration: ${(entry.params.duration * 0.62) / 1000}, // erste Phase: ruhige y-Einfahrt
+      delay: ${(entry.params.delay ?? 0) / 1000},
+      ease: ${formatFramerEase(entry.params.easing)},
+    },
+  });
+
+  await controls.start({
+    y: [0, -5, 0], // zweite Phase: moderater y-Nudge
+    transition: {
+      duration: ${(entry.params.duration * 0.38) / 1000},
+      ease: ${formatFramerEase(entry.params.easing)},
+      times: [0, 0.5, 1],
+    },
+  });
+}`;
+}
+
+function generateToastOneShotFramerCode(entry: MappingEntry) {
+  const name = toCamelCase(entry.id);
+
+  return `${sourceComment(entry, "//")}
+
+export async function ${name}(controls) {
+  await controls.set({
+    x: 0,
+    y: "100%", // Einfahrt von unten
+    scale: 1,
+    opacity: ${entry.params.opacity?.[0] ?? 1},
+  });
+
+  await controls.start({
+    y: 0,
+    opacity: ${entry.params.opacity?.[1] ?? 1},
+    transition: {
+      duration: ${(entry.params.duration * 0.42) / 1000}, // erste Phase: ruhige y-Einfahrt
+      ease: ${formatFramerEase(entry.params.easing)},
+    },
+  });
+
+  await controls.start({
+    scale: [1, 1.025, 1, 1.025, 1], // zweite Phase: zwei subtile Scale-Impulse
+    transition: {
+      duration: ${(entry.params.duration * 0.58) / 1000},
+      ease: ${formatFramerEase(entry.params.easing)},
+      times: [0, 0.25, 0.5, 0.75, 1],
+    },
+  });
+}`;
+}
+
+function generateInputWarningFramerCode(entry: MappingEntry) {
+  const name = toCamelCase(entry.id);
+
+  return `${sourceComment(entry, "//")}
+
+export const ${name} = {
+  field: {
+    initial: {
+      opacity: 1,
+    },
+    animate: {
+      opacity: 1,
+    },
+  },
+  message: {
+    initial: {
+      opacity: ${entry.params.opacity?.[0] ?? 0},
+      y: 4, // lokales Erscheinen des Helper-Texts
+    },
+    animate: {
+      opacity: ${entry.params.opacity?.[1] ?? 1},
+      y: 0,
+    },
+    transition: {
+      duration: ${entry.params.duration / 1000},
+      ease: ${formatFramerEase(entry.params.easing)},
+    },
+  },
+};`;
+}
+
+function generateInputFocusFramerCode(entry: MappingEntry) {
+  const name = toCamelCase(entry.id);
+
+  return `${sourceComment(entry, "//")}
+
+export const ${name} = {
+  container: {
+    initial: {
+      scale: 1,
+      filter: "drop-shadow(0 0 0 rgba(47, 84, 70, 0))",
+    },
+    animate: {
+      scale: 1.01,
+      filter: "drop-shadow(0 0 0.75rem rgba(47, 84, 70, 0.26))",
+    },
+  },
+  field: {
+    initial: {
+      borderColor: "var(--line)",
+      backgroundColor: "rgba(247, 241, 227, 0.6)",
+    },
+    animate: {
+      borderColor: "rgba(47, 84, 70, 0.76)",
+      backgroundColor: "rgba(247, 241, 227, 0.84)",
+    },
+  },
+  label: {
+    initial: {
+      color: "var(--muted)",
+    },
+    animate: {
+      color: "rgba(47, 84, 70, 0.95)",
+    },
+  },
+  transition: {
+    duration: ${entry.params.duration / 1000},
+    ease: ${formatFramerEase(entry.params.easing)},
+  },
+};`;
+}
+
+function generateInputBlurFramerCode(entry: MappingEntry) {
+  const name = toCamelCase(entry.id);
+
+  return `${sourceComment(entry, "//")}
+
+export const ${name} = {
+  container: {
+    initial: {
+      scale: 1.01,
+      filter: "drop-shadow(0 0 0.75rem rgba(47, 84, 70, 0.26))",
+    },
+    animate: {
+      scale: 1,
+      filter: "drop-shadow(0 0 0 rgba(47, 84, 70, 0))",
+    },
+  },
+  field: {
+    initial: {
+      borderColor: "rgba(47, 84, 70, 0.76)",
+      backgroundColor: "rgba(247, 241, 227, 0.84)",
+    },
+    animate: {
+      borderColor: "var(--line)",
+      backgroundColor: "rgba(247, 241, 227, 0.6)",
+    },
+  },
+  label: {
+    initial: {
+      color: "rgba(47, 84, 70, 0.95)",
+    },
+    animate: {
+      color: "var(--muted)",
+    },
+  },
+  transition: {
+    duration: ${entry.params.duration / 1000},
+    ease: ${formatFramerEase(entry.params.easing)},
+  },
+};`;
+}
+
 export function generateFramerMotionCode(entry: MappingEntry): string {
   if (entry.id === "toast-feedback-error") {
     return generateToastErrorFramerCode(entry);
+  }
+
+  if (entry.id === "toast-feedback-warning") {
+    return generateToastWarningFramerCode(entry);
+  }
+
+  if (entry.id === "toast-attention-oneShot") {
+    return generateToastOneShotFramerCode(entry);
+  }
+
+  if (entry.id === "input-feedback-warning") {
+    return generateInputWarningFramerCode(entry);
+  }
+
+  if (entry.id === "input-stateChange-focus") {
+    return generateInputFocusFramerCode(entry);
+  }
+
+  if (entry.id === "input-stateChange-blur") {
+    return generateInputBlurFramerCode(entry);
   }
 
   const name = toCamelCase(entry.id);
@@ -339,10 +538,32 @@ ${shakeFrames}
 }`;
   }
 
+  if (entry.id === "toast-feedback-warning") {
+    return `@keyframes ${keyframesName} {
+  0% { opacity: ${params.opacity?.[0] ?? 1}; transform: translateY(100%); }
+  62% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0); }
+  81% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(-5px); }
+  100% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0); }
+}`;
+  }
+
+  if (entry.id === "toast-attention-oneShot") {
+    return `@keyframes ${keyframesName} {
+  0% { opacity: ${params.opacity?.[0] ?? 1}; transform: translateY(100%) scale(1); }
+  42% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0) scale(1); }
+  56.5% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0) scale(1.025); }
+  71% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0) scale(1); }
+  85.5% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0) scale(1.025); }
+  100% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0) scale(1); }
+}`;
+  }
+
   if (params.opacityKeyframes !== undefined) {
     const lastIndex = params.opacityKeyframes.values.length - 1;
     const frames = params.opacityKeyframes.values.map((opacity, index) => {
-      const percent = formatPercent(params.opacityKeyframes!.times[index] * 100);
+      const percent = formatPercent(
+        params.opacityKeyframes!.times[index] * 100,
+      );
       const parts: TransformParts = {};
 
       if (params.translateFrom !== undefined) {
@@ -419,7 +640,95 @@ ${frames.join("\n")}
 }`;
 }
 
+function generateInputCSSCode(entry: MappingEntry) {
+  const className = `smf-${entry.id}`;
+  const easing = formatCssEase(entry.params.easing);
+
+  if (entry.id === "input-feedback-warning") {
+    return `${sourceComment(entry, "/*")}
+
+@keyframes ${className}-message {
+  0% { opacity: ${entry.params.opacity?.[0] ?? 0}; transform: translateY(4px); }
+  100% { opacity: ${entry.params.opacity?.[1] ?? 1}; transform: translateY(0); }
+}
+
+.${className} .input-message {
+  animation: ${className}-message ${entry.params.duration}ms ${easing} both;
+}`;
+  }
+
+  if (entry.id === "input-stateChange-focus") {
+    return `${sourceComment(entry, "/*")}
+
+@keyframes ${className}-ring {
+  0% { filter: drop-shadow(0 0 0 rgba(47, 84, 70, 0)); transform: scale(1); }
+  100% { filter: drop-shadow(0 0 0.75rem rgba(47, 84, 70, 0.26)); transform: scale(1.01); }
+}
+
+@keyframes ${className}-field {
+  0% { border-color: var(--line); background: rgba(247, 241, 227, 0.6); }
+  100% { border-color: rgba(47, 84, 70, 0.76); background: rgba(247, 241, 227, 0.84); }
+}
+
+@keyframes ${className}-label {
+  0% { color: var(--muted); }
+  100% { color: rgba(47, 84, 70, 0.95); }
+}
+
+.${className} {
+  animation: ${className}-ring ${entry.params.duration}ms ${easing} both;
+}
+
+.${className} input {
+  animation: ${className}-field ${entry.params.duration}ms ${easing} both;
+}
+
+.${className} label {
+  animation: ${className}-label ${entry.params.duration}ms ${easing} both;
+}`;
+  }
+
+  if (entry.id === "input-stateChange-blur") {
+    return `${sourceComment(entry, "/*")}
+
+@keyframes ${className}-ring {
+  0% { filter: drop-shadow(0 0 0.75rem rgba(47, 84, 70, 0.26)); transform: scale(1.01); }
+  100% { filter: drop-shadow(0 0 0 rgba(47, 84, 70, 0)); transform: scale(1); }
+}
+
+@keyframes ${className}-field {
+  0% { border-color: rgba(47, 84, 70, 0.76); background: rgba(247, 241, 227, 0.84); }
+  100% { border-color: var(--line); background: rgba(247, 241, 227, 0.6); }
+}
+
+@keyframes ${className}-label {
+  0% { color: rgba(47, 84, 70, 0.95); }
+  100% { color: var(--muted); }
+}
+
+.${className} {
+  animation: ${className}-ring ${entry.params.duration}ms ${easing} both;
+}
+
+.${className} input {
+  animation: ${className}-field ${entry.params.duration}ms ${easing} both;
+}
+
+.${className} label {
+  animation: ${className}-label ${entry.params.duration}ms ${easing} both;
+}`;
+  }
+
+  return null;
+}
+
 export function generateCSSCode(entry: MappingEntry): string {
+  const inputCSSCode = generateInputCSSCode(entry);
+
+  if (inputCSSCode !== null) {
+    return inputCSSCode;
+  }
+
   const className = `smf-${entry.id}`;
   const warning =
     "preset" in entry.params.easing && entry.params.easing.preset === "spring"

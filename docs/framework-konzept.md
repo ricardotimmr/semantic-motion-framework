@@ -75,6 +75,26 @@ Das Framework behandelt folgende Parameter als bedeutungstragende Einheiten:
 - Mittel (6–10px / 0.9–1.1): Wahrnehmbar, ohne zu dominieren. Für primäre Feedbacks.
 - Groß (12px+ / 0.8–1.2): Dringend, nicht zu übersehen. Für kritische Fehler und Warnungen. Sparsam einsetzen.
 
+**Opacity / Deckkraft**: Ergänzender Sichtbarkeitsparameter. Opacity ist
+keine Bewegung im räumlichen Sinn, aber ein zeitbasierter Übergang von
+Sichtbarkeit. Im Framework ist Opacity nur dann semantisch tragfähig, wenn
+Erscheinen, Verschwinden, Fokusverlust, Abschluss oder Verfügbarkeit selbst die
+Bedeutung tragen.
+
+- Opacity 0 → 1: Einblenden, Erscheinen, Aktivwerden.
+- Opacity 1 → 0: Ausblenden, Verschwinden, Abschluss, Fokusverlust.
+- Opacity darf ergänzend zu räumlicher Motion eingesetzt werden, etwa bei Enter-
+  und Exit-Animationen.
+- Opacity-only-Mappings müssen besonders begründet werden: Sichtbarkeit selbst
+  muss der Bedeutungsträger sein, nicht nur ein dekorativer Effekt.
+
+**Theoretische Einordnung:** Opacity ist kein primärer Bewegungsparameter wie
+Direction oder Amplitude. Semiotisch kann ein Opacity-Übergang aber ikonisch
+wirken: Verblassen ähnelt physikalischem Verschwinden, Einblenden ähnelt
+Erscheinen. Deshalb wird Opacity im Semantic Motion Framework als
+ergänzender Sichtbarkeitsparameter behandelt, nicht als beliebige
+Animationsoption.
+
 **Iterations**: Wie oft eine Animation wiederholt wird.
 
 - 1: Einmalig. Standard für die meisten Animationen.
@@ -95,7 +115,9 @@ Das Framework behandelt folgende Parameter als bedeutungstragende Einheiten:
 
 **Wahrnehmungspsychologische Grundlage:** Feedback-Animationen nutzen präattentive Verarbeitung, um das Ergebnis ohne explizite Lektüre zu kommunizieren. Bartram et al. (2003) zeigen, dass Bewegungsattribute zuverlässig zwischen Zustandskategorien unterscheiden können.
 
-**Gilt für Komponenten:** Button, Toast, Toggle, Modal (Validierung)
+**Gilt für Komponenten:** Button, Toast, Input Field. Nicht jede Komponente
+deckt jede Feedback-Subkategorie ab; im aktuellen Framework besitzt der Button
+bewusst kein Feedback-Warning-Mapping.
 
 ---
 
@@ -143,18 +165,24 @@ Das Framework behandelt folgende Parameter als bedeutungstragende Einheiten:
 
 **Bedeutung:** Eine Aktion ist möglich, aber der Nutzer sollte aufmerksam sein. Kein Fehler, aber ein Hinweis auf einen kritischen Zustand.
 
-**Leitprinzip:** Wiederholte Aufmerksamkeitsbewegung mit moderater Intensität. Unterscheidet sich von Error durch Wiederholung (persistent) und von Success durch fehlende Auflösung.
+**Leitprinzip:** Sanfter Hinweis als Antwort auf eine Nutzeraktion. Unterscheidet sich von Error durch geringere Abruptheit und von Success durch fehlende positive Auflösung.
 
 | Parameter | Wert | Begründung |
 |---|---|---|
 | Easing | Ease-In-Out `[0.4, 0.0, 0.2, 1.0]` | Keine Abruptheit, aber auch kein Abklingen |
 | Duration | 400–500ms pro Zyklus | Langsam genug, um als Warnung und nicht als Fehler wahrgenommen zu werden |
-| Direction | y (vertikal, kurzes Auf und Ab) oder Puls (Scale) | Aufmerksamkeitssignal ohne Richtungskonnotation |
-| Amplitude | Mittel (Scale 1.0 → 1.03 → 1.0 oder ±4px vertikal) | Sichtbar aber nicht aggressiv |
-| Iterations | 2–3 | Persistente Aufmerksamkeit; endet von selbst |
-| Zeichentyp | Index | Wiederholte Bewegung als kultureller Index für Persistenz und Dringlichkeit |
+| Direction | Kontextabhängig, häufig y oder keine Translation | Warnung soll sichtbar sein, aber nicht wie Fehler ablehnen |
+| Amplitude | Klein bis mittel | Sichtbar, aber nicht aggressiv |
+| Iterations | 1 | Feedback antwortet auf eine konkrete Aktion und sollte nicht dauerhaft konkurrieren |
+| Zeichentyp | Index / Ikon | Warnhinweis als kausale Reaktion auf eine Nutzeraktion |
 
-**Für Editor-Begründungstext:** Die wiederholte, gleichmäßige Bewegung signalisiert, dass der Nutzer Aufmerksamkeit schenken sollte, ohne einen Fehler zu kommunizieren. Die Wiederholung unterscheidet Warnung von einmaligem Feedback.
+**Für Editor-Begründungstext:** Die ruhige Warnbewegung signalisiert, dass eine Nutzeraktion einen überprüfungsbedürftigen Zustand ausgelöst hat, ohne einen Fehler zu kommunizieren.
+
+**Abgrenzung zum Button:** Der aktuelle Button-Warning-Eintrag ist bewusst kein
+Feedback-Mapping. `button-attention-warning` ist systeminitiiert und fordert
+Aufmerksamkeit ein. Ein hypothetisches `button-feedback-warning` wäre dagegen
+eine unmittelbare Reaktion auf einen Klick und ist im aktuellen Scope nicht
+modelliert.
 
 ---
 
@@ -585,23 +613,23 @@ Die folgende Tabelle gibt einen Überblick aller geplanten Mappings. Die vollst�
 |---|---|---|---|---|---|---|---|
 | Button | Feedback | Success | Ease-Out | 250ms | y (kurz) | Scale 1.0→1.05→1.0 | Ikon/Index |
 | Button | Feedback | Error | Sharp | 350ms | x (Shake) | ±8px | Index |
-| Button | Feedback | Warning | Ease-In-Out | 450ms | y (Pulse) | Scale 1.0→1.03 | Index |
+| Button | Aufmerksamkeit | Warning | Ease-In-Out | 600ms | none | Scale 1.0→1.03→1.0, 3 Zyklen | Index |
 | Button | Aufmerksamkeit | Persistierend | Ease-In-Out | 1000ms | none | Scale 1.0→1.04 | Index |
 | Toggle | State Change | On | Ease-In-Out | 220ms | x | Volle Breite | Ikon |
 | Toggle | State Change | Off | Ease-In-Out | 220ms | x (umgekehrt) | Volle Breite | Ikon |
 | Toast | Feedback | Success | Ease-Out | 300ms | y (von unten) | Volle Höhe + Spring | Index |
 | Toast | Feedback | Error | Sharp | 350ms | y + x (Shake) | Volle Höhe + ±6px | Index |
 | Toast | Feedback | Warning | Ease-In-Out | 400ms | y (von unten) | Volle Höhe | Index |
-| Toast | Aufmerksamkeit | Einmalig | Ease-Out | 300ms | y (von unten) | Volle Höhe + Spring | Index |
+| Toast | Aufmerksamkeit | Einmalig | Ease-Out | 760ms | y (von unten) | Volle Höhe + Scale-Impulse | Index |
 | Modal | Hierarchie | In den Vordergrund | Ease-Out | 300ms | none | Scale 0.95→1.0 + Opacity | Ikon |
 | Modal | Hierarchie | In den Hintergrund | Ease-In | 250ms | none | Scale 1.0→0.96 | Ikon |
 | Modal | Direction | Enter | Ease-Out | 350ms | y (von unten) | Volle Höhe | Index |
 | Modal | Direction | Exit | Ease-In | 280ms | y (nach unten) | Volle Höhe | Index |
 | Input Field | Feedback | Success | Ease-Out | 175ms | none | Scale 1.0→1.02→1.0 | Ikon/Index |
 | Input Field | Feedback | Error | Sharp | 275ms | x (Shake) | ±5px | Index |
-| Input Field | Feedback | Warning | Ease-In-Out | 300ms | none | Opacity-Transition | Ikon |
+| Input Field | Feedback | Warning | Ease-In-Out | 300ms | none | Helper-Text: Opacity + y-Offset | Ikon |
 | Input Field | State Change | Focus | Ease-Out | 175ms | none | Border-Transition + Label | Ikon |
-| Input Field | State Change | Blur | Ease-In | 150ms | none | Border-Rücktransition | Ikon |
+| Input Field | State Change | Blur | Ease-In | 210ms | none | Border-Rücktransition | Ikon |
 | Input Field | Aufmerksamkeit | Pflichtfeld-Hinweis | Sharp | 325ms | x (Shake) | ±6px | Index |
 | Skeleton Loader | Aufmerksamkeit | Laden | Linear | 1500ms | x (Shimmer) | Volle Breite | **Symbol** |
 | Skeleton Loader | Aufmerksamkeit | Aufgelöst | Ease-Out | 350ms | none | Opacity 1→0 | Ikon |

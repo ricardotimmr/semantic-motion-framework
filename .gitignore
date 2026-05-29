@@ -25,6 +25,7 @@ dist-ssr
 
 # Local evaluation notes
 docs/framework-evaluation.md
+docs/poc-03-mapping-evaluation.md
 
 # Local mockups
 docs/smf-mockup-final-for-real.html
