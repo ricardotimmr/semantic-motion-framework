@@ -9,8 +9,6 @@ import { getPreviewChoreography } from "./previewChoreography";
 
 type Axis = "x" | "y";
 
-type PreviewComponent = Extract<ComponentId, "button" | "modal" | "toast">;
-
 type PreviewSize = {
   width: number;
   height: number;
@@ -35,10 +33,13 @@ type ScaleAnimation =
       animate: number;
     };
 
-const previewSizes: Record<PreviewComponent, PreviewSize> = {
+const previewSizes: Record<ComponentId, PreviewSize> = {
   button: { width: 168, height: 42 },
+  toggle: { width: 32, height: 0 },
   modal: { width: 340, height: 210 },
   toast: { width: 360, height: 78 },
+  input: { width: 320, height: 48 },
+  skeleton: { width: 360, height: 0 },
 };
 
 function waitForNextFrame() {
@@ -53,20 +54,8 @@ function wait(milliseconds: number) {
   });
 }
 
-function isPreviewComponent(
-  component: ComponentId,
-): component is PreviewComponent {
-  return (
-    component === "button" || component === "modal" || component === "toast"
-  );
-}
-
 function getPreviewSize(component: ComponentId): PreviewSize {
-  if (isPreviewComponent(component)) {
-    return previewSizes[component];
-  }
-
-  return { width: 240, height: 80 };
+  return previewSizes[component];
 }
 
 function getAxis(entry: MappingEntry): Axis {
@@ -117,11 +106,32 @@ function getScaleAnimation(entry: MappingEntry): ScaleAnimation | null {
   };
 }
 
+function getRepeat(entry: MappingEntry) {
+  const { iterations } = entry.params;
+
+  if (iterations === Infinity) {
+    return Infinity;
+  }
+
+  if (iterations !== undefined && iterations > 1) {
+    return iterations - 1;
+  }
+
+  return undefined;
+}
+
 function getTransition(entry: MappingEntry): Transition {
-  const { easing, duration, springConfig } = entry.params;
+  const { delay, easing, duration, springConfig } = entry.params;
+  const repeat = getRepeat(entry);
+  const baseTransition: Transition = {
+    delay: delay !== undefined ? delay / 1000 : undefined,
+    repeat,
+    repeatType: repeat !== undefined ? "loop" : undefined,
+  };
 
   if ("preset" in easing && easing.preset === "spring") {
     return {
+      ...baseTransition,
       type: "spring",
       stiffness: springConfig?.stiffness,
       damping: springConfig?.damping,
@@ -133,6 +143,7 @@ function getTransition(entry: MappingEntry): Transition {
     "preset" in easing ? EASING_CURVES[easing.preset] : easing.cubicBezier;
 
   return {
+    ...baseTransition,
     duration: duration / 1000,
     ease,
   };
@@ -169,6 +180,14 @@ function getInitialTarget(entry: MappingEntry): TargetAndTransition {
 
   if (params.translateFrom !== undefined) {
     target[axis] = edgeToValue(params.translateFrom, size);
+  }
+
+  if (params.trackFactor !== undefined && params.trackFactor < 0) {
+    target[axis] = Math.abs(params.trackFactor) * size.width;
+  }
+
+  if (entry.component === "skeleton" && params.trackFactor !== undefined) {
+    target[axis] = -size.width;
   }
 
   return target;
@@ -233,6 +252,15 @@ function getSingleStageAnimation(entry: MappingEntry): TargetAndTransition {
     target[axis] = edgeToValue(params.translateTo, size);
   }
 
+  if (params.trackFactor !== undefined) {
+    if (entry.component === "skeleton") {
+      target[axis] = params.trackFactor * size.width;
+    } else {
+      target[axis] =
+        params.trackFactor > 0 ? params.trackFactor * size.width : 0;
+    }
+  }
+
   target.transition = transition;
   return target;
 }
@@ -272,12 +300,119 @@ async function playToastError(entry: MappingEntry, controls: PlaybackControls) {
   }
 }
 
+async function playToastWarning(
+  entry: MappingEntry,
+  controls: PlaybackControls,
+) {
+  const size = getPreviewSize(entry.component);
+  const transition = getTransition(entry);
+  const enterDuration = (entry.params.duration * 0.62) / 1000;
+  const nudgeDuration = (entry.params.duration * 0.38) / 1000;
+
+  await controls.stop();
+  await controls.set({
+    x: 0,
+    y: edgeToValue("bottom", size),
+    scale: 1,
+    opacity: entry.params.opacity?.[0] ?? 1,
+  });
+  await waitForNextFrame();
+  await wait(entry.params.delay ?? 0);
+
+  await controls.start({
+    y: 0,
+    opacity: entry.params.opacity?.[1] ?? 1,
+    transition: {
+      ...transition,
+      delay: undefined,
+      duration: enterDuration,
+    },
+  });
+
+  await controls.start({
+    y: [0, -5, 0],
+    transition: {
+      ...transition,
+      delay: undefined,
+      duration: nudgeDuration,
+      times: [0, 0.5, 1],
+    },
+  });
+}
+
+async function playToastOneShot(
+  entry: MappingEntry,
+  controls: PlaybackControls,
+) {
+  const size = getPreviewSize(entry.component);
+  const transition = getTransition(entry);
+  const enterDuration = (entry.params.duration * 0.42) / 1000;
+  const pulseDuration = (entry.params.duration * 0.58) / 1000;
+
+  await controls.stop();
+  await controls.set({
+    x: 0,
+    y: edgeToValue("bottom", size),
+    scale: 1,
+    opacity: entry.params.opacity?.[0] ?? 1,
+  });
+  await waitForNextFrame();
+
+  await controls.start({
+    y: 0,
+    opacity: entry.params.opacity?.[1] ?? 1,
+    transition: {
+      ...transition,
+      duration: enterDuration,
+    },
+  });
+
+  await controls.start({
+    scale: [1, 1.025, 1, 1.025, 1],
+    transition: {
+      ...transition,
+      duration: pulseDuration,
+      times: [0, 0.25, 0.5, 0.75, 1],
+    },
+  });
+}
+
+async function playInputWarning(
+  entry: MappingEntry,
+  controls: PlaybackControls,
+) {
+  await controls.stop();
+  await controls.set({
+    x: 0,
+    y: 0,
+    scale: 1,
+    opacity: 1,
+  });
+  await waitForNextFrame();
+  await wait(getPreviewChoreography(entry).holdInitialMs);
+}
+
 export async function playMappingAnimation(
   entry: MappingEntry,
   controls: PlaybackControls,
 ) {
   if (entry.id === "toast-feedback-error") {
     await playToastError(entry, controls);
+    return;
+  }
+
+  if (entry.id === "toast-feedback-warning") {
+    await playToastWarning(entry, controls);
+    return;
+  }
+
+  if (entry.id === "toast-attention-oneShot") {
+    await playToastOneShot(entry, controls);
+    return;
+  }
+
+  if (entry.id === "input-feedback-warning") {
+    await playInputWarning(entry, controls);
     return;
   }
 

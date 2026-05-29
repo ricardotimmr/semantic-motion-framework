@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { mappings } from "../../../prototyp/src/data/mappings";
 import type {
@@ -15,20 +15,17 @@ import {
   getSubcategoriesForDimension,
 } from "../../../prototyp/src/framework/classifier";
 import { playMappingAnimation } from "./motionAdapter";
-
-type PreviewComponent = Extract<ComponentId, "button" | "modal" | "toast">;
+import { getPreviewChoreography } from "./previewChoreography";
 
 const previewComponents = Array.from(
-  new Set(
-    mappings
-      .filter((entry) =>
-        ["button", "modal", "toast"].includes(entry.component),
-      )
-      .map((entry) => entry.component),
-  ),
-) as PreviewComponent[];
+  new Set(mappings.map((entry) => entry.component)),
+) as ComponentId[];
 
-function getFirstMapping(component: PreviewComponent) {
+type PreviewInputStyle = CSSProperties & {
+  "--preview-hold-ms"?: string;
+};
+
+function getFirstMapping(component: ComponentId) {
   return getMappingsForComponent(component)[0];
 }
 
@@ -37,13 +34,15 @@ function getInitialMapping() {
 }
 
 function formatLabel(value: string) {
-  return value.replace(/([A-Z])/g, " $1").replace(/^./, (char) => char.toUpperCase());
+  return value
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (char) => char.toUpperCase());
 }
 
 export function App() {
   const initialMapping = getInitialMapping();
-  const [selectedComponent, setSelectedComponent] = useState<PreviewComponent>(
-    initialMapping.component as PreviewComponent,
+  const [selectedComponent, setSelectedComponent] = useState<ComponentId>(
+    initialMapping.component,
   );
   const [selectedDimension, setSelectedDimension] = useState<Dimension>(
     initialMapping.dimension,
@@ -71,7 +70,7 @@ export function App() {
     );
   }, [selectedComponent, selectedDimension, selectedSubcategory]);
 
-  function selectComponent(component: PreviewComponent) {
+  function selectComponent(component: ComponentId) {
     const nextMapping = getFirstMapping(component);
     setSelectedComponent(component);
     setSelectedDimension(nextMapping.dimension);
@@ -79,7 +78,10 @@ export function App() {
   }
 
   function selectDimension(dimension: Dimension) {
-    const nextMapping = getMappingsForDimension(selectedComponent, dimension)[0];
+    const nextMapping = getMappingsForDimension(
+      selectedComponent,
+      dimension,
+    )[0];
     setSelectedDimension(dimension);
     setSelectedSubcategory(nextMapping.subcategory);
   }
@@ -245,6 +247,19 @@ function PreviewPanel({
         {entry.component === "toast" ? (
           <PreviewToast controls={controls} entry={entry} />
         ) : null}
+        {entry.component === "toggle" ? (
+          <PreviewToggle controls={controls} entry={entry} />
+        ) : null}
+        {entry.component === "input" ? (
+          <PreviewInput
+            controls={controls}
+            entry={entry}
+            replayKey={replayKey}
+          />
+        ) : null}
+        {entry.component === "skeleton" ? (
+          <PreviewSkeleton entry={entry} replayKey={replayKey} />
+        ) : null}
       </div>
     </section>
   );
@@ -260,7 +275,9 @@ function PreviewButton({
   return (
     <motion.button
       animate={controls}
-      className={entry.subcategory === "error" ? "demo-button error" : "demo-button"}
+      className={
+        entry.subcategory === "error" ? "demo-button error" : "demo-button"
+      }
       type="button"
     >
       {entry.subcategory === "error" ? "Eingabe prüfen" : "Aktion ausführen"}
@@ -295,10 +312,115 @@ function PreviewToast({
   return (
     <motion.div
       animate={controls}
-      className={entry.subcategory === "error" ? "demo-toast error" : "demo-toast"}
+      className={
+        entry.subcategory === "error" ? "demo-toast error" : "demo-toast"
+      }
     >
       <strong>{formatLabel(entry.subcategory)}</strong>
       <span>{entry.dimension}</span>
+    </motion.div>
+  );
+}
+
+function PreviewToggle({
+  controls,
+  entry,
+}: {
+  controls: ReturnType<typeof useAnimationControls>;
+  entry: MappingEntry;
+}) {
+  return (
+    <div className="demo-toggle">
+      <motion.div animate={controls} className="toggle-thumb" />
+      <span>{formatLabel(entry.subcategory)}</span>
+    </div>
+  );
+}
+
+function PreviewInput({
+  controls,
+  entry,
+  replayKey,
+}: {
+  controls: ReturnType<typeof useAnimationControls>;
+  entry: MappingEntry;
+  replayKey: number;
+}) {
+  const choreography = getPreviewChoreography(entry);
+  const style: PreviewInputStyle | undefined =
+    choreography.holdInitialMs > 0
+      ? {
+          "--preview-hold-ms": `${choreography.holdInitialMs}ms`,
+        }
+      : undefined;
+
+  return (
+    <motion.div
+      animate={controls}
+      className={`demo-input ${entry.subcategory}`}
+      key={`${entry.id}-${replayKey}`}
+      style={style}
+    >
+      <label htmlFor="preview-input">{formatLabel(entry.subcategory)}</label>
+      <input
+        id="preview-input"
+        readOnly
+        value={
+          entry.subcategory === "requiredField"
+            ? ""
+            : entry.subcategory === "error"
+              ? "ungueltige-eingabe"
+              : "semantic-motion"
+        }
+      />
+      {entry.subcategory === "warning" ? (
+        <span className="input-message">Eingabe prüfen</span>
+      ) : null}
+      {entry.subcategory === "requiredField" ? (
+        <span className="input-message">Pflichtfeld</span>
+      ) : null}
+    </motion.div>
+  );
+}
+
+function PreviewSkeleton({
+  entry,
+  replayKey,
+}: {
+  entry: MappingEntry;
+  replayKey: number;
+}) {
+  const isLoading = entry.subcategory === "loading";
+  const containerControls = useAnimationControls();
+  const shimmerControls = useAnimationControls();
+
+  useEffect(() => {
+    if (isLoading) {
+      void containerControls.set({ opacity: 1, x: 0, y: 0, scale: 1 });
+      void playMappingAnimation(entry, shimmerControls);
+      return;
+    }
+
+    void playMappingAnimation(entry, containerControls);
+  }, [containerControls, entry, isLoading, replayKey, shimmerControls]);
+
+  return (
+    <motion.div animate={containerControls} className="demo-skeleton">
+      <div className="skeleton-line skeleton-line-wide">
+        {isLoading ? (
+          <motion.span animate={shimmerControls} className="skeleton-shimmer" />
+        ) : null}
+      </div>
+      <div className="skeleton-line skeleton-line-mid">
+        {isLoading ? (
+          <motion.span animate={shimmerControls} className="skeleton-shimmer" />
+        ) : null}
+      </div>
+      <div className="skeleton-line skeleton-line-short">
+        {isLoading ? (
+          <motion.span animate={shimmerControls} className="skeleton-shimmer" />
+        ) : null}
+      </div>
     </motion.div>
   );
 }

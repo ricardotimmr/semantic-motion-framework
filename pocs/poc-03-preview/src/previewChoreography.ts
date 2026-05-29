@@ -10,9 +10,27 @@ const defaultChoreography: PreviewChoreography = {
 
 const choreographyByMappingId: Partial<Record<string, PreviewChoreography>> = {
   "modal-hierarchy-toForeground": {
-    holdInitialMs: 140,
+    holdInitialMs: 180,
   },
   "modal-hierarchy-toBackground": {
+    holdInitialMs: 260,
+  },
+  "modal-direction-enter": {
+    holdInitialMs: 140,
+  },
+  "modal-direction-backEnter": {
+    holdInitialMs: 140,
+  },
+  "modal-direction-exit": {
+    holdInitialMs: 180,
+  },
+  "modal-direction-backExit": {
+    holdInitialMs: 180,
+  },
+  "input-stateChange-blur": {
+    holdInitialMs: 220,
+  },
+  "skeleton-attention-resolved": {
     holdInitialMs: 260,
   },
 };
