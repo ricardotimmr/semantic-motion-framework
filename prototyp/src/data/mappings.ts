@@ -56,7 +56,7 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        "Die horizontale Schüttelbewegung greift auf die universelle " +
+        "Die horizontale Schüttelbewegung greift auf die vertraute " +
         "Ablehnungsgeste des Kopfschüttelns zurück und kommuniziert, " +
         "dass eine Eingabe nicht akzeptiert wurde.",
       source:
@@ -121,8 +121,10 @@ export const mappings: MappingDatabase = [
         "Aktion. Ease-In-Out: gleichmäßig, nicht dringend. Duration 1000ms: " +
         "langsam genug, um periphere Wahrnehmung zu aktivieren ohne " +
         "Hauptaufgabe zu stören (Bartram et al. 2003). Iterations Infinity: " +
-        "Persistenz als semantisches Ziel.",
-      references: ["Peirce1931", "BartramWareCalvert2003"],
+        "Persistenz als semantisches Ziel. Accessibility: endlose Bewegung " +
+        "muss im Editor über prefers-reduced-motion reduziert oder ersetzt " +
+        "werden können (WCAG 2.1 SC 2.3.3).",
+      references: ["Peirce1931", "BartramWareCalvert2003", "WCAG21"],
       signType: "index",
     },
   },
@@ -290,8 +292,8 @@ export const mappings: MappingDatabase = [
         "emotionale Valenz. Duration 420ms + delay 80ms: langsamer als " +
         "success (300ms) und error (320ms). Der anschließende y-Nudge " +
         "setzt ein moderates Warnsignal ohne Fehler-Shake oder positiven Spring " +
-        "(Head 2016).",
-      references: ["Peirce1931", "Head2016"],
+        "(Head 2016; Bartram et al. 2003).",
+      references: ["Peirce1931", "Head2016", "BartramWareCalvert2003"],
       signType: "index",
     },
   },
@@ -325,8 +327,9 @@ export const mappings: MappingDatabase = [
         "ohne positive Energie. Duration 760ms: genug Zeit für Einfahrt und " +
         "zwei subtile Scale-Impulse, ohne Dringlichkeit zu erzeugen. " +
         "Der Scale-Pulse wirkt als Aufmerksamkeitssignal, ohne den warnenden " +
-        "y-Nudge oder den positiven Spring der Feedback-Mappings zu übernehmen " +
-        "(Bartram et al. 2003).",
+        "y-Nudge oder den positiven Spring der Feedback-Mappings zu übernehmen. " +
+        "Bartram et al. (2003) stützen die Annahme, dass einfache " +
+        "Bewegungsattribute periphere Aufmerksamkeit lenken können.",
       references: ["Peirce1931", "BartramWareCalvert2003"],
       signType: "index",
     },
@@ -453,7 +456,7 @@ export const mappings: MappingDatabase = [
         "Ease-In: Verlassen als Aufbaukurve (Zacks & Tversky 2001). " +
         "Duration 280ms: kürzer als Enter – das Verlassende ist nicht " +
         "mehr der Fokus (Head 2016).",
-      references: ["Peirce1931", "ZacksTversky2001", "Head2016"],
+      references: ["Peirce1931", "ZacksTversky2001", "Head2016", "AppleHIG", "MaterialDesign3"],
       signType: "index",
     },
   },
@@ -507,8 +510,10 @@ export const mappings: MappingDatabase = [
         "Das Modal fährt nach rechts aus. Die horizontale Bewegung kommuniziert, " +
         "dass die aktuelle Ebene im Rahmen einer Rückwärtsnavigation verlassen wird.",
       source:
-        "Index (Peirce): Direction Bias - Bewegung nach rechts kodiert " +
-        "Rückwärtsbewegung (komplementär zu backEnter von links). " +
+        "Index (Peirce): Die Bewegung nach rechts ist nicht isoliert als " +
+        "allgemeines Rückwärtszeichen zu verstehen, sondern als komplementäre " +
+        "Ausfahrt zu backEnter von links innerhalb einer horizontalen " +
+        "Rückwärtsnavigation. " +
         "Anders als modal-direction-exit beschreibt dieses Mapping keine " +
         "vertikale Sheet-Schließung, sondern eine horizontale Navigationsrichtung. " +
         "Ware (2012). Ease-In: Verlassen als Aufbaukurve " +
@@ -624,12 +629,14 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        "Die schnelle, abklingende Transition des Fokusrahmens kommuniziert " +
-        "sofortige Bereitschaft. Der Nutzer sieht, dass das Feld aktiv ist, " +
+        "Die schnelle, abklingende Transition von Fokusrahmen, Feldzustand " +
+        "und Label kommuniziert sofortige Bereitschaft. Der Nutzer sieht, " +
+        "dass das Feld aktiv ist, " +
         "ohne auf eine Reaktion warten zu müssen.",
       source:
-        "Ikon (Peirce): Expansion des Fokusindikators ähnelt physikalischem " +
-        "Herantreten. Ease-Out: Ankommen (Zacks & Tversky 2001). " +
+        "Ikon (Peirce): Die komponentenspezifische Expansion des Fokusindikators " +
+        "und die Änderung von Border/Label ähnelt einem Herantreten des aktiven " +
+        "Elements. Ease-Out: Ankommen (Zacks & Tversky 2001). " +
         "Duration 175ms: Nutzer möchte sofort tippen (Head 2016). " +
         "Accessibility: Fokuszustand muss auch ohne Animation erkennbar " +
         "sein (WCAG 2.1, 2.4.7).",
@@ -652,13 +659,14 @@ export const mappings: MappingDatabase = [
     rationale: {
       short:
         "Das Feld kehrt ruhig in seinen Ausgangszustand zurück. " +
-        "Die kürzere Duration gegenüber Focus signalisiert, dass " +
-        "Blur ein passiver Vorgang ist.",
+        "Die leicht verlängerte Rücktransition macht sichtbar, dass " +
+        "der Fokus passiv aus dem Feld zurücktritt.",
       source:
         "Ikon (Peirce): Rücktransition des Fokusindikators. Ease-In: " +
         "Zurücktreten als Aufbaukurve (Zacks & Tversky 2001). " +
         "Duration 210ms: langsam genug, damit die Rückbewegung in der Preview " +
-        "als Zustandswechsel lesbar bleibt, aber weiterhin passiver als Focus. " +
+        "als Zustandswechsel lesbar bleibt. Trotz längerer Dauer wirkt Blur " +
+        "durch Ease-In und Rücknahme von Ring/Label passiver als Focus. " +
         "Bewusste Asymmetrie zu input-stateChange-focus (Ease-Out): " +
         "Focus ist aktives Ankommen, Blur ist passives Zurücktreten – " +
         "keine gleichwertigen Zustände (Norman 2013).",
@@ -690,11 +698,15 @@ export const mappings: MappingDatabase = [
         "die Aufmerksamkeit auf das Feld, ohne eine Fehlermeldung zu überlagern.",
       source:
         "Index (Peirce): horizontaler Shake als Ablehnungsindex (Ware 2012). " +
+        "Attention statt allgemeines Feedback: Nach einer fehlgeschlagenen " +
+        "Formularabgabe fordert nicht die gesamte Aktion Bewertung ein, sondern " +
+        "ein konkretes Feld Aufmerksamkeit und Korrektur. " +
         "translatePx ±6px: etwas mehr als input-feedback-error (±5px), " +
         "weil dieser Shake von einer Submit-Aktion ausgelöst wird. " +
         "Duration 325ms: zwischen input-feedback-error (275ms) und " +
-        "button-feedback-error (350ms).",
-      references: ["Peirce1931", "Ware2012"],
+        "button-feedback-error (350ms), damit das Feld auffällt, ohne den " +
+        "Formularfluss übermäßig zu blockieren (Head 2016).",
+      references: ["Peirce1931", "Ware2012", "Head2016"],
       signType: "index",
     },
   },
@@ -729,8 +741,10 @@ export const mappings: MappingDatabase = [
         "Lineares Easing: konstante Geschwindigkeit repräsentiert einen " +
         "kontinuierlichen Prozess ohne identifizierbare Phasenstruktur " +
         "(Zacks & Tversky 2001). Linear ist der einzige semantisch " +
-        "begründete Einsatz dieses Presets im Framework.",
-      references: ["Peirce1931", "Chandler2007", "ZacksTversky2001"],
+        "begründete Einsatz dieses Presets im Framework. Accessibility: " +
+        "Der endlose Shimmer muss bei prefers-reduced-motion reduzierbar oder " +
+        "durch einen statischen Ladezustand ersetzbar sein (WCAG 2.1 SC 2.3.3).",
+      references: ["Peirce1931", "Chandler2007", "ZacksTversky2001", "WCAG21"],
       signType: "symbol",
     },
   },

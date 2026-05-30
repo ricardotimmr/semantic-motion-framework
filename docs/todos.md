@@ -6,12 +6,10 @@ Diese Datei sammelt die noch relevanten technischen Punkte für POC 03, Export u
 
 1. Spring-Handling in den Hauptprototyp übernehmen.
 2. Mehrphasige Toast-Error-Animation in den Hauptprototyp übernehmen.
-3. POC 03 als vollständiges Mapping-Review-Werkzeug nutzen.
-4. Systematischen Mapping-Review durchführen.
-5. Parameter-Tuning und Begründungen synchronisieren.
-6. Export nachziehen, wenn POC 03 neue Sonderfälle oder Interpretationen braucht.
-7. Generisches Phasenmodell vor dem Hauptprototyp prüfen.
-8. Input-Focus/Blur später vollständig über Framer-Motion-Controls steuern.
+3. Parameter-Tuning und Begründungen synchronisieren.
+4. Export nachziehen, wenn POC 03 neue Sonderfälle oder Interpretationen braucht.
+5. Generisches Phasenmodell vor dem Hauptprototyp prüfen.
+6. Input-Focus/Blur später vollständig über Framer-Motion-Controls steuern.
 
 ## 1. Spring-Easing gesondert behandeln
 
@@ -58,9 +56,9 @@ TODO für den Hauptprototyp:
 - Kein `stages`-Modell vor dem Hauptprototyp einführen.
 - `stages` oder ein allgemeines Phasenmodell erst prüfen, wenn mehrere mehrphasige Mappings entstehen.
 
-## 3. POC 03 als vollständiges Mapping-Review-Werkzeug nutzen
+<!-- ## 3. POC 03 als vollständiges Mapping-Review-Werkzeug nutzen
 
-Status: In Arbeit.
+Status: Erledigt.
 
 POC 03 soll alle vorhandenen Mapping-Einträge darstellen, damit die Preview nicht nur mit einzelnen Testfällen arbeitet, sondern das vollständige Mapping abbildet.
 
@@ -85,11 +83,11 @@ Akzeptanzkriterien:
 - Alle 24 Mapping-Einträge sind in POC 03 integriert.
 - Jede Animation kann einzeln getestet werden.
 - Unklare oder schwache Animationen können dokumentiert werden.
-- POC 03 eignet sich danach als Review-Werkzeug für das gesamte semantische Mapping.
+- POC 03 eignet sich danach als Review-Werkzeug für das gesamte semantische Mapping. -->
 
-## 4. Systematischen Mapping-Review durchführen
+<!-- ## 4. Systematischen Mapping-Review durchführen
 
-Status: Offen.
+Status: Erledigt.
 
 Alle Mapping-Einträge sollen einzeln geprüft werden:
 
@@ -110,7 +108,7 @@ Prüffragen:
 Dokumentation:
 
 - Auffälligkeiten in der lokalen Review-Datei festhalten.
-- Änderungen entweder direkt im Mapping umsetzen oder als Folge-TODO dokumentieren.
+- Änderungen entweder direkt im Mapping umsetzen oder als Folge-TODO dokumentieren. -->
 
 ## 5. Parameter-Tuning und Begründungen synchronisieren
 
@@ -183,11 +181,53 @@ TODO:
 - Preview-Replay, Code-Export und tatsächliche Editor-Preview dadurch konsistenter machen.
 - Prüfen, ob dafür ein kleines komponentenspezifisches Renderer-Modell reicht oder ob ein allgemeineres Target-Modell nötig wird.
 
-## Optionale Erweiterungen
+## Kleine Spätere Themen
+
+Diese Punkte sind nicht kritisch für die aktuelle POC-Phase, sollten aber beim Hauptprototyp oder beim finalen Mapping-Review noch einmal geprüft werden.
+
+### K1. Accessibility für wiederholte und endlose Animationen
+
+Status: Offen.
+
+Besonders relevant für:
+
+- `button-attention-persistent`
+- `skeleton-attention-loading`
+- weitere Mappings mit `iterations > 1` oder `iterations: Infinity`
+
+TODO:
+
+- `prefers-reduced-motion` im Hauptprototyp berücksichtigen.
+- Für endlose Animationen eine reduzierte oder statische Alternative definieren.
+- Im Editor kenntlich machen, wenn ein Mapping besondere Reduced-Motion-Behandlung braucht.
+
+### K2. `input-attention-requiredField` stärker von Feedback abgrenzen
+
+Status: Optional.
+
+Das Mapping nutzt einen Shake und wird durch eine fehlgeschlagene Formularabgabe ausgelöst. Streng betrachtet könnte es auch als Feedback gelesen werden. Die aktuelle Einordnung als Attention ist aber plausibel, weil nicht die gesamte Aktion bewertet wird, sondern ein bestimmtes Feld Aufmerksamkeit einfordert.
+
+TODO:
+
+- Rationale bei Bedarf schärfen.
+- Klarer formulieren: RequiredField ist feldbezogener Aufmerksamkeitsmarker nach Submit, nicht allgemeines Error-Feedback.
+
+### K3. `input-feedback-success` visuell prüfen
+
+Status: Optional.
+
+Das Mapping ist bewusst subtil, könnte in der Preview aber sehr schwach wirken.
+
+TODO:
+
+- Beim finalen Mapping-Review prüfen, ob `scaleFactor: 0.02` sichtbar genug ist.
+- Falls zu schwach, eher kleinen Success-Indikator oder Border-Feedback ergänzen statt das gesamte Input-Feld stärker zu skalieren.
+
+## Optionale Größere Erweiterungen
 
 Diese Punkte sind nicht notwendig für den aktuellen POC-Scope, wären aber sinnvolle Erweiterungen für ein größeres Framework oder einen produktiveren Editor.
 
-### Sichtbar zurückgestuftes Layer-Mapping
+### O1. Sichtbar zurückgestuftes Layer-Mapping
 
 Status: Optional.
 
@@ -217,7 +257,7 @@ Offene Entscheidung:
   - `card-hierarchy-toBackground`
   - oder entsprechendes `panel-*`-Mapping.
 
-### Explizites Scale-Modell prüfen
+### O2. Explizites Scale-Modell prüfen
 
 Status: Optional.
 
@@ -251,3 +291,5 @@ Prüfen, wenn:
 - Preview-Replay-Hold für Modal-Enter/-Exit, Hierarchie, Skeleton-Resolved und Input-Blur vereinheitlicht.
 - Opacity als ergänzenden Sichtbarkeitsparameter theoretisch legitimiert.
 - Kontextabhängige `scaleFactor`-Interpretation dokumentiert.
+- POC 03 als vollständiges Mapping-Review-Werkzeug genutzt.
+- Systematischen Mapping-Review der priorisierten Schwächen durchgeführt.
