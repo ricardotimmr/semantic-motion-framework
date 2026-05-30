@@ -323,46 +323,12 @@ h1 {
   font: inherit;
 }
 
-.demo-input.focus {
-  animation: input-focus-ring 175ms ease-out var(--preview-hold-ms, 0ms) both;
-}
-
-.demo-input.blur {
-  animation: input-blur-ring 210ms ease-in var(--preview-hold-ms, 0ms) both;
-}
-
-.demo-input.focus label {
-  animation: input-focus-label 175ms ease-out var(--preview-hold-ms, 0ms) both;
-}
-
-.demo-input.blur label {
-  animation: input-blur-label 210ms ease-in var(--preview-hold-ms, 0ms) both;
-}
-
-.demo-input.focus input {
-  animation: input-focus-field 175ms ease-out var(--preview-hold-ms, 0ms) both;
-}
-
-.demo-input.blur input {
-  animation: input-blur-field 210ms ease-in var(--preview-hold-ms, 0ms) both;
-}
-
-.demo-input.error input,
-.demo-input.requiredField input {
-  border-color: rgba(139, 46, 46, 0.62);
-}
-
-.demo-input.warning input {
-  border-color: rgba(152, 104, 18, 0.62);
-}
-
 .input-message {
   color: var(--red);
   font-size: 0.75rem;
 }
 
 .demo-input.warning .input-message {
-  animation: input-warning-message 300ms ease-in-out both;
   color: rgba(128, 82, 0, 0.86);
 }
 
@@ -406,86 +372,6 @@ h1 {
     rgba(247, 241, 227, 0.78),
     transparent
   );
-}
-
-@keyframes input-focus-ring {
-  0% {
-    filter: drop-shadow(0 0 0 rgba(47, 84, 70, 0));
-    transform: scale(1);
-  }
-
-  100% {
-    filter: drop-shadow(0 0 0.75rem rgba(47, 84, 70, 0.26));
-    transform: scale(1.01);
-  }
-}
-
-@keyframes input-blur-ring {
-  0% {
-    filter: drop-shadow(0 0 0.75rem rgba(47, 84, 70, 0.26));
-    transform: scale(1.01);
-  }
-
-  100% {
-    filter: drop-shadow(0 0 0 rgba(47, 84, 70, 0));
-    transform: scale(1);
-  }
-}
-
-@keyframes input-focus-field {
-  0% {
-    border-color: var(--line);
-    background: rgba(247, 241, 227, 0.6);
-  }
-
-  100% {
-    border-color: rgba(47, 84, 70, 0.76);
-    background: rgba(247, 241, 227, 0.84);
-  }
-}
-
-@keyframes input-blur-field {
-  0% {
-    border-color: rgba(47, 84, 70, 0.76);
-    background: rgba(247, 241, 227, 0.84);
-  }
-
-  100% {
-    border-color: var(--line);
-    background: rgba(247, 241, 227, 0.6);
-  }
-}
-
-@keyframes input-focus-label {
-  0% {
-    color: var(--muted);
-  }
-
-  100% {
-    color: rgba(47, 84, 70, 0.95);
-  }
-}
-
-@keyframes input-blur-label {
-  0% {
-    color: rgba(47, 84, 70, 0.95);
-  }
-
-  100% {
-    color: var(--muted);
-  }
-}
-
-@keyframes input-warning-message {
-  0% {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .info-panel {

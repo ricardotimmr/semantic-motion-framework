@@ -6,10 +6,7 @@ Diese Datei sammelt die noch relevanten technischen Punkte für POC 03, Export u
 
 1. Spring-Handling in den Hauptprototyp übernehmen.
 2. Mehrphasige Toast-Error-Animation in den Hauptprototyp übernehmen.
-3. Parameter-Tuning und Begründungen synchronisieren.
-4. Export nachziehen, wenn POC 03 neue Sonderfälle oder Interpretationen braucht.
-5. Generisches Phasenmodell vor dem Hauptprototyp prüfen.
-6. Input-Focus/Blur später vollständig über Framer-Motion-Controls steuern.
+3. Generisches Phasenmodell vor dem Hauptprototyp prüfen.
 
 ## 1. Spring-Easing gesondert behandeln
 
@@ -110,9 +107,9 @@ Dokumentation:
 - Auffälligkeiten in der lokalen Review-Datei festhalten.
 - Änderungen entweder direkt im Mapping umsetzen oder als Folge-TODO dokumentieren. -->
 
-## 5. Parameter-Tuning und Begründungen synchronisieren
+<!-- ## 5. Parameter-Tuning und Begründungen synchronisieren
 
-Status: Offen.
+Status: Erledigt.
 
 Wenn Mapping-Parameter geändert werden, müssen die Begründungstexte mitgezogen werden.
 
@@ -124,11 +121,11 @@ TODO:
 - Opacity-only-Mappings besonders prüfen:
   - Trägt Sichtbarkeit wirklich die Bedeutung?
   - Oder fehlt eigentlich ein räumlicher Bewegungsanteil?
-  - Wenn Opacity alleine bleibt, muss die Begründung Erscheinen, Verschwinden, Abschluss, Fokusverlust oder Verfügbarkeit explizit benennen.
+  - Wenn Opacity alleine bleibt, muss die Begründung Erscheinen, Verschwinden, Abschluss, Fokusverlust oder Verfügbarkeit explizit benennen. -->
 
-## 6. Export nachziehen
+<!-- ## 6. Export nachziehen
 
-Status: Offen, abhängig vom Mapping-Review.
+Status: Erledigt.
 
 Wenn POC 03 neue Sonderfälle oder Interpretationsregeln braucht, müssen POC 04 und POC 05 entsprechend nachgezogen werden.
 
@@ -139,7 +136,13 @@ TODO:
 - Tests für neue Sonderfälle ergänzen.
 - POC 05 prüfen, damit Integration, Preview und Export konsistent bleiben.
 
-## 7. Generisches Phasenmodell vor dem Hauptprototyp prüfen
+Ergebnis:
+
+- POC 04 Export-Tests erfolgreich ausgeführt.
+- POC 05 Build erfolgreich ausgeführt.
+- Keine zusätzliche Export-Logik nötig, weil die Rationale-Änderungen direkt aus `mappings.ts` übernommen werden. -->
+
+## 3. Generisches Phasenmodell vor dem Hauptprototyp prüfen
 
 Status: Offen, vor dem Hauptprototyp entscheiden.
 
@@ -168,9 +171,9 @@ Entscheidung:
 - Vor dem Hauptprototyp aktiv entscheiden, ob `motionPhases` oder `secondaryMotion` eingeführt wird.
 - Falls weitere mehrphasige Mappings entstehen, sollte ein generisches Modell bevorzugt werden.
 
-## 8. Input-Focus/Blur auf Framer-Motion-Controls umstellen
+<!-- ## 4. Input-Focus/Blur auf Framer-Motion-Controls umstellen
 
-Status: Offen.
+Status: Erledigt.
 
 Aktuell werden `input-stateChange-focus` und `input-stateChange-blur` in POC 03 über CSS-Keyframes auf der Preview-Komponente visualisiert. Das ist für den POC ausreichend, aber für den späteren Editor nicht ideal, weil das Framework insgesamt mit Framer Motion arbeitet.
 
@@ -180,6 +183,13 @@ TODO:
 - Container, Input-Feld, Label und optional Helper-Text als getrennte Animationsziele modellieren.
 - Preview-Replay, Code-Export und tatsächliche Editor-Preview dadurch konsistenter machen.
 - Prüfen, ob dafür ein kleines komponentenspezifisches Renderer-Modell reicht oder ob ein allgemeineres Target-Modell nötig wird.
+
+Ergebnis:
+
+- POC 03 nutzt für Input-Preview jetzt komponentenspezifische Framer-Motion-Controls.
+- Container, Feld, Label und Message werden getrennt animiert.
+- Focus, Blur, Warning, Success, Error und RequiredField laufen über denselben Input-Preview-Renderer.
+- Kein allgemeines Target-Modell eingeführt; für den aktuellen Scope reicht ein kleiner Input-Sonderrenderer. -->
 
 ## Kleine Spätere Themen
 
@@ -293,3 +303,5 @@ Prüfen, wenn:
 - Kontextabhängige `scaleFactor`-Interpretation dokumentiert.
 - POC 03 als vollständiges Mapping-Review-Werkzeug genutzt.
 - Systematischen Mapping-Review der priorisierten Schwächen durchgeführt.
+- Export nach Mapping-Review geprüft: POC 04 Tests und POC 05 Build erfolgreich.
+- Input-Focus/Blur in POC 03 auf Framer-Motion-Controls umgestellt.

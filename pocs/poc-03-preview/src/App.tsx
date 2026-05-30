@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { mappings } from "../../../prototyp/src/data/mappings";
 import type {
@@ -15,15 +15,11 @@ import {
   getSubcategoriesForDimension,
 } from "../../../prototyp/src/framework/classifier";
 import { playMappingAnimation } from "./motionAdapter";
-import { getPreviewChoreography } from "./previewChoreography";
+import { playInputPreviewAnimation } from "./inputMotionAdapter";
 
 const previewComponents = Array.from(
   new Set(mappings.map((entry) => entry.component)),
 ) as ComponentId[];
-
-type PreviewInputStyle = CSSProperties & {
-  "--preview-hold-ms"?: string;
-};
 
 function getFirstMapping(component: ComponentId) {
   return getMappingsForComponent(component)[0];
@@ -226,6 +222,10 @@ function PreviewPanel({
   const controls = useAnimationControls();
 
   useEffect(() => {
+    if (entry.component === "input") {
+      return;
+    }
+
     void playMappingAnimation(entry, controls);
   }, [controls, entry, replayKey]);
 
@@ -251,11 +251,7 @@ function PreviewPanel({
           <PreviewToggle controls={controls} entry={entry} />
         ) : null}
         {entry.component === "input" ? (
-          <PreviewInput
-            controls={controls}
-            entry={entry}
-            replayKey={replayKey}
-          />
+          <PreviewInput entry={entry} replayKey={replayKey} />
         ) : null}
         {entry.component === "skeleton" ? (
           <PreviewSkeleton entry={entry} replayKey={replayKey} />
@@ -338,31 +334,43 @@ function PreviewToggle({
 }
 
 function PreviewInput({
-  controls,
   entry,
   replayKey,
 }: {
-  controls: ReturnType<typeof useAnimationControls>;
   entry: MappingEntry;
   replayKey: number;
 }) {
-  const choreography = getPreviewChoreography(entry);
-  const style: PreviewInputStyle | undefined =
-    choreography.holdInitialMs > 0
-      ? {
-          "--preview-hold-ms": `${choreography.holdInitialMs}ms`,
-        }
-      : undefined;
+  const containerControls = useAnimationControls();
+  const fieldControls = useAnimationControls();
+  const labelControls = useAnimationControls();
+  const messageControls = useAnimationControls();
+
+  useEffect(() => {
+    void playInputPreviewAnimation(entry, {
+      container: containerControls,
+      field: fieldControls,
+      label: labelControls,
+      message: messageControls,
+    });
+  }, [
+    containerControls,
+    entry,
+    fieldControls,
+    labelControls,
+    messageControls,
+    replayKey,
+  ]);
 
   return (
     <motion.div
-      animate={controls}
+      animate={containerControls}
       className={`demo-input ${entry.subcategory}`}
-      key={`${entry.id}-${replayKey}`}
-      style={style}
     >
-      <label htmlFor="preview-input">{formatLabel(entry.subcategory)}</label>
-      <input
+      <motion.label animate={labelControls} htmlFor="preview-input">
+        {formatLabel(entry.subcategory)}
+      </motion.label>
+      <motion.input
+        animate={fieldControls}
         id="preview-input"
         readOnly
         value={
@@ -374,10 +382,14 @@ function PreviewInput({
         }
       />
       {entry.subcategory === "warning" ? (
-        <span className="input-message">Eingabe prüfen</span>
+        <motion.span animate={messageControls} className="input-message">
+          Eingabe prüfen
+        </motion.span>
       ) : null}
       {entry.subcategory === "requiredField" ? (
-        <span className="input-message">Pflichtfeld</span>
+        <motion.span animate={messageControls} className="input-message">
+          Pflichtfeld
+        </motion.span>
       ) : null}
     </motion.div>
   );
