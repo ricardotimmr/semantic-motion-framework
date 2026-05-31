@@ -2,6 +2,7 @@ import {
   EASING_CURVES,
   type EasingValue,
   type MappingEntry,
+  type MotionPhase,
   type TranslationEdge,
 } from "../../../prototyp/src/framework/types";
 
@@ -49,6 +50,14 @@ function formatMotionArray(values: readonly (number | string)[]) {
     .join(", ")}]`;
 }
 
+function formatMotionValue(value: number | string | readonly number[]) {
+  if (Array.isArray(value)) {
+    return formatArray(value);
+  }
+
+  return typeof value === "string" ? `"${value}"` : String(value);
+}
+
 function formatPercent(value: number) {
   return Number(value.toFixed(4));
 }
@@ -93,6 +102,39 @@ function edgeToPercent(edge: TranslationEdge) {
     case "bottom":
       return "100%";
   }
+}
+
+function phaseAxis(phase: MotionPhase): Axis {
+  return phase.direction ?? "y";
+}
+
+function phaseEasing(entry: MappingEntry, phase: MotionPhase) {
+  return phase.easing ?? entry.params.easing;
+}
+
+function phaseSpringConfig(entry: MappingEntry, phase: MotionPhase) {
+  return phase.springConfig ?? entry.params.springConfig;
+}
+
+function phaseTimes(phase: MotionPhase) {
+  return (
+    phase.keyframes?.times ??
+    phase.scaleKeyframes?.times ??
+    phase.opacityKeyframes?.times
+  );
+}
+
+function phaseAnimationDuration(entry: MappingEntry) {
+  const phases = entry.params.motionPhases;
+
+  if (phases === undefined) {
+    return entry.params.duration;
+  }
+
+  return phases.reduce(
+    (sum, phase) => sum + phase.duration + (phase.delay ?? 0),
+    0,
+  );
 }
 
 function transformString(parts: TransformParts) {
@@ -180,102 +222,148 @@ function framerTransition(entry: MappingEntry, indent = "    ") {
     .join("\n");
 }
 
-function generateToastErrorFramerCode(entry: MappingEntry) {
-  const name = toCamelCase(entry.id);
-  const keyframes = entry.params.keyframes;
+function phaseInitialValues(entry: MappingEntry) {
+  const firstPhase = entry.params.motionPhases?.[0];
+  const initial = new Map<string, number | string>();
 
-  return `${sourceComment(entry, "//")}
+  initial.set("x", 0);
+  initial.set("y", 0);
+  initial.set("scale", 1);
+  initial.set("opacity", 1);
 
-export async function ${name}(controls) {
-  await controls.set({
-    x: 0,
-    y: "100%", // Einfahrt von unten
-    opacity: ${entry.params.opacity?.[0] ?? 1},
-  });
+  if (firstPhase === undefined) {
+    return initial;
+  }
 
-  await controls.start({
-    y: 0,
-    opacity: ${entry.params.opacity?.[1] ?? 1},
-    transition: {
-      duration: ${entry.params.duration / 2000}, // erste Phase: y-Einfahrt
-      ease: ${formatFramerEase(entry.params.easing)},
-    },
-  });
+  const axis = phaseAxis(firstPhase);
 
-  await controls.start({
-    x: ${formatArray(keyframes?.values ?? [0])}, // zweite Phase: x-Shake nach Ankunft
-    transition: {
-      duration: ${entry.params.duration / 2000},
-      ease: ${formatFramerEase(entry.params.easing)},
-      times: ${formatArray(keyframes?.times ?? [0])},
-    },
-  });
-}`;
+  if (firstPhase.opacity !== undefined) {
+    initial.set("opacity", firstPhase.opacity[0]);
+  }
+
+  if (firstPhase.opacityKeyframes !== undefined) {
+    initial.set("opacity", firstPhase.opacityKeyframes.values[0]);
+  }
+
+  if (firstPhase.scaleKeyframes !== undefined) {
+    initial.set("scale", firstPhase.scaleKeyframes.values[0]);
+  }
+
+  if (firstPhase.translateFrom !== undefined) {
+    initial.set(axis, edgeToPercent(firstPhase.translateFrom));
+  }
+
+  if (firstPhase.translateTo !== undefined) {
+    initial.set(axis, 0);
+  }
+
+  if (firstPhase.keyframes !== undefined) {
+    initial.set(axis, firstPhase.keyframes.values[0]);
+  }
+
+  return initial;
 }
 
-function generateToastWarningFramerCode(entry: MappingEntry) {
-  const name = toCamelCase(entry.id);
+function phaseAnimateValues(phase: MotionPhase) {
+  const animate = new Map<string, number | string | readonly number[]>();
+  const axis = phaseAxis(phase);
 
-  return `${sourceComment(entry, "//")}
+  if (phase.opacity !== undefined) {
+    animate.set("opacity", phase.opacity[1]);
+  }
 
-export async function ${name}(controls) {
-  await controls.set({
-    x: 0,
-    y: "100%", // Einfahrt von unten
-    opacity: ${entry.params.opacity?.[0] ?? 1},
-  });
+  if (phase.opacityKeyframes !== undefined) {
+    animate.set("opacity", phase.opacityKeyframes.values);
+  }
 
-  await controls.start({
-    y: 0,
-    opacity: ${entry.params.opacity?.[1] ?? 1},
-    transition: {
-      duration: ${(entry.params.duration * 0.62) / 1000}, // erste Phase: ruhige y-Einfahrt
-      delay: ${(entry.params.delay ?? 0) / 1000},
-      ease: ${formatFramerEase(entry.params.easing)},
-    },
-  });
+  if (phase.scaleKeyframes !== undefined) {
+    animate.set("scale", phase.scaleKeyframes.values);
+  }
 
-  await controls.start({
-    y: [0, -5, 0], // zweite Phase: moderater y-Nudge
-    transition: {
-      duration: ${(entry.params.duration * 0.38) / 1000},
-      ease: ${formatFramerEase(entry.params.easing)},
-      times: [0, 0.5, 1],
-    },
-  });
-}`;
+  if (phase.translateFrom !== undefined) {
+    animate.set(axis, 0);
+  }
+
+  if (phase.translateTo !== undefined) {
+    animate.set(axis, edgeToPercent(phase.translateTo));
+  }
+
+  if (phase.keyframes !== undefined) {
+    animate.set(axis, phase.keyframes.values);
+  }
+
+  if (phase.translatePx !== undefined) {
+    animate.set(axis, [0, phase.translatePx, 0]);
+  }
+
+  return animate;
 }
 
-function generateToastOneShotFramerCode(entry: MappingEntry) {
+function formatObjectLines(
+  values: Map<string, number | string | readonly number[]>,
+  indent = "    ",
+) {
+  return Array.from(values.entries())
+    .map(([key, value]) => `${indent}${key}: ${formatMotionValue(value)},`)
+    .join("\n");
+}
+
+function formatPhaseTransition(entry: MappingEntry, phase: MotionPhase) {
+  const easing = phaseEasing(entry, phase);
+  const times = phaseTimes(phase);
+
+  if ("preset" in easing && easing.preset === "spring") {
+    const springConfig = phaseSpringConfig(entry, phase);
+
+    return [
+      "      transition: {",
+      "        type: \"spring\",",
+      `        stiffness: ${springConfig?.stiffness ?? 100},`,
+      `        damping: ${springConfig?.damping ?? 10},`,
+      `        mass: ${springConfig?.mass ?? 1},`,
+      phase.delay !== undefined ? `        delay: ${phase.delay / 1000},` : null,
+      "      },",
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }
+
+  return [
+    "      transition: {",
+    `        duration: ${phase.duration / 1000},`,
+    phase.delay !== undefined ? `        delay: ${phase.delay / 1000},` : null,
+    `        ease: ${formatFramerEase(easing)},`,
+    times !== undefined ? `        times: ${formatArray(times)},` : null,
+    "      },",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function generatePhasedFramerCode(entry: MappingEntry) {
   const name = toCamelCase(entry.id);
+  const phases = entry.params.motionPhases ?? [];
+  const initial = phaseInitialValues(entry);
+  const phaseBlocks = phases
+    .map((phase) => {
+      const animate = phaseAnimateValues(phase);
+
+      return `  // Phase: ${phase.id}
+  await controls.start({
+${formatObjectLines(animate, "    ")}
+${formatPhaseTransition(entry, phase)}
+  });`;
+    })
+    .join("\n\n");
 
   return `${sourceComment(entry, "//")}
 
 export async function ${name}(controls) {
   await controls.set({
-    x: 0,
-    y: "100%", // Einfahrt von unten
-    scale: 1,
-    opacity: ${entry.params.opacity?.[0] ?? 1},
+${formatObjectLines(initial)}
   });
 
-  await controls.start({
-    y: 0,
-    opacity: ${entry.params.opacity?.[1] ?? 1},
-    transition: {
-      duration: ${(entry.params.duration * 0.42) / 1000}, // erste Phase: ruhige y-Einfahrt
-      ease: ${formatFramerEase(entry.params.easing)},
-    },
-  });
-
-  await controls.start({
-    scale: [1, 1.025, 1, 1.025, 1], // zweite Phase: zwei subtile Scale-Impulse
-    transition: {
-      duration: ${(entry.params.duration * 0.58) / 1000},
-      ease: ${formatFramerEase(entry.params.easing)},
-      times: [0, 0.25, 0.5, 0.75, 1],
-    },
-  });
+${phaseBlocks}
 }`;
 }
 
@@ -393,16 +481,8 @@ export const ${name} = {
 }
 
 export function generateFramerMotionCode(entry: MappingEntry): string {
-  if (entry.id === "toast-feedback-error") {
-    return generateToastErrorFramerCode(entry);
-  }
-
-  if (entry.id === "toast-feedback-warning") {
-    return generateToastWarningFramerCode(entry);
-  }
-
-  if (entry.id === "toast-attention-oneShot") {
-    return generateToastOneShotFramerCode(entry);
+  if (entry.params.motionPhases !== undefined) {
+    return generatePhasedFramerCode(entry);
   }
 
   if (entry.id === "input-feedback-warning") {
@@ -518,44 +598,157 @@ ${framerTransition(entry, "  ")}
 };`;
 }
 
+type CssPhaseState = {
+  x: string;
+  y: string;
+  scale: string;
+  opacity: number;
+};
+
+type CssFrame = {
+  time: number;
+  state: CssPhaseState;
+};
+
+function cloneCssState(state: CssPhaseState): CssPhaseState {
+  return { ...state };
+}
+
+function cssTransformFromState(state: CssPhaseState) {
+  return transformString({
+    x: state.x,
+    y: state.y,
+    scale: state.scale,
+  });
+}
+
+function cssFrameLine(frame: CssFrame, totalDuration: number) {
+  const percent = totalDuration === 0 ? 100 : formatPercent((frame.time / totalDuration) * 100);
+
+  return `  ${percent}% { opacity: ${frame.state.opacity}; transform: ${cssTransformFromState(frame.state)}; }`;
+}
+
+function getInitialCssPhaseState(entry: MappingEntry): CssPhaseState {
+  const state: CssPhaseState = {
+    x: "0",
+    y: "0",
+    scale: "1",
+    opacity: 1,
+  };
+  const firstPhase = entry.params.motionPhases?.[0];
+
+  if (firstPhase === undefined) {
+    return state;
+  }
+
+  const axis = phaseAxis(firstPhase);
+
+  if (firstPhase.opacity !== undefined) {
+    state.opacity = firstPhase.opacity[0];
+  }
+
+  if (firstPhase.opacityKeyframes !== undefined) {
+    state.opacity = firstPhase.opacityKeyframes.values[0];
+  }
+
+  if (firstPhase.scaleKeyframes !== undefined) {
+    state.scale = String(firstPhase.scaleKeyframes.values[0]);
+  }
+
+  if (firstPhase.translateFrom !== undefined) {
+    state[axis] = edgeToPercent(firstPhase.translateFrom);
+  }
+
+  if (firstPhase.translateTo !== undefined) {
+    state[axis] = "0";
+  }
+
+  if (firstPhase.keyframes !== undefined) {
+    state[axis] = `${firstPhase.keyframes.values[0]}px`;
+  }
+
+  return state;
+}
+
+function generatePhasedCssKeyframes(entry: MappingEntry) {
+  const phases = entry.params.motionPhases ?? [];
+  const keyframesName = `smf-${entry.id}`;
+  const totalDuration = phaseAnimationDuration(entry);
+  const frames: CssFrame[] = [];
+  const state = getInitialCssPhaseState(entry);
+  let currentTime = 0;
+
+  frames.push({ time: currentTime, state: cloneCssState(state) });
+
+  for (const phase of phases) {
+    const axis = phaseAxis(phase);
+
+    if (phase.delay !== undefined && phase.delay > 0) {
+      currentTime += phase.delay;
+      frames.push({ time: currentTime, state: cloneCssState(state) });
+    }
+
+    if (phase.opacity !== undefined) {
+      state.opacity = phase.opacity[1];
+    }
+
+    if (phase.translateFrom !== undefined) {
+      state[axis] = "0";
+    }
+
+    if (phase.translateTo !== undefined) {
+      state[axis] = edgeToPercent(phase.translateTo);
+    }
+
+    if (
+      phase.keyframes === undefined &&
+      phase.scaleKeyframes === undefined &&
+      phase.opacityKeyframes === undefined
+    ) {
+      frames.push({
+        time: currentTime + phase.duration,
+        state: cloneCssState(state),
+      });
+      currentTime += phase.duration;
+      continue;
+    }
+
+    const times = phaseTimes(phase) ?? [0, 1];
+
+    for (const [index, time] of times.entries()) {
+      if (phase.keyframes !== undefined) {
+        state[axis] = `${phase.keyframes.values[index]}px`;
+      }
+
+      if (phase.scaleKeyframes !== undefined) {
+        state.scale = String(phase.scaleKeyframes.values[index]);
+      }
+
+      if (phase.opacityKeyframes !== undefined) {
+        state.opacity = phase.opacityKeyframes.values[index];
+      }
+
+      frames.push({
+        time: currentTime + time * phase.duration,
+        state: cloneCssState(state),
+      });
+    }
+
+    currentTime += phase.duration;
+  }
+
+  return `@keyframes ${keyframesName} {
+${frames.map((frame) => cssFrameLine(frame, totalDuration)).join("\n")}
+}`;
+}
+
 function cssKeyframes(entry: MappingEntry) {
   const { params } = entry;
   const axis = getAxis(entry);
   const keyframesName = `smf-${entry.id}`;
 
-  if (entry.id === "toast-feedback-error" && params.keyframes !== undefined) {
-    const shakeFrames = params.keyframes.values
-      .map((value, index) => {
-        const percent = formatPercent(50 + params.keyframes!.times[index] * 50);
-        return `  ${percent}% { opacity: 1; transform: translateY(0) translateX(${value}px); }`;
-      })
-      .join("\n");
-
-    return `@keyframes ${keyframesName} {
-  0% { opacity: ${params.opacity?.[0] ?? 1}; transform: translateY(100%) translateX(0); }
-  50% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0) translateX(0); }
-${shakeFrames}
-}`;
-  }
-
-  if (entry.id === "toast-feedback-warning") {
-    return `@keyframes ${keyframesName} {
-  0% { opacity: ${params.opacity?.[0] ?? 1}; transform: translateY(100%); }
-  62% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0); }
-  81% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(-5px); }
-  100% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0); }
-}`;
-  }
-
-  if (entry.id === "toast-attention-oneShot") {
-    return `@keyframes ${keyframesName} {
-  0% { opacity: ${params.opacity?.[0] ?? 1}; transform: translateY(100%) scale(1); }
-  42% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0) scale(1); }
-  56.5% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0) scale(1.025); }
-  71% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0) scale(1); }
-  85.5% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0) scale(1.025); }
-  100% { opacity: ${params.opacity?.[1] ?? 1}; transform: translateY(0) scale(1); }
-}`;
+  if (params.motionPhases !== undefined) {
+    return generatePhasedCssKeyframes(entry);
   }
 
   if (params.opacityKeyframes !== undefined) {
@@ -740,7 +933,7 @@ ${warning}
 ${cssKeyframes(entry)}
 
 .${className} {
-  animation: smf-${entry.id} ${entry.params.duration}ms ${formatCssEase(entry.params.easing)} both;
+  animation: smf-${entry.id} ${phaseAnimationDuration(entry)}ms ${formatCssEase(entry.params.easing)} both;
 }`;
 }
 

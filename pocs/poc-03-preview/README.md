@@ -8,7 +8,7 @@ Dieses Verzeichnis validiert eine Preview-Komponente, die Mapping-Einträge als 
 
 ## Scope
 
-Aktueller Stand: implementierter Preview-POC mit Button-, Modal- und Toast-Preview.
+Aktueller Stand: implementierter Preview-POC für alle sechs Framework-Komponenten.
 
 Enthalten:
 
@@ -17,7 +17,7 @@ Enthalten:
 - Wiederholungslogik
 - direkte Anbindung an die aktuelle Mapping-Datenbank aus `prototyp/src/data/mappings.ts`
 - Motion-Adapter zur Übersetzung von `AnimationParams` in Framer-Motion-Controls
-- Sonderbehandlung für die zweiphasige `toast-feedback-error` Animation
+- generische Verarbeitung von `motionPhases` für mehrphasige Animationen
 
 Bewusst nicht enthalten:
 
@@ -40,7 +40,7 @@ Validieren, dass die Mapping-Datenbank aus POC 2 direkt als Animationsquelle fü
 
 ### Aufgaben
 
-- Preview-Komponenten für Button, Modal und Toast bauen
+- Preview-Komponenten für alle Framework-Komponenten bauen
 - Jede Komponente nimmt einen `MappingEntry` als Prop entgegen und spielt die dort definierten `AnimationParams` ab
 - Auswahl-UI bauen: Dropdown oder Button-Gruppe für Komponente und Bedeutungsdimension, direkt aus der Mapping-Datenbank generiert (keine hardcodierten Labels)
 - Animation wird bei jeder Änderung der Auswahl automatisch neu ausgelöst
@@ -56,7 +56,7 @@ Validieren, dass die Mapping-Datenbank aus POC 2 direkt als Animationsquelle fü
 
 - Auswahl einer neuen Kombination löst die Animation sofort aus
 - Wiederholungs-Button funktioniert zuverlässig
-- Alle drei Komponenten (Button, Modal, Toast) spielen ihre Animation korrekt ab
+- Alle sechs Framework-Komponenten spielen ihre Animation korrekt ab
 - Die Animationsparameter kommen ausschließlich aus der Mapping-Datenbank, keine hardcodierten Werte in den Preview-Komponenten
 
 ### Abgrenzung
@@ -66,9 +66,9 @@ Kein Code-Export, kein vollständiges Editor-UI, keine Begründungstexte im UI (
 ### Ergebnis
 
 - Auswahloptionen werden aus der Mapping-Datenbank generiert.
-- Button, Modal und Toast erhalten jeweils einen `MappingEntry` als Animationsquelle.
+- Button, Toggle, Toast, Modal, Input und Skeleton erhalten jeweils einen `MappingEntry` als Animationsquelle.
 - Bei jeder Auswahländerung wird die laufende Animation gestoppt, zurückgesetzt und neu abgespielt.
 - Der Replay-Button spielt dieselbe Mapping-Animation erneut ab, ohne Seitenreload.
 - Die Preview nutzt imperative Framer-Motion-Controls statt React-Remount per `key`.
 - Spring-Easing wird über `springConfig` behandelt.
-- `toast-feedback-error` wird als zweiphasige Sequenz gerendert: y-Einfahrt, danach x-Shake.
+- Mehrphasige Toast-Mappings werden über `motionPhases` generisch gerendert.

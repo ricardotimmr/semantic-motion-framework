@@ -3,6 +3,7 @@ import {
   EASING_CURVES,
   type ComponentId,
   type MappingEntry,
+  type MotionPhase,
   type TranslationEdge,
 } from "../../../prototyp/src/framework/types";
 import { getPreviewChoreography } from "./previewChoreography";
@@ -149,6 +150,38 @@ function getTransition(entry: MappingEntry): Transition {
   };
 }
 
+function getPhaseAxis(phase: MotionPhase): Axis {
+  return phase.direction ?? "y";
+}
+
+function getPhaseTransition(
+  entry: MappingEntry,
+  phase: MotionPhase,
+): Transition {
+  const easing = phase.easing ?? entry.params.easing;
+  const delay = phase.delay !== undefined ? phase.delay / 1000 : undefined;
+
+  if ("preset" in easing && easing.preset === "spring") {
+    const springConfig = phase.springConfig ?? entry.params.springConfig;
+
+    return {
+      delay,
+      type: "spring",
+      stiffness: springConfig?.stiffness,
+      damping: springConfig?.damping,
+      mass: springConfig?.mass,
+    };
+  }
+
+  const ease = "preset" in easing ? EASING_CURVES[easing.preset] : easing.cubicBezier;
+
+  return {
+    delay,
+    duration: phase.duration / 1000,
+    ease,
+  };
+}
+
 function getBaseTarget(entry: MappingEntry): TargetAndTransition {
   const target: TargetAndTransition = {
     x: 0,
@@ -191,6 +224,121 @@ function getInitialTarget(entry: MappingEntry): TargetAndTransition {
   }
 
   return target;
+}
+
+function getPhasedInitialTarget(entry: MappingEntry): TargetAndTransition {
+  const target: TargetAndTransition = {
+    x: 0,
+    y: 0,
+    scale: 1,
+    opacity: 1,
+  };
+  const firstPhase = entry.params.motionPhases?.[0];
+
+  if (firstPhase === undefined) {
+    return getInitialTarget(entry);
+  }
+
+  const axis = getPhaseAxis(firstPhase);
+  const size = getPreviewSize(entry.component);
+
+  if (firstPhase.opacity !== undefined) {
+    target.opacity = firstPhase.opacity[0];
+  }
+
+  if (firstPhase.opacityKeyframes !== undefined) {
+    target.opacity = firstPhase.opacityKeyframes.values[0];
+  }
+
+  if (firstPhase.scaleKeyframes !== undefined) {
+    target.scale = firstPhase.scaleKeyframes.values[0];
+  }
+
+  if (firstPhase.translateFrom !== undefined) {
+    target[axis] = edgeToValue(firstPhase.translateFrom, size);
+  }
+
+  if (firstPhase.translateTo !== undefined) {
+    target[axis] = 0;
+  }
+
+  if (firstPhase.keyframes !== undefined) {
+    target[axis] = firstPhase.keyframes.values[0];
+  }
+
+  return target;
+}
+
+function getPhaseAnimation(
+  entry: MappingEntry,
+  phase: MotionPhase,
+): TargetAndTransition {
+  const axis = getPhaseAxis(phase);
+  const size = getPreviewSize(entry.component);
+  const target: TargetAndTransition = {
+    transition: getPhaseTransition(entry, phase),
+  };
+  const times =
+    phase.keyframes?.times ??
+    phase.scaleKeyframes?.times ??
+    phase.opacityKeyframes?.times;
+
+  if (times !== undefined) {
+    target.transition = {
+      ...target.transition,
+      times,
+    };
+  }
+
+  if (phase.opacity !== undefined) {
+    target.opacity = phase.opacity[1];
+  }
+
+  if (phase.opacityKeyframes !== undefined) {
+    target.opacity = phase.opacityKeyframes.values;
+  }
+
+  if (phase.scaleKeyframes !== undefined) {
+    target.scale = phase.scaleKeyframes.values;
+  }
+
+  if (phase.translateFrom !== undefined) {
+    target[axis] = 0;
+  }
+
+  if (phase.translateTo !== undefined) {
+    target[axis] = edgeToValue(phase.translateTo, size);
+  }
+
+  if (phase.keyframes !== undefined) {
+    target[axis] = phase.keyframes.values;
+  }
+
+  if (phase.translatePx !== undefined) {
+    target[axis] = [0, phase.translatePx, 0];
+  }
+
+  return target;
+}
+
+async function playPhasedAnimation(
+  entry: MappingEntry,
+  controls: PlaybackControls,
+) {
+  const phases = entry.params.motionPhases;
+
+  if (phases === undefined || phases.length === 0) {
+    return;
+  }
+
+  await controls.stop();
+  await controls.set(getPhasedInitialTarget(entry));
+  await waitForNextFrame();
+  await wait(getPreviewChoreography(entry).holdInitialMs);
+
+  for (const phase of phases) {
+    await controls.start(getPhaseAnimation(entry, phase));
+  }
 }
 
 function getSingleStageAnimation(entry: MappingEntry): TargetAndTransition {
@@ -265,118 +413,6 @@ function getSingleStageAnimation(entry: MappingEntry): TargetAndTransition {
   return target;
 }
 
-async function playToastError(entry: MappingEntry, controls: PlaybackControls) {
-  const size = getPreviewSize(entry.component);
-  const transition = getTransition(entry);
-  const halfDuration = entry.params.duration / 2000;
-
-  await controls.stop();
-  await controls.set({
-    x: 0,
-    y: edgeToValue("bottom", size),
-    scale: 1,
-    opacity: entry.params.opacity?.[0] ?? 1,
-  });
-  await waitForNextFrame();
-
-  await controls.start({
-    y: 0,
-    opacity: entry.params.opacity?.[1] ?? 1,
-    transition: {
-      ...transition,
-      duration: halfDuration,
-    },
-  });
-
-  if (entry.params.keyframes !== undefined) {
-    await controls.start({
-      x: entry.params.keyframes.values,
-      transition: {
-        ...transition,
-        duration: halfDuration,
-        times: entry.params.keyframes.times,
-      },
-    });
-  }
-}
-
-async function playToastWarning(
-  entry: MappingEntry,
-  controls: PlaybackControls,
-) {
-  const size = getPreviewSize(entry.component);
-  const transition = getTransition(entry);
-  const enterDuration = (entry.params.duration * 0.62) / 1000;
-  const nudgeDuration = (entry.params.duration * 0.38) / 1000;
-
-  await controls.stop();
-  await controls.set({
-    x: 0,
-    y: edgeToValue("bottom", size),
-    scale: 1,
-    opacity: entry.params.opacity?.[0] ?? 1,
-  });
-  await waitForNextFrame();
-  await wait(entry.params.delay ?? 0);
-
-  await controls.start({
-    y: 0,
-    opacity: entry.params.opacity?.[1] ?? 1,
-    transition: {
-      ...transition,
-      delay: undefined,
-      duration: enterDuration,
-    },
-  });
-
-  await controls.start({
-    y: [0, -5, 0],
-    transition: {
-      ...transition,
-      delay: undefined,
-      duration: nudgeDuration,
-      times: [0, 0.5, 1],
-    },
-  });
-}
-
-async function playToastOneShot(
-  entry: MappingEntry,
-  controls: PlaybackControls,
-) {
-  const size = getPreviewSize(entry.component);
-  const transition = getTransition(entry);
-  const enterDuration = (entry.params.duration * 0.42) / 1000;
-  const pulseDuration = (entry.params.duration * 0.58) / 1000;
-
-  await controls.stop();
-  await controls.set({
-    x: 0,
-    y: edgeToValue("bottom", size),
-    scale: 1,
-    opacity: entry.params.opacity?.[0] ?? 1,
-  });
-  await waitForNextFrame();
-
-  await controls.start({
-    y: 0,
-    opacity: entry.params.opacity?.[1] ?? 1,
-    transition: {
-      ...transition,
-      duration: enterDuration,
-    },
-  });
-
-  await controls.start({
-    scale: [1, 1.025, 1, 1.025, 1],
-    transition: {
-      ...transition,
-      duration: pulseDuration,
-      times: [0, 0.25, 0.5, 0.75, 1],
-    },
-  });
-}
-
 async function playInputWarning(
   entry: MappingEntry,
   controls: PlaybackControls,
@@ -396,18 +432,8 @@ export async function playMappingAnimation(
   entry: MappingEntry,
   controls: PlaybackControls,
 ) {
-  if (entry.id === "toast-feedback-error") {
-    await playToastError(entry, controls);
-    return;
-  }
-
-  if (entry.id === "toast-feedback-warning") {
-    await playToastWarning(entry, controls);
-    return;
-  }
-
-  if (entry.id === "toast-attention-oneShot") {
-    await playToastOneShot(entry, controls);
+  if (entry.params.motionPhases !== undefined) {
+    await playPhasedAnimation(entry, controls);
     return;
   }
 

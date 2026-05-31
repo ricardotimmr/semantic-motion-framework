@@ -57,10 +57,10 @@ describe("POC 04 export generators", () => {
     const cssCode = generateCSSCode(entry!);
 
     expect(framerCode).toContain("async function toastFeedbackError");
-    expect(framerCode).toContain("erste Phase: y-Einfahrt");
-    expect(framerCode).toContain("zweite Phase: x-Shake");
+    expect(framerCode).toContain("Phase: enter");
+    expect(framerCode).toContain("Phase: shake");
     expect(cssCode).toContain("translateY(100%)");
-    expect(cssCode).toContain("translateY(0) translateX(-6px)");
+    expect(cssCode).toContain("translateX(-6px)");
   });
 
   it("exports toast warning as enter plus y nudge", () => {
@@ -72,10 +72,11 @@ describe("POC 04 export generators", () => {
     const cssCode = generateCSSCode(entry!);
 
     expect(framerCode).toContain("async function toastFeedbackWarning");
-    expect(framerCode).toContain("zweite Phase: moderater y-Nudge");
+    expect(framerCode).toContain("Phase: enter");
+    expect(framerCode).toContain("Phase: nudge");
     expect(framerCode).toContain("y: [0, -5, 0]");
     expect(cssCode).toContain(
-      "81% { opacity: 1; transform: translateY(-5px); }",
+      "84% { opacity: 1; transform: translateX(0) translateY(-5px) scale(1); }",
     );
   });
 
@@ -88,13 +89,14 @@ describe("POC 04 export generators", () => {
     const cssCode = generateCSSCode(entry!);
 
     expect(framerCode).toContain("async function toastAttentionOneShot");
+    expect(framerCode).toContain("Phase: enter");
+    expect(framerCode).toContain("Phase: pulse");
     expect(framerCode).toContain("scale: [1, 1.025, 1, 1.025, 1]");
-    expect(framerCode).toContain("zweite Phase: zwei subtile Scale-Impulse");
     expect(cssCode).toContain(
-      "56.5% { opacity: 1; transform: translateY(0) scale(1.025); }",
+      "56.5789% { opacity: 1; transform: translateX(0) translateY(0) scale(1.025); }",
     );
     expect(cssCode).toContain(
-      "85.5% { opacity: 1; transform: translateY(0) scale(1.025); }",
+      "85.5263% { opacity: 1; transform: translateX(0) translateY(0) scale(1.025); }",
     );
   });
 
