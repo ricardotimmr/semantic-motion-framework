@@ -22,7 +22,7 @@ Enthalten:
 - semantische Kommentare mit Bedeutung, Zeichentyp und Quelle
 - Sonderbehandlung für Spring-Easing im Framer-Motion-Export
 - CSS-Hinweis bei Spring-Mappings, weil CSS keine native Spring-Physik unterstützt
-- zweiphasiger Export für `toast-feedback-error`
+- generischer Export von `motionPhases` für mehrphasige Animationen
 
 Bewusst nicht enthalten:
 
@@ -117,5 +117,5 @@ Kein vollständiges Editor-UI. Der Export wird als isolierte Funktion validiert,
 - `generateExportBundle(entry)` gibt beide Exportvarianten gemeinsam zurück.
 - Framer Motion nutzt bei Spring-Mappings `transition.type = "spring"` und `springConfig`.
 - CSS nutzt bei Spring-Mappings eine kommentierte Approximation.
-- `toast-feedback-error` wird nicht als flacher `direction`/`keyframes`-Fall exportiert, sondern als zweiphasige Sequenz.
-- Tests validieren generellen Export, Button-Error-Keyframes, Spring-Export und Toast-Error-Sequenz.
+- Mehrphasige Mappings werden nicht als flache `direction`/`keyframes`-Fälle exportiert, sondern über `motionPhases`.
+- Tests validieren generellen Export, Button-Error-Keyframes, Spring-Export und mehrphasige Toast-Sequenzen.

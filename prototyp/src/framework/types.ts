@@ -201,6 +201,63 @@ export interface KeyframeSequence {
 }
 
 /**
+ * Eine explizite Phase innerhalb einer mehrphasigen Animation.
+ * Jede Phase beschreibt genau einen sequenziellen Bewegungsschritt
+ * auf demselben animierten Hauptelement, z. B. erst Einfahrt, danach Shake.
+ *
+ * Phasen verwenden standardmäßig easing aus AnimationParams. Ein eigenes
+ * easing kann gesetzt werden, wenn eine Phase bewusst eine andere Kurve braucht.
+ * duration ist phasenspezifisch und wird in Millisekunden angegeben.
+ */
+export interface MotionPhase {
+  /** Maschinenlesbarer Phasenname, z. B. "enter", "shake", "nudge" */
+  id: string;
+
+  /** Dauer dieser Phase in Millisekunden */
+  duration: number;
+
+  /** Optionale Verzögerung vor dieser Phase in Millisekunden */
+  delay?: number;
+
+  /** Optionale eigene Beschleunigungskurve; sonst gilt AnimationParams.easing */
+  easing?: EasingValue;
+
+  /**
+   * Semantisch relevante Achse der translatorischen Bewegung dieser Phase.
+   * Erforderlich wenn translatePx, translateDistance, translateFrom,
+   * translateTo oder keyframes gesetzt ist.
+   */
+  direction?: "x" | "y";
+
+  /** Pixel-Versatz für translatorische Phasen */
+  translatePx?: number;
+
+  /** Größenabhängige Translationsdistanz dieser Phase */
+  translateDistance?: TranslationDistance;
+
+  /** Startkante einer größenabhängigen Enter-Phase */
+  translateFrom?: TranslationEdge;
+
+  /** Zielkante einer größenabhängigen Exit-Phase */
+  translateTo?: TranslationEdge;
+
+  /** Explizite translatorische Keyframes dieser Phase */
+  keyframes?: KeyframeSequence;
+
+  /** Explizite Scale-Keyframes dieser Phase */
+  scaleKeyframes?: KeyframeSequence;
+
+  /** Deckkraft-Bereich [von, bis] dieser Phase */
+  opacity?: [number, number];
+
+  /** Explizite Deckkraft-Keyframes dieser Phase */
+  opacityKeyframes?: KeyframeSequence;
+
+  /** Federmechanik-Konfiguration, falls diese Phase spring verwendet */
+  springConfig?: SpringConfig;
+}
+
+/**
  * Kante, von der eine größenabhängige Translation startet oder zu der sie führt.
  * Wird nur für Enter-/Exit-Bewegungen verwendet, bei denen der konkrete Pixelwert
  * erst im Komponenten-Rendering bekannt ist.
@@ -248,6 +305,11 @@ export type TranslationDistance = "self";
  * sondern ein ergänzender Sichtbarkeitsparameter. Sie darf ergänzend oder alleine
  * verwendet werden, muss dann aber semantisch als Erscheinen, Verschwinden,
  * Abschluss, Fokusverlust oder Verfügbarkeit begründet sein.
+ *
+ * Mehrphasige Animationen werden über motionPhases modelliert. In diesem Fall
+ * bleiben die flachen Bewegungsfelder auf AnimationParams frei; die konkrete
+ * Bewegung liegt in den einzelnen Phasen. easing und duration bleiben auf
+ * oberster Ebene als Default-Kurve und Gesamtdauer lesbar.
  */
 export interface AnimationParams {
   /** Beschleunigungskurve – der semantisch bedeutsamste Parameter */
@@ -357,6 +419,16 @@ export interface AnimationParams {
    * Wenn vorhanden, präzisiert dieses Feld den einfachen opacity-Bereich.
    */
   opacityKeyframes?: KeyframeSequence;
+
+  /**
+   * Sequenz expliziter Bewegungsphasen für mehrphasige Animationen.
+   * Wird verwendet, wenn eine einzelne flache Parametergruppe die semantische
+   * Bewegung nicht sauber abbilden kann, z. B. Toast-Einfahrt plus Shake.
+   *
+   * Wenn motionPhases vorhanden ist, behandeln Preview und Export diese Phasen
+   * als primäre Bewegungsbeschreibung.
+   */
+  motionPhases?: MotionPhase[];
 }
 
 // ---------------------------------------------------------------------------

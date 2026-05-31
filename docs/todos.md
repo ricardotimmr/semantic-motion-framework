@@ -5,8 +5,7 @@ Diese Datei sammelt die noch relevanten technischen Punkte für POC 03, Export u
 ## Offene Reihenfolge
 
 1. Spring-Handling in den Hauptprototyp übernehmen.
-2. Mehrphasige Toast-Error-Animation in den Hauptprototyp übernehmen.
-3. Generisches Phasenmodell vor dem Hauptprototyp prüfen.
+2. Mehrphasige Toast-Animationen über `motionPhases` in den Hauptprototyp übernehmen.
 
 ## 1. Spring-Easing gesondert behandeln
 
@@ -30,28 +29,27 @@ TODO für den Hauptprototyp:
 - CSS-Export bei Spring mit Hinweis versehen und bewusst approximieren.
 - Kein neues Datenmodell nötig.
 
-## 2. Mehrphasige Toast-Error-Animation behandeln
+## 2. Mehrphasige Toast-Animationen über `motionPhases` behandeln
 
-Status: In POC 03 und POC 04 prototypisch als Sonderfall gelöst, später in den Hauptprototyp übernehmen.
+Status: In POC 03 und POC 04 über `motionPhases` gelöst, später in den Hauptprototyp übernehmen.
 
 Ursprünglicher Zustand:
 
-- `toast-feedback-error` ist zweiphasig:
-  - y-Einfahrt von unten
-  - x-Shake nach Ankunft
-- Ein naiver `direction`/`keyframes`-Renderer reicht dafür nicht aus, weil `direction: "y"` die Einfahrt beschreibt, die Keyframes aber den anschließenden x-Shake.
+- Mehrphasige Toast-Mappings wurden zunächst als Renderer-Sonderfälle behandelt.
+- Ein naiver `direction`/`keyframes`-Renderer reicht dafür nicht aus, weil mehrere Bewegungsphasen unterschiedliche Eigenschaften oder Achsen verwenden.
 
 Umsetzung in den POCs:
 
-- POC 03 rendert `toast-feedback-error` als zweiphasige Preview-Sequenz.
-- POC 04 exportiert `toast-feedback-error` als zweiphasige Framer-Motion-Sequenz.
-- POC 04 erzeugt für CSS kombinierte Keyframes mit y-Einfahrt und anschließendem x-Shake.
+- `types.ts` enthält `motionPhases` als generisches Phasenmodell.
+- `toast-feedback-error`, `toast-feedback-warning` und `toast-attention-oneShot` nutzen `motionPhases`.
+- POC 03 rendert `motionPhases` generisch in der Preview.
+- POC 04 exportiert `motionPhases` generisch für Framer Motion und CSS.
 
 TODO für den Hauptprototyp:
 
-- Für die erste Editor-Implementierung reicht ein gezielter Sonderfall im Toast-Renderer und Export.
-- Kein `stages`-Modell vor dem Hauptprototyp einführen.
-- `stages` oder ein allgemeines Phasenmodell erst prüfen, wenn mehrere mehrphasige Mappings entstehen.
+- `motionPhases` in den Hauptprototyp übernehmen.
+- Keine neuen Toast-ID-Sonderfälle mehr einführen.
+- Preview und Export direkt auf dem generischen Phasenmodell aufbauen.
 
 <!-- ## 3. POC 03 als vollständiges Mapping-Review-Werkzeug nutzen
 
@@ -142,9 +140,9 @@ Ergebnis:
 - POC 05 Build erfolgreich ausgeführt.
 - Keine zusätzliche Export-Logik nötig, weil die Rationale-Änderungen direkt aus `mappings.ts` übernommen werden. -->
 
-## 3. Generisches Phasenmodell vor dem Hauptprototyp prüfen
+<!-- ## 3. Generisches Phasenmodell vor dem Hauptprototyp prüfen
 
-Status: Offen, vor dem Hauptprototyp entscheiden.
+Status: Erledigt.
 
 Aktuell werden bereits mehrere Toast-Mappings als gezielte Renderer-Sonderfälle behandelt:
 
@@ -167,9 +165,9 @@ Mögliche Modellrichtungen:
 
 Entscheidung:
 
-- Für den aktuellen POC bleiben gezielte Sonderfälle zulässig.
-- Vor dem Hauptprototyp aktiv entscheiden, ob `motionPhases` oder `secondaryMotion` eingeführt wird.
-- Falls weitere mehrphasige Mappings entstehen, sollte ein generisches Modell bevorzugt werden.
+- `motionPhases` wurde eingeführt.
+- POC 03 und POC 04 verwenden keine Toast-ID-Sonderfälle mehr für die mehrphasigen Toast-Mappings.
+- Die Architekturentscheidung ist in `docs/architekturentscheidungen.md` als ADR-10 dokumentiert. -->
 
 <!-- ## 4. Input-Focus/Blur auf Framer-Motion-Controls umstellen
 
@@ -305,3 +303,4 @@ Prüfen, wenn:
 - Systematischen Mapping-Review der priorisierten Schwächen durchgeführt.
 - Export nach Mapping-Review geprüft: POC 04 Tests und POC 05 Build erfolgreich.
 - Input-Focus/Blur in POC 03 auf Framer-Motion-Controls umgestellt.
+- Generisches Phasenmodell `motionPhases` eingeführt und in POC 03/04 umgesetzt.

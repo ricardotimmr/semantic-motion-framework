@@ -233,19 +233,26 @@ export const mappings: MappingDatabase = [
     params: {
       easing: { preset: "sharp" },
       duration: 320,
-      direction: "y",
-      translateDistance: "self",
-      translateFrom: "bottom",
       iterations: 1,
-      opacity: [0, 1],
-      keyframes: {
-        // Shake auf der x-Achse nach Einfahrt auf der y-Achse;
-        // zweiphasige Animation: Phase 1 = y-Einfahrt, Phase 2 = x-Shake
-        // Aktuell als gezielter Renderer-Sonderfall umgesetzt;
-        // späterer Kandidat für ein generisches motionPhases-Modell.
-        values: [0, -6, 6, -6, 6, 0],
-        times:  [0, 0.2, 0.4, 0.6, 0.8, 1.0],
-      },
+      motionPhases: [
+        {
+          id: "enter",
+          duration: 160,
+          direction: "y",
+          translateDistance: "self",
+          translateFrom: "bottom",
+          opacity: [0, 1],
+        },
+        {
+          id: "shake",
+          duration: 160,
+          direction: "x",
+          keyframes: {
+            values: [0, -6, 6, -6, 6, 0],
+            times:  [0, 0.2, 0.4, 0.6, 0.8, 1.0],
+          },
+        },
+      ],
     },
     rationale: {
       short:
@@ -271,15 +278,27 @@ export const mappings: MappingDatabase = [
     params: {
       easing: { preset: "easeInOut" },
       duration: 420,
-      delay: 80,
-      direction: "y",
-      translateDistance: "self",
-      translateFrom: "bottom",
       iterations: 1,
-      opacity: [0, 1],
-      // Mehrphasige Animation: y-Einfahrt plus sekundärer y-Nudge.
-      // Aktuell als gezielter Renderer-Sonderfall umgesetzt;
-      // späterer Kandidat für ein generisches motionPhases-Modell.
+      motionPhases: [
+        {
+          id: "enter",
+          delay: 80,
+          duration: 260,
+          direction: "y",
+          translateDistance: "self",
+          translateFrom: "bottom",
+          opacity: [0, 1],
+        },
+        {
+          id: "nudge",
+          duration: 160,
+          direction: "y",
+          keyframes: {
+            values: [0, -5, 0],
+            times: [0, 0.5, 1],
+          },
+        },
+      ],
     },
     rationale: {
       short:
@@ -306,14 +325,25 @@ export const mappings: MappingDatabase = [
     params: {
       easing: { preset: "easeOut" },
       duration: 760,
-      direction: "y",
-      translateDistance: "self",
-      translateFrom: "bottom",
       iterations: 1,
-      opacity: [0, 1],
-      // Mehrphasige Animation: y-Einfahrt plus sekundäre Scale-Impulse.
-      // Aktuell als gezielter Renderer-Sonderfall umgesetzt;
-      // späterer Kandidat für ein generisches motionPhases-Modell.
+      motionPhases: [
+        {
+          id: "enter",
+          duration: 320,
+          direction: "y",
+          translateDistance: "self",
+          translateFrom: "bottom",
+          opacity: [0, 1],
+        },
+        {
+          id: "pulse",
+          duration: 440,
+          scaleKeyframes: {
+            values: [1, 1.025, 1, 1.025, 1],
+            times: [0, 0.25, 0.5, 0.75, 1],
+          },
+        },
+      ],
     },
     rationale: {
       short:

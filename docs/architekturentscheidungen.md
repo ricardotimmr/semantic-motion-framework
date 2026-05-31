@@ -210,3 +210,40 @@ Diese Unterscheidung ist stabil genug, um sie als Renderer-Regel zu behandeln. S
 Diese Entscheidung bedeutet nicht, dass `scaleFactor` beliebig interpretiert werden darf. Die Kontextregel ist Teil des Framework-Verhaltens und muss in Preview und Export konsistent bleiben.
 
 Wenn später weitere Scale-Bedeutungen entstehen, etwa Squash, Pressed-State, Overshoot, gestaffelte Skalierung oder komponentenspezifische Scale-Keyframes, sollte ein explizites Feld wie `scaleMode` oder `scaleKeyframes` eingeführt werden.
+
+---
+
+## ADR-10: Mehrphasige Animationen über `motionPhases`
+
+### Entscheidung
+
+Mehrphasige Animationen werden im Framework über das optionale Feld `motionPhases` in `AnimationParams` modelliert. Eine Motion-Phase beschreibt einen sequenziellen Bewegungsschritt auf demselben animierten Hauptelement, zum Beispiel:
+
+- Einfahrt von unten
+- anschließender Shake
+- anschließender Nudge
+- anschließende Scale-Impulse
+
+Wenn `motionPhases` vorhanden ist, gilt diese Sequenz als primäre Bewegungsbeschreibung. Die flachen Bewegungsfelder wie `direction`, `translateFrom`, `keyframes`, `opacity` oder `scaleFactor` werden dann nicht zusätzlich auf oberster Parameterebene verwendet.
+
+### Begründung
+
+Die Toast-Mappings haben gezeigt, dass einige semantische Bewegungen nicht sauber durch ein einzelnes flaches Parameterobjekt beschrieben werden können:
+
+- `toast-feedback-error`: y-Einfahrt plus x-Shake
+- `toast-feedback-warning`: y-Einfahrt plus y-Nudge
+- `toast-attention-oneShot`: y-Einfahrt plus Scale-Impulse
+
+Diese Fälle waren in den POCs zunächst als gezielte Renderer-Sonderfälle umgesetzt. Das war für die frühe Prüfung vertretbar, hätte aber vor dem Hauptprototyp zu inkonsistenter Logik geführt: Die Mapping-Datenbank hätte nur einen Teil der tatsächlichen Bewegung beschrieben, während Preview und Export die fehlende Sequenzlogik hart codiert hätten.
+
+`motionPhases` verschiebt diese Sequenz wieder in das Framework-Modell. Dadurch beschreiben Mapping-Daten, Preview und Export dieselbe Struktur. Der Renderer muss nicht mehr wissen, dass bestimmte Toast-IDs besondere Fälle sind, sondern verarbeitet eine generische Phasenliste.
+
+### Abgrenzung
+
+`motionPhases` ist bewusst kein allgemeines Szenen- oder Target-Modell. Eine Phase beschreibt nur die Bewegung desselben Hauptelements. Komponenten mit mehreren Teilzielen, etwa Input mit Container, Label und Helper-Text, bleiben weiterhin komponentenspezifische Renderer-Fälle.
+
+Ein allgemeines Target-Modell wäre erst sinnvoll, wenn mehrere Komponenten regelmäßig interne Teilziele wie Backdrop, Panel, Icon, Label oder Content unabhängig voneinander animieren müssen.
+
+### Konsequenz
+
+POC 03 rendert mehrphasige Mappings nun generisch über `motionPhases`. POC 04 exportiert dieselbe Phasenstruktur generisch für Framer Motion und CSS. Die Mapping-Validierung prüft zusätzlich die Struktur der Phasen, unter anderem Keyframe-Längen, Monotonie der Zeiten und die Trennung von flachen Bewegungsfeldern und Phasenmodell.
