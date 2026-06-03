@@ -14,7 +14,10 @@ import {
   getOutOfScopeCombinations,
   getSupportedComponents,
 } from "../../../prototyp/src/framework/classifier";
-import { validateMappingDatabase } from "../../../prototyp/src/framework/validation";
+import {
+  validateMappingDatabase,
+  validateMappingEntry,
+} from "../../../prototyp/src/framework/validation";
 
 describe("POC 02 mapping database validation", () => {
   it("validates the current mapping database without structural errors", () => {
@@ -80,5 +83,39 @@ describe("POC 02 mapping database validation", () => {
     ]);
     expect(getSupportedComponents()).toEqual([...COMPONENT_IDS]);
     expect(getOutOfScopeCombinations().length).toBeGreaterThan(0);
+  });
+
+  it("requires scaleMode when scaleFactor is used", () => {
+    const entry = getMappingById("button-feedback-success");
+
+    expect(entry).not.toBeNull();
+
+    const errors = validateMappingEntry({
+      ...entry!,
+      params: {
+        ...entry!.params,
+        scaleMode: undefined,
+      },
+    });
+
+    expect(errors).toContain("button-feedback-success: scaleFactor requires scaleMode");
+  });
+
+  it("rejects negative scaleFactor values", () => {
+    const entry = getMappingById("modal-hierarchy-toBackground");
+
+    expect(entry).not.toBeNull();
+
+    const errors = validateMappingEntry({
+      ...entry!,
+      params: {
+        ...entry!.params,
+        scaleFactor: -0.04,
+      },
+    });
+
+    expect(errors).toContain(
+      "modal-hierarchy-toBackground: scaleFactor must be greater than 0",
+    );
   });
 });

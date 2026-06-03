@@ -81,34 +81,35 @@ function edgeToValue(edge: TranslationEdge, size: PreviewSize) {
 }
 
 function getScaleAnimation(entry: MappingEntry): ScaleAnimation | null {
-  const { scaleFactor } = entry.params;
+  const { scaleFactor, scaleMode } = entry.params;
 
   if (scaleFactor === undefined) {
     return null;
   }
 
-  if (entry.dimension === "hierarchy" && scaleFactor > 0) {
-    return {
-      type: "scaleIn",
-      initial: 1 - scaleFactor,
-      animate: 1,
-    };
+  switch (scaleMode) {
+    case "scaleIn":
+      return {
+        type: "scaleIn",
+        initial: 1 - scaleFactor,
+        animate: 1,
+      };
+    case "scaleOut":
+      return {
+        type: "scaleOut",
+        initial: 1,
+        animate: 1 - scaleFactor,
+      };
+    case "pulse":
+      return {
+        type: "pulse",
+        initial: 1,
+        animate: [1, 1 + scaleFactor, 1],
+        times: [0, 0.45, 1],
+      };
+    default:
+      return null;
   }
-
-  if (entry.dimension === "hierarchy" && scaleFactor < 0) {
-    return {
-      type: "scaleOut",
-      initial: 1,
-      animate: 1 + scaleFactor,
-    };
-  }
-
-  return {
-    type: "pulse",
-    initial: 1,
-    animate: [1, 1 + scaleFactor, 1],
-    times: [0, 0.45, 1],
-  };
 }
 
 function getRepeat(entry: MappingEntry) {
@@ -216,7 +217,7 @@ function getReducedShortenAnimation(entry: MappingEntry): TargetAndTransition {
   const scaleFactor = entry.params.scaleFactor;
 
   if (scaleFactor !== undefined) {
-    const cappedFactor = Math.min(Math.abs(scaleFactor), 0.01);
+    const cappedFactor = Math.min(scaleFactor, 0.01);
 
     return {
       scale: [1, 1 + cappedFactor, 1],

@@ -155,7 +155,7 @@ describe("POC 04 export generators", () => {
     expect(blurCSS).toContain("transform: scale(1);");
   });
 
-  it("exports scaleFactor as pulse, scale-in, or scale-out by semantic context", () => {
+  it("exports scaleFactor as pulse, scale-in, or scale-out by scaleMode", () => {
     const buttonSuccess = getMappingById("button-feedback-success");
     const modalForeground = getMappingById("modal-hierarchy-toForeground");
     const modalBackground = getMappingById("modal-hierarchy-toBackground");

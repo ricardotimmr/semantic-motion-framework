@@ -63,7 +63,7 @@ function formatParams(entry: MappingEntry) {
   }
 
   if (params.scaleFactor !== undefined) {
-    parts.push(`scale ${params.scaleFactor}`);
+    parts.push(`scale ${params.scaleFactor} ${params.scaleMode}`);
   }
 
   if (params.translatePx !== undefined) {

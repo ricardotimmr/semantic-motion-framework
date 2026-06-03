@@ -275,6 +275,13 @@ export type TranslationEdge = "left" | "right" | "top" | "bottom";
  */
 export type TranslationDistance = "self";
 
+/**
+ * Explizite Interpretation von scaleFactor.
+ * scaleFactor bleibt dabei ein positives Intensitätsdelta; scaleMode legt fest,
+ * ob daraus ein Pulse, Scale-In oder Scale-Out entsteht.
+ */
+export type ScaleMode = "pulse" | "scaleIn" | "scaleOut";
+
 // ---------------------------------------------------------------------------
 // Animationsparameter
 // ---------------------------------------------------------------------------
@@ -295,8 +302,9 @@ export type TranslationDistance = "self";
  *                 "self" für volle Elementhöhe/-breite bei Enter-/Exit-Animationen.
  *                 Wird zusammen mit direction und optional translateFrom/translateTo verwendet.
  *
- *   scaleFactor   Bruchteilsdelta, das auf die Basisskala des Elements angewendet wird.
- *                 Beispiel: 0.05 bedeutet, das Element skaliert zwischen 0.95 und 1.05.
+ *   scaleFactor   Positives Bruchteilsdelta, das auf die Basisskala des Elements angewendet wird.
+ *                 Die semantische Interpretation wird durch scaleMode festgelegt.
+ *                 Beispiel: scaleFactor 0.05 + scaleMode "pulse" = 1.0 → 1.05 → 1.0.
  *                 Niemals zusammen mit direction verwenden.
  *
  *   trackFactor   Normalisierter Anteil einer komponenteneigenen Bewegungsstrecke.
@@ -368,20 +376,20 @@ export interface AnimationParams {
   translateTo?: TranslationEdge;
 
   /**
-   * Relatives Skalierungsdelta.
-   *
-   * Die konkrete Interpolation wird vom Renderer anhand des semantischen
-   * Kontexts entschieden:
-   * - hierarchy + positiver Wert: Scale-In, z. B. 0.05 = 0.95 → 1.0
-   * - hierarchy + negativer Wert: Scale-Out, z. B. -0.04 = 1.0 → 0.96
-   * - andere Dimensionen: Pulse, z. B. 0.05 = 1.0 → 1.05 → 1.0
-   *
-   * Wenn später weitere Scale-Bedeutungen entstehen, sollte ein explizites
-   * Feld wie scaleMode oder scaleKeyframes geprüft werden.
-   *
+   * Positives relatives Skalierungsdelta.
+   * Die konkrete Interpretation muss über scaleMode gesetzt werden:
+   * - pulse:    1.0 → 1.0 + scaleFactor → 1.0
+   * - scaleIn:  1.0 - scaleFactor → 1.0
+   * - scaleOut: 1.0 → 1.0 - scaleFactor
    * Schließt sich gegenseitig mit Translation-Feldern und trackFactor aus.
    */
   scaleFactor?: number;
+
+  /**
+   * Semantische Interpretation von scaleFactor.
+   * Erforderlich wenn scaleFactor gesetzt ist.
+   */
+  scaleMode?: ScaleMode;
 
   /**
    * Normalisierter Anteil einer komponenteneigenen Bewegungsstrecke [0..1].

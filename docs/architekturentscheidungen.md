@@ -182,34 +182,41 @@ Beispiele für legitime Opacity-only-Fälle sind das Ausblenden eines Skeleton L
 
 ---
 
-## ADR-09: Kontextabhängige Interpretation von `scaleFactor`
+## ADR-09: Explizite Interpretation von `scaleFactor` über `scaleMode`
 
 ### Entscheidung
 
-`scaleFactor` bleibt im aktuellen Datenmodell als relatives Skalierungsdelta erhalten. Es wird kein zusätzliches Feld wie `scaleMode` eingeführt.
+`scaleFactor` bleibt im Datenmodell als relatives Skalierungsdelta erhalten. Die semantische Interpretation wird aber nicht mehr aus Dimension und Vorzeichen abgeleitet, sondern explizit über `scaleMode` beschrieben.
 
-Die konkrete Interpretation erfolgt im Preview- und Export-Renderer anhand des semantischen Kontexts:
+Zulässige Werte:
 
-- Hierarchie mit positivem `scaleFactor`: Scale-In, zum Beispiel `0.05` als `0.95 -> 1.0`
-- Hierarchie mit negativem `scaleFactor`: Scale-Out, zum Beispiel `-0.04` als `1.0 -> 0.96`
-- Andere Dimensionen: Pulse, zum Beispiel `0.05` als `1.0 -> 1.05 -> 1.0`
+- `pulse`: `1.0 -> 1.0 + scaleFactor -> 1.0`
+- `scaleIn`: `1.0 - scaleFactor -> 1.0`
+- `scaleOut`: `1.0 -> 1.0 - scaleFactor`
+
+`scaleFactor` ist dadurch immer ein positiver Intensitätswert. Negative Werte werden nicht mehr verwendet, um Scale-Out zu kodieren.
 
 ### Begründung
 
-Ein explizites Feld wie `scaleMode: "pulse" | "fromBelow" | "toBelow"` wäre technisch eindeutiger. Für den aktuellen Scope wäre es aber zusätzlicher Modellierungsaufwand, weil Types, Mapping-Datenbank, Validierung, Preview, Export und Tests angepasst werden müssten.
+Die frühere Kontextregel war technisch funktionsfähig, aber semantisch zu implizit: Derselbe Wert `scaleFactor: 0.05` konnte je nach Dimension Pulse oder Scale-In bedeuten, während ein negativer Wert Scale-Out kodierte. Das war für Preview und Export umsetzbar, aber im Mapping selbst nicht eindeutig genug.
 
-Aktuell gibt es nur zwei semantische Scale-Verwendungen:
+Mit `scaleMode` steht die beabsichtigte Scale-Bewegung direkt im Mapping. Dadurch müssen Preview, Export und späterer Editor die Bedeutung nicht mehr aus Dimension und Vorzeichen rekonstruieren.
 
-- Pulse für Feedback und Aufmerksamkeit
-- Scale-In/Scale-Out für Hierarchie
+Diese Entscheidung stärkt die Nachvollziehbarkeit:
 
-Diese Unterscheidung ist stabil genug, um sie als Renderer-Regel zu behandeln. Sie ist in POC 03 und POC 04 explizit umgesetzt und getestet.
+- Pulse bleibt als Feedback- oder Aufmerksamkeitssignal lesbar.
+- Scale-In bleibt als Eintritt in den Vordergrund lesbar.
+- Scale-Out bleibt als Zurücktreten oder Fokusverlust lesbar.
 
 ### Abgrenzung
 
-Diese Entscheidung bedeutet nicht, dass `scaleFactor` beliebig interpretiert werden darf. Die Kontextregel ist Teil des Framework-Verhaltens und muss in Preview und Export konsistent bleiben.
+`scaleMode` ist kein allgemeines Keyframe-Modell. Es deckt nur einfache Scale-Fälle ab, die durch ein einzelnes Delta beschrieben werden können.
 
-Wenn später weitere Scale-Bedeutungen entstehen, etwa Squash, Pressed-State, Overshoot, gestaffelte Skalierung oder komponentenspezifische Scale-Keyframes, sollte ein explizites Feld wie `scaleMode` oder `scaleKeyframes` eingeführt werden.
+Komplexere Scale-Sequenzen, etwa mehrere Impulse, Overshoot oder gestaffelte Skalierung, werden weiterhin über `motionPhases` mit `scaleKeyframes` modelliert. Top-Level-`scaleKeyframes` werden im aktuellen Scope nicht eingeführt.
+
+### Konsequenz
+
+Die Mapping-Validierung verlangt, dass `scaleFactor` und `scaleMode` gemeinsam auftreten. `scaleFactor` muss positiv und endlich sein. POC 03 und POC 04 interpretieren Scale-Bewegungen nicht mehr über Dimension und Vorzeichen, sondern über `scaleMode`.
 
 ---
 
@@ -224,7 +231,7 @@ Mehrphasige Animationen werden im Framework über das optionale Feld `motionPhas
 - anschließender Nudge
 - anschließende Scale-Impulse
 
-Wenn `motionPhases` vorhanden ist, gilt diese Sequenz als primäre Bewegungsbeschreibung. Die flachen Bewegungsfelder wie `direction`, `translateFrom`, `keyframes`, `opacity` oder `scaleFactor` werden dann nicht zusätzlich auf oberster Parameterebene verwendet.
+Wenn `motionPhases` vorhanden ist, gilt diese Sequenz als primäre Bewegungsbeschreibung. Die flachen Bewegungsfelder wie `direction`, `translateFrom`, `keyframes`, `opacity`, `scaleFactor` oder `scaleMode` werden dann nicht zusätzlich auf oberster Parameterebene verwendet.
 
 ### Finale Modellregeln
 
@@ -303,3 +310,44 @@ WCAG 2.2 SC 2.3.3 behandelt Animationen aus Interaktionen, WCAG 2.2 SC 2.2.2 beh
 Der spätere Editor soll die Strategie automatisch auswerten, nicht als frei wählbare Variante anbieten. Wenn `prefers-reduced-motion` aktiv ist, entscheidet der Renderer anhand von `accessibility.reducedMotion`, ob die Animation normal läuft, verkürzt, ersetzt oder statisch dargestellt wird.
 
 POC 03 bildet diese Entscheidung als Testmodus ab: Der Reduced-Motion-Schalter simuliert die Systemeinstellung und zeigt, wie Mappings mit hinterlegter Strategie reduziert dargestellt werden.
+
+---
+
+## ADR-12: Komponentenspezifische Renderer-Regeln für interne Teilziele
+
+### Entscheidung
+
+Das generische Mapping-Modell beschreibt die semantisch begründete Motion-Entscheidung für eine UI-Komponente. Es modelliert nicht jedes interne Teilziel einer Komponente.
+
+Interne Teilziele wie Border, Label, Helper-Text, Shadow, Backdrop oder Container-Zustand bleiben im aktuellen Scope Verantwortung des komponentenspezifischen Renderers. Es wird vor dem Hauptprototyp kein allgemeines Feld wie `target: "container" | "label" | "message"` eingeführt.
+
+### Beispiele
+
+- `input-stateChange-focus`: Das Mapping beschreibt den semantischen Übergang in den Fokuszustand. Der Renderer darf diesen Zustand über Border, Label, Shadow und Container-Zustand darstellen.
+- `input-stateChange-blur`: Das Mapping beschreibt den Verlust des Fokus. Der Renderer setzt die entsprechenden Teilziele zurück.
+- `input-feedback-warning`: Das Mapping beschreibt eine Warnung während der Eingabe. Der Renderer darf dafür einen Helper-Text mit lokalem y-Offset und Opacity einblenden.
+- `modal-hierarchy-toBackground`: Das Mapping beschreibt den Fokusverlust und das Zurücktreten des Modals. Beim Modal wird diese Bedeutung als Entfernen/Ausblenden gerendert, weil ein halbtransparent sichtbares geschlossenes Modal UX-seitig missverständlich wäre.
+
+### Begründung
+
+Ein allgemeines Target-Modell würde das Framework stärker in Richtung eines komponentenspezifischen Render-Schemas verschieben. Für den aktuellen Scope ist das nicht notwendig, weil die semantische Zuordnung weiterhin eindeutig im Mapping liegt und nur die konkrete visuelle Umsetzung auf Teilziele komponentenabhängig ist.
+
+Diese Trennung hält das Framework klein:
+
+- Das Mapping erklärt, welche Bedeutung durch Motion kommuniziert werden soll.
+- Der Renderer entscheidet, welche Teilflächen einer konkreten Komponente diese Bedeutung visuell tragen.
+
+Dadurch kann der spätere Editor Input-, Toast-, Modal- oder Skeleton-spezifische Visualisierungen implementieren, ohne das generische Datenmodell mit komponentenspezifischen Zielstrukturen zu überladen.
+
+### Abgrenzung
+
+Diese Entscheidung gilt nur, solange interne Teilziele komponentenspezifische Einzelentscheidungen bleiben. Ein allgemeines Target-Modell sollte erneut geprüft werden, wenn mehrere Komponenten regelmäßig dieselben Teilzieltypen benötigen, zum Beispiel:
+
+- `container`
+- `label`
+- `message`
+- `backdrop`
+- `icon`
+- `content`
+
+Besonders bei möglichen Erweiterungen wie Card-, Panel-, Sidebar- oder gestapelten Layer-Mappings kann ein explizites Target-Modell sinnvoll werden. Vorher reicht die dokumentierte Renderer-Konvention.

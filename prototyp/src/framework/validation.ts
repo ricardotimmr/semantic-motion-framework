@@ -13,6 +13,7 @@ import type {
   MappingQuery,
   MotionPhase,
   ReducedMotionStrategy,
+  ScaleMode,
   SpringConfig,
   Subcategory,
   TranslationEdge,
@@ -42,6 +43,7 @@ const reducedMotionStrategies = new Set<ReducedMotionStrategy>([
   "replace",
   "static",
 ]);
+const scaleModes = new Set<ScaleMode>(["pulse", "scaleIn", "scaleOut"]);
 const durationTolerance = 0.001;
 
 function isFiniteNumber(value: number): boolean {
@@ -484,7 +486,8 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
     params.translateFrom !== undefined ||
     params.translateTo !== undefined ||
     params.keyframes !== undefined;
-  const hasScale = params.scaleFactor !== undefined;
+  const hasScale =
+    params.scaleFactor !== undefined || params.scaleMode !== undefined;
   const hasTrack = params.trackFactor !== undefined;
   const hasOpacity =
     params.opacity !== undefined || params.opacityKeyframes !== undefined;
@@ -542,8 +545,22 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
       errors.push(`${entry.id}: scaleFactor must be finite`);
     }
 
-    if (params.scaleFactor === 0) {
-      errors.push(`${entry.id}: scaleFactor must not be 0`);
+    if (params.scaleFactor <= 0) {
+      errors.push(`${entry.id}: scaleFactor must be greater than 0`);
+    }
+
+    if (params.scaleMode === undefined) {
+      errors.push(`${entry.id}: scaleFactor requires scaleMode`);
+    }
+  }
+
+  if (params.scaleMode !== undefined) {
+    if (!scaleModes.has(params.scaleMode)) {
+      errors.push(`${entry.id}: invalid scaleMode "${params.scaleMode}"`);
+    }
+
+    if (params.scaleFactor === undefined) {
+      errors.push(`${entry.id}: scaleMode requires scaleFactor`);
     }
   }
 
@@ -619,6 +636,7 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
       params.translateFrom !== undefined ||
       params.translateTo !== undefined ||
       params.scaleFactor !== undefined ||
+      params.scaleMode !== undefined ||
       params.trackFactor !== undefined ||
       params.keyframes !== undefined ||
       params.opacity !== undefined ||

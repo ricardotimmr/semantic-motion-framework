@@ -22,6 +22,7 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeOut" },
       duration: 250,
       scaleFactor: 0.05, // 1.0 → 1.05 → 1.0
+      scaleMode: "pulse",
       iterations: 1,
     },
     rationale: {
@@ -82,6 +83,7 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeInOut" },
       duration: 600,
       scaleFactor: 0.03, // 1.0 → 1.03 → 1.0
+      scaleMode: "pulse",
       iterations: 3,
       // Bewusst Attention statt Feedback: Die Animation wird systeminitiiert
       // ausgelöst und ist keine unmittelbare Reaktion auf einen Button-Klick.
@@ -115,6 +117,7 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeInOut" },
       duration: 1000,
       scaleFactor: 0.04, // 1.0 → 1.04 → 1.0
+      scaleMode: "pulse",
       iterations: Infinity,
     },
     accessibility: {
@@ -399,6 +402,7 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeOut" },
       duration: 300,
       scaleFactor: 0.05, // 0.95 → 1.0
+      scaleMode: "scaleIn",
       iterations: 1,
       opacity: [0, 1],
     },
@@ -429,7 +433,8 @@ export const mappings: MappingDatabase = [
     params: {
       easing: { preset: "easeIn" },
       duration: 250,
-      scaleFactor: -0.04, // 1.0 → 0.96
+      scaleFactor: 0.04, // 1.0 → 0.96
+      scaleMode: "scaleOut",
       iterations: 1,
       // Für Modal bedeutet "toBackground" hier: verliert Vordergrundpriorität
       // und wird aus dem aktiven Fokus entfernt. Ein halbtransparent sichtbares
@@ -605,6 +610,7 @@ export const mappings: MappingDatabase = [
       easing: { preset: "easeOut" },
       duration: 175,
       scaleFactor: 0.02, // 1.0 → 1.02 → 1.0
+      scaleMode: "pulse",
       iterations: 1,
     },
     rationale: {
