@@ -226,6 +226,19 @@ Mehrphasige Animationen werden im Framework über das optionale Feld `motionPhas
 
 Wenn `motionPhases` vorhanden ist, gilt diese Sequenz als primäre Bewegungsbeschreibung. Die flachen Bewegungsfelder wie `direction`, `translateFrom`, `keyframes`, `opacity` oder `scaleFactor` werden dann nicht zusätzlich auf oberster Parameterebene verwendet.
 
+### Finale Modellregeln
+
+Für `motionPhases` gelten folgende Regeln:
+
+- `duration` auf Top-Level beschreibt die semantische Gesamtdauer der Bewegung.
+- Diese Top-Level-`duration` entspricht der Summe der Phasendauern ohne `delay`.
+- `delay` innerhalb einer Phase ist ein zusätzlicher Playback-Abstand vor dieser Phase und zählt nicht zur semantischen Bewegungsdauer.
+- `iterations` auf Top-Level wiederholt die komplette Phasensequenz, nicht einzelne Phasen.
+- Phasen dürfen eigene `easing`-Werte haben, wenn eine Phase bewusst eine andere Bewegungsqualität braucht.
+- Mehrere Keyframe-Sequenzen innerhalb derselben Phase, etwa `keyframes`, `scaleKeyframes` und `opacityKeyframes`, sind nur sauber, wenn sie dasselbe `times`-Raster verwenden.
+
+Diese Regeln werden durch die zentrale Mapping-Validierung geprüft, soweit sie strukturell prüfbar sind. Dadurch bleibt das Phasenmodell klein, aber für Preview und Export eindeutig interpretierbar.
+
 ### Begründung
 
 Die Toast-Mappings haben gezeigt, dass einige semantische Bewegungen nicht sauber durch ein einzelnes flaches Parameterobjekt beschrieben werden können:
@@ -247,3 +260,46 @@ Ein allgemeines Target-Modell wäre erst sinnvoll, wenn mehrere Komponenten rege
 ### Konsequenz
 
 POC 03 rendert mehrphasige Mappings nun generisch über `motionPhases`. POC 04 exportiert dieselbe Phasenstruktur generisch für Framer Motion und CSS. Die Mapping-Validierung prüft zusätzlich die Struktur der Phasen, unter anderem Keyframe-Längen, Monotonie der Zeiten und die Trennung von flachen Bewegungsfeldern und Phasenmodell.
+
+Framer Motion kann phase-spezifische `easing`-Werte direkt abbilden. CSS kann kombinierte Keyframes dagegen nur eingeschränkt mit unterschiedlichen Easing-Kurven pro Phase beschreiben. Der CSS-Export darf solche Fälle deshalb als Approximation kennzeichnen und eine globale Timing-Funktion verwenden.
+
+---
+
+## ADR-11: Reduced Motion als Accessibility-Metadatum
+
+### Entscheidung
+
+Reduced Motion wird im Framework als optionales Accessibility-Metadatum am Mapping-Eintrag modelliert:
+
+```ts
+accessibility: {
+  reducedMotion: "none" | "shorten" | "replace" | "static"
+}
+```
+
+Diese Angabe ist keine zusätzliche ästhetische Variante und keine alternative Pattern-Auswahl. Das semantische Mapping bleibt eindeutig. `reducedMotion` beschreibt nur, wie dieselbe Bedeutung bei aktivierter Systemeinstellung `prefers-reduced-motion` mit weniger oder ohne problematische Bewegung dargestellt werden soll.
+
+### Strategien
+
+- `none`: Keine besondere Reduktion erforderlich.
+- `shorten`: Bewegung bleibt erhalten, wird aber in Dauer, Wiederholung oder Amplitude reduziert.
+- `replace`: Problematische Bewegung wird durch eine weniger bewegungsintensive Darstellung ersetzt, etwa durch Opacity, Farbzustand, Border oder statischen Status.
+- `static`: Bewegung entfällt vollständig; ein statischer Zustand trägt die Information.
+
+### Begründung
+
+Das Framework ist ein Motion-Framework und keine umfassende Accessibility-Systematik. Trotzdem betreffen einige Mappings potenziell Nutzerinnen und Nutzer, die Bewegung reduzieren müssen oder von wiederholter Bewegung abgelenkt werden können. Besonders relevant sind:
+
+- endlose oder wiederholte Bewegung, z. B. `button-attention-persistent` und `skeleton-attention-loading`
+- Shake-Animationen
+- Spring/Overshoot
+- großflächige Translationen, z. B. Toast- oder Modal-Einfahrten
+- systeminitiierte Bewegung ohne direkte Nutzeraktion
+
+WCAG 2.2 SC 2.3.3 behandelt Animationen aus Interaktionen, WCAG 2.2 SC 2.2.2 behandelt automatisch startende, länger laufende oder wiederholte Bewegung. Für Fokuszustände bleibt WCAG 2.2 SC 2.4.7 relevant: Fokus muss auch ohne Animation sichtbar bleiben.
+
+### Konsequenz
+
+Der spätere Editor soll die Strategie automatisch auswerten, nicht als frei wählbare Variante anbieten. Wenn `prefers-reduced-motion` aktiv ist, entscheidet der Renderer anhand von `accessibility.reducedMotion`, ob die Animation normal läuft, verkürzt, ersetzt oder statisch dargestellt wird.
+
+POC 03 bildet diese Entscheidung als Testmodus ab: Der Reduced-Motion-Schalter simuliert die Systemeinstellung und zeigt, wie Mappings mit hinterlegter Strategie reduziert dargestellt werden.

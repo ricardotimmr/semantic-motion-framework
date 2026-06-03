@@ -46,6 +46,7 @@ export function App() {
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>(
     initialMapping.subcategory,
   );
+  const [reducedMotionPreview, setReducedMotionPreview] = useState(false);
   const [replayKey, setReplayKey] = useState(0);
 
   const dimensions = useMemo(
@@ -160,8 +161,12 @@ export function App() {
 
         <PreviewPanel
           entry={activeMapping}
+          reducedMotion={reducedMotionPreview}
           replayKey={replayKey}
           onReplay={() => setReplayKey((current) => current + 1)}
+          onToggleReducedMotion={() =>
+            setReducedMotionPreview((current) => !current)
+          }
         />
 
         <aside className="info-panel">
@@ -183,6 +188,10 @@ export function App() {
             <div>
               <dt>SignType</dt>
               <dd>{activeMapping.rationale.signType}</dd>
+            </div>
+            <div>
+              <dt>Reduced Motion</dt>
+              <dd>{activeMapping.accessibility?.reducedMotion ?? "none"}</dd>
             </div>
           </dl>
           <div className="param-block">
@@ -213,10 +222,14 @@ function SelectionGroup({
 function PreviewPanel({
   entry,
   onReplay,
+  onToggleReducedMotion,
+  reducedMotion,
   replayKey,
 }: {
   entry: MappingEntry;
   onReplay: () => void;
+  onToggleReducedMotion: () => void;
+  reducedMotion: boolean;
   replayKey: number;
 }) {
   const controls = useAnimationControls();
@@ -226,16 +239,26 @@ function PreviewPanel({
       return;
     }
 
-    void playMappingAnimation(entry, controls);
-  }, [controls, entry, replayKey]);
+    void playMappingAnimation(entry, controls, { reducedMotion });
+  }, [controls, entry, reducedMotion, replayKey]);
 
   return (
     <section className="preview-panel">
       <div className="preview-header">
         <p className="panel-label">Preview</p>
-        <button className="replay-button" onClick={onReplay} type="button">
-          Replay
-        </button>
+        <div className="preview-actions">
+          <label className="motion-switch">
+            <input
+              checked={reducedMotion}
+              onChange={onToggleReducedMotion}
+              type="checkbox"
+            />
+            <span>Reduced Motion</span>
+          </label>
+          <button className="replay-button" onClick={onReplay} type="button">
+            Replay
+          </button>
+        </div>
       </div>
       <div className="stage">
         {entry.component === "button" ? (
@@ -251,10 +274,18 @@ function PreviewPanel({
           <PreviewToggle controls={controls} entry={entry} />
         ) : null}
         {entry.component === "input" ? (
-          <PreviewInput entry={entry} replayKey={replayKey} />
+          <PreviewInput
+            entry={entry}
+            reducedMotion={reducedMotion}
+            replayKey={replayKey}
+          />
         ) : null}
         {entry.component === "skeleton" ? (
-          <PreviewSkeleton entry={entry} replayKey={replayKey} />
+          <PreviewSkeleton
+            entry={entry}
+            reducedMotion={reducedMotion}
+            replayKey={replayKey}
+          />
         ) : null}
       </div>
     </section>
@@ -335,9 +366,11 @@ function PreviewToggle({
 
 function PreviewInput({
   entry,
+  reducedMotion,
   replayKey,
 }: {
   entry: MappingEntry;
+  reducedMotion: boolean;
   replayKey: number;
 }) {
   const containerControls = useAnimationControls();
@@ -346,18 +379,23 @@ function PreviewInput({
   const messageControls = useAnimationControls();
 
   useEffect(() => {
-    void playInputPreviewAnimation(entry, {
-      container: containerControls,
-      field: fieldControls,
-      label: labelControls,
-      message: messageControls,
-    });
+    void playInputPreviewAnimation(
+      entry,
+      {
+        container: containerControls,
+        field: fieldControls,
+        label: labelControls,
+        message: messageControls,
+      },
+      { reducedMotion },
+    );
   }, [
     containerControls,
     entry,
     fieldControls,
     labelControls,
     messageControls,
+    reducedMotion,
     replayKey,
   ]);
 
@@ -397,9 +435,11 @@ function PreviewInput({
 
 function PreviewSkeleton({
   entry,
+  reducedMotion,
   replayKey,
 }: {
   entry: MappingEntry;
+  reducedMotion: boolean;
   replayKey: number;
 }) {
   const isLoading = entry.subcategory === "loading";
@@ -409,12 +449,19 @@ function PreviewSkeleton({
   useEffect(() => {
     if (isLoading) {
       void containerControls.set({ opacity: 1, x: 0, y: 0, scale: 1 });
-      void playMappingAnimation(entry, shimmerControls);
+      void playMappingAnimation(entry, shimmerControls, { reducedMotion });
       return;
     }
 
-    void playMappingAnimation(entry, containerControls);
-  }, [containerControls, entry, isLoading, replayKey, shimmerControls]);
+    void playMappingAnimation(entry, containerControls, { reducedMotion });
+  }, [
+    containerControls,
+    entry,
+    isLoading,
+    reducedMotion,
+    replayKey,
+    shimmerControls,
+  ]);
 
   return (
     <motion.div animate={containerControls} className="demo-skeleton">

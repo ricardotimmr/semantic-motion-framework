@@ -21,6 +21,10 @@ type PlaybackControls = {
   stop: () => void;
 };
 
+type MotionPlaybackOptions = {
+  reducedMotion?: boolean;
+};
+
 type ScaleAnimation =
   | {
       type: "pulse";
@@ -119,6 +123,142 @@ function getRepeat(entry: MappingEntry) {
   }
 
   return undefined;
+}
+
+function getReducedMotionStrategy(entry: MappingEntry) {
+  return entry.accessibility?.reducedMotion ?? "none";
+}
+
+function shouldUseReducedMotion(
+  entry: MappingEntry,
+  options: MotionPlaybackOptions = {},
+) {
+  return (
+    options.reducedMotion === true && getReducedMotionStrategy(entry) !== "none"
+  );
+}
+
+function getFirstOpacity(entry: MappingEntry) {
+  const firstPhase = entry.params.motionPhases?.[0];
+
+  if (firstPhase?.opacity !== undefined) {
+    return firstPhase.opacity[0];
+  }
+
+  if (firstPhase?.opacityKeyframes !== undefined) {
+    return firstPhase.opacityKeyframes.values[0];
+  }
+
+  if (entry.params.opacity !== undefined) {
+    return entry.params.opacity[0];
+  }
+
+  if (entry.params.opacityKeyframes !== undefined) {
+    return entry.params.opacityKeyframes.values[0];
+  }
+
+  return 1;
+}
+
+function getLastOpacity(entry: MappingEntry) {
+  const phases = entry.params.motionPhases;
+
+  if (phases !== undefined) {
+    for (const phase of [...phases].reverse()) {
+      if (phase.opacity !== undefined) {
+        return phase.opacity[1];
+      }
+
+      if (phase.opacityKeyframes !== undefined) {
+        return phase.opacityKeyframes.values.at(-1) ?? 1;
+      }
+    }
+  }
+
+  if (entry.params.opacity !== undefined) {
+    return entry.params.opacity[1];
+  }
+
+  if (entry.params.opacityKeyframes !== undefined) {
+    return entry.params.opacityKeyframes.values.at(-1) ?? 1;
+  }
+
+  return 1;
+}
+
+function getReducedInitialTarget(entry: MappingEntry): TargetAndTransition {
+  return {
+    x: 0,
+    y: 0,
+    scale: 1,
+    opacity: getFirstOpacity(entry),
+  };
+}
+
+function getReducedFinalTarget(entry: MappingEntry): TargetAndTransition {
+  return {
+    x: 0,
+    y: 0,
+    scale: 1,
+    opacity:
+      entry.id === "skeleton-attention-loading" ? 0 : getLastOpacity(entry),
+  };
+}
+
+function getReducedTransition(): Transition {
+  return {
+    duration: 0.12,
+    ease: EASING_CURVES.easeOut,
+  };
+}
+
+function getReducedShortenAnimation(entry: MappingEntry): TargetAndTransition {
+  const scaleFactor = entry.params.scaleFactor;
+
+  if (scaleFactor !== undefined) {
+    const cappedFactor = Math.min(Math.abs(scaleFactor), 0.01);
+
+    return {
+      scale: [1, 1 + cappedFactor, 1],
+      opacity: getLastOpacity(entry),
+      transition: {
+        ...getReducedTransition(),
+        times: [0, 0.45, 1],
+      },
+    };
+  }
+
+  return {
+    ...getReducedFinalTarget(entry),
+    transition: getReducedTransition(),
+  };
+}
+
+async function playReducedMotionAnimation(
+  entry: MappingEntry,
+  controls: PlaybackControls,
+) {
+  const strategy = getReducedMotionStrategy(entry);
+
+  await controls.stop();
+  await controls.set(getReducedInitialTarget(entry));
+  await waitForNextFrame();
+  await wait(getPreviewChoreography(entry).holdInitialMs);
+
+  if (strategy === "static") {
+    await controls.set(getReducedFinalTarget(entry));
+    return;
+  }
+
+  if (strategy === "shorten") {
+    await controls.start(getReducedShortenAnimation(entry));
+    return;
+  }
+
+  await controls.start({
+    ...getReducedFinalTarget(entry),
+    transition: getReducedTransition(),
+  });
 }
 
 function getTransition(entry: MappingEntry): Transition {
@@ -431,7 +571,13 @@ async function playInputWarning(
 export async function playMappingAnimation(
   entry: MappingEntry,
   controls: PlaybackControls,
+  options: MotionPlaybackOptions = {},
 ) {
+  if (shouldUseReducedMotion(entry, options)) {
+    await playReducedMotionAnimation(entry, controls);
+    return;
+  }
+
   if (entry.params.motionPhases !== undefined) {
     await playPhasedAnimation(entry, controls);
     return;

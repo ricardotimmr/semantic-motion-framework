@@ -207,16 +207,21 @@ export interface KeyframeSequence {
  *
  * Phasen verwenden standardmäßig easing aus AnimationParams. Ein eigenes
  * easing kann gesetzt werden, wenn eine Phase bewusst eine andere Kurve braucht.
- * duration ist phasenspezifisch und wird in Millisekunden angegeben.
+ * duration beschreibt die semantische Bewegungsdauer dieser Phase in Millisekunden.
+ * delay ist ein technischer Startabstand vor der Phase und zählt nicht zur
+ * semantischen Top-Level-duration.
+ *
+ * Wenn mehrere Keyframe-Sequenzen in derselben Phase kombiniert werden, z. B.
+ * translate + scale + opacity, müssen sie dasselbe times-Raster verwenden.
  */
 export interface MotionPhase {
   /** Maschinenlesbarer Phasenname, z. B. "enter", "shake", "nudge" */
   id: string;
 
-  /** Dauer dieser Phase in Millisekunden */
+  /** Semantische Bewegungsdauer dieser Phase in Millisekunden */
   duration: number;
 
-  /** Optionale Verzögerung vor dieser Phase in Millisekunden */
+  /** Optionale Playback-Verzögerung vor dieser Phase in Millisekunden */
   delay?: number;
 
   /** Optionale eigene Beschleunigungskurve; sonst gilt AnimationParams.easing */
@@ -309,13 +314,21 @@ export type TranslationDistance = "self";
  * Mehrphasige Animationen werden über motionPhases modelliert. In diesem Fall
  * bleiben die flachen Bewegungsfelder auf AnimationParams frei; die konkrete
  * Bewegung liegt in den einzelnen Phasen. easing und duration bleiben auf
- * oberster Ebene als Default-Kurve und Gesamtdauer lesbar.
+ * oberster Ebene als Default-Kurve und semantische Gesamtdauer lesbar.
+ *
+ * Bei motionPhases gilt:
+ * - duration auf Top-Level entspricht der Summe der Phasendauern ohne delay.
+ * - delay innerhalb einer Phase ist ein zusätzlicher Playback-Abstand.
+ * - iterations auf Top-Level wiederholt die gesamte Phasensequenz.
  */
 export interface AnimationParams {
   /** Beschleunigungskurve – der semantisch bedeutsamste Parameter */
   easing: EasingValue;
 
-  /** Gesamtdauer der Animation in Millisekunden */
+  /**
+   * Semantische Gesamtdauer der Animation in Millisekunden.
+   * Bei motionPhases entspricht sie der Summe der Phasendauern ohne delay.
+   */
   duration: number;
 
   /**
@@ -388,6 +401,7 @@ export interface AnimationParams {
    * Anzahl der Wiederholungen der Animation.
    * Wenn weggelassen oder 1, wird die Animation einmal abgespielt.
    * Werte größer als 1 wiederholen die Animation entsprechend oft.
+   * Bei motionPhases wiederholt sich die komplette Phasensequenz.
    * Infinity = läuft in einer Schleife bis zum programmatischen Stopp.
    */
   iterations?: number | typeof Infinity;
@@ -427,9 +441,40 @@ export interface AnimationParams {
    * Bewegung nicht sauber abbilden kann, z. B. Toast-Einfahrt plus Shake.
    *
    * Wenn motionPhases vorhanden ist, behandeln Preview und Export diese Phasen
-   * als primäre Bewegungsbeschreibung.
+   * als primäre Bewegungsbeschreibung. Flache Bewegungsfelder bleiben dann frei.
    */
   motionPhases?: MotionPhase[];
+}
+
+// ---------------------------------------------------------------------------
+// Accessibility
+// ---------------------------------------------------------------------------
+
+/**
+ * Strategie für prefers-reduced-motion.
+ *
+ * Diese Strategie ist keine alternative ästhetische Variante des Mappings.
+ * Sie beschreibt nur, wie dieselbe semantische Aussage mit weniger oder ohne
+ * problematische Bewegung dargestellt werden soll.
+ *
+ * none     – keine besondere Reduktion nötig
+ * shorten  – Bewegung bleibt erhalten, aber Dauer, Wiederholung oder Amplitude werden reduziert
+ * replace  – problematische Bewegung wird durch weniger bewegungsintensive Darstellung ersetzt
+ * static   – Bewegung entfällt; ein statischer Zustand trägt die Information
+ */
+export type ReducedMotionStrategy =
+  | "none"
+  | "shorten"
+  | "replace"
+  | "static";
+
+/**
+ * Accessibility-Metadaten für einen Mapping-Eintrag.
+ * Der spätere Editor kann diese Felder automatisch auswerten, ohne dem Nutzer
+ * mehrere gleichwertige Mapping-Varianten anzubieten.
+ */
+export interface MappingAccessibility {
+  reducedMotion: ReducedMotionStrategy;
 }
 
 // ---------------------------------------------------------------------------
@@ -518,6 +563,9 @@ export interface MappingEntry {
 
   /** Die zweischichtige Begründung für dieses Mapping */
   rationale: Rationale;
+
+  /** Accessibility-Metadaten, z. B. Reduced-Motion-Verhalten */
+  accessibility?: MappingAccessibility;
 }
 
 // ---------------------------------------------------------------------------

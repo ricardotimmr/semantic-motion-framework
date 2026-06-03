@@ -71,7 +71,7 @@ function formatEasingValue(easing: EasingValue) {
 }
 
 function formatFramerEase(easing: EasingValue) {
-  if ("preset" in easing && easing.preset === "spring") {
+  if (isSpringEasing(easing)) {
     return null;
   }
 
@@ -81,6 +81,10 @@ function formatFramerEase(easing: EasingValue) {
 function formatCssEase(easing: EasingValue) {
   const curve = formatEasingValue(easing);
   return `cubic-bezier(${curve.join(", ")})`;
+}
+
+function isSpringEasing(easing: EasingValue) {
+  return "preset" in easing && easing.preset === "spring";
 }
 
 function getAxis(entry: MappingEntry): Axis {
@@ -110,6 +114,20 @@ function phaseAxis(phase: MotionPhase): Axis {
 
 function phaseEasing(entry: MappingEntry, phase: MotionPhase) {
   return phase.easing ?? entry.params.easing;
+}
+
+function hasPhaseSpecificEasing(entry: MappingEntry) {
+  return entry.params.motionPhases?.some((phase) => phase.easing !== undefined) ?? false;
+}
+
+function usesSpringEasing(entry: MappingEntry) {
+  if (isSpringEasing(entry.params.easing)) {
+    return true;
+  }
+
+  return entry.params.motionPhases?.some((phase) => {
+    return phase.easing !== undefined && isSpringEasing(phase.easing);
+  }) ?? false;
 }
 
 function phaseSpringConfig(entry: MappingEntry, phase: MotionPhase) {
@@ -312,7 +330,7 @@ function formatPhaseTransition(entry: MappingEntry, phase: MotionPhase) {
   const easing = phaseEasing(entry, phase);
   const times = phaseTimes(phase);
 
-  if ("preset" in easing && easing.preset === "spring") {
+  if (isSpringEasing(easing)) {
     const springConfig = phaseSpringConfig(entry, phase);
 
     return [
@@ -923,10 +941,15 @@ export function generateCSSCode(entry: MappingEntry): string {
   }
 
   const className = `smf-${entry.id}`;
-  const warning =
-    "preset" in entry.params.easing && entry.params.easing.preset === "spring"
-      ? "/* Hinweis: CSS unterstützt keine echte Spring-Physik. Diese Ausgabe nutzt eine approximierte cubic-bezier-Kurve. */\n"
-      : "";
+  const warnings = [
+    usesSpringEasing(entry)
+      ? "/* Hinweis: CSS unterstützt keine echte Spring-Physik. Diese Ausgabe nutzt eine approximierte cubic-bezier-Kurve. */"
+      : null,
+    hasPhaseSpecificEasing(entry)
+      ? "/* Hinweis: CSS bildet phase-spezifisches Easing in kombinierten Keyframes nur approximiert ab. Diese Ausgabe nutzt die Top-Level-Easing-Kurve. */"
+      : null,
+  ].filter(Boolean);
+  const warning = warnings.length > 0 ? `${warnings.join("\n")}\n` : "";
 
   return `${sourceComment(entry, "/*")}
 ${warning}

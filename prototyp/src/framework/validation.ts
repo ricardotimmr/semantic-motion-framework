@@ -12,6 +12,7 @@ import type {
   MappingEntry,
   MappingQuery,
   MotionPhase,
+  ReducedMotionStrategy,
   SpringConfig,
   Subcategory,
   TranslationEdge,
@@ -35,6 +36,12 @@ const componentIds = new Set<ComponentId>(COMPONENT_IDS);
 const dimensions = new Set<Dimension>(DIMENSIONS);
 const xEdges = new Set<TranslationEdge>(["left", "right"]);
 const yEdges = new Set<TranslationEdge>(["top", "bottom"]);
+const reducedMotionStrategies = new Set<ReducedMotionStrategy>([
+  "none",
+  "shorten",
+  "replace",
+  "static",
+]);
 const durationTolerance = 0.001;
 
 function isFiniteNumber(value: number): boolean {
@@ -403,6 +410,33 @@ function usesComponentSpecificRenderer(entry: MappingEntry): boolean {
   );
 }
 
+function requiresReducedMotionStrategy(entry: MappingEntry): boolean {
+  const { iterations } = entry.params;
+
+  return iterations === Infinity || (iterations !== undefined && iterations > 1);
+}
+
+function validateAccessibility(entry: MappingEntry): string[] {
+  const errors: string[] = [];
+  const { accessibility } = entry;
+
+  if (accessibility === undefined) {
+    if (requiresReducedMotionStrategy(entry)) {
+      errors.push(
+        `${entry.id}: repeated or endless motion requires accessibility.reducedMotion`,
+      );
+    }
+
+    return errors;
+  }
+
+  if (!reducedMotionStrategies.has(accessibility.reducedMotion)) {
+    errors.push(`${entry.id}: unknown accessibility.reducedMotion strategy`);
+  }
+
+  return errors;
+}
+
 export function validateMappingEntry(entry: MappingEntry): string[] {
   const errors: string[] = [];
   const expectedId = `${entry.component}-${entry.dimension}-${entry.subcategory}`;
@@ -461,6 +495,7 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
   errors.push(...validateNonNegativeNumber(entry.id, "delay", params.delay));
   errors.push(...validateIterations(entry.id, params.iterations));
   errors.push(...validateEasing(entry.id, "easing", params.easing));
+  errors.push(...validateAccessibility(entry));
 
   if (movementGroups.length > 1) {
     errors.push(`${entry.id}: multiple primary movement groups`);

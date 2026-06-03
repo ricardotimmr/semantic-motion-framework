@@ -1,5 +1,6 @@
 import { mappings } from "../../../prototyp/src/data/mappings";
 import { getMappingById } from "../../../prototyp/src/framework/classifier";
+import type { MappingEntry } from "../../../prototyp/src/framework/types";
 import {
   generateCSSCode,
   generateExportBundle,
@@ -98,6 +99,27 @@ describe("POC 04 export generators", () => {
     expect(cssCode).toContain(
       "85.5263% { opacity: 1; transform: translateX(0) translateY(0) scale(1.025); }",
     );
+  });
+
+  it("warns when CSS approximates phase-specific easing", () => {
+    const baseEntry = getMappingById("toast-feedback-error");
+
+    expect(baseEntry).not.toBeNull();
+
+    const entry: MappingEntry = {
+      ...baseEntry!,
+      params: {
+        ...baseEntry!.params,
+        motionPhases: baseEntry!.params.motionPhases!.map((phase, index) =>
+          index === 1 ? { ...phase, easing: { preset: "easeInOut" } } : phase,
+        ),
+      },
+    };
+
+    const cssCode = generateCSSCode(entry);
+
+    expect(cssCode).toContain("phase-spezifisches Easing");
+    expect(cssCode).toContain("Top-Level-Easing-Kurve");
   });
 
   it("exports input warning as helper text motion", () => {

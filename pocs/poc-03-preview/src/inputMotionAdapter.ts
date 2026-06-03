@@ -12,6 +12,10 @@ type InputPreviewControls = {
   message: PlaybackControls;
 };
 
+type InputPlaybackOptions = {
+  reducedMotion?: boolean;
+};
+
 type PlaybackControls = {
   set: (definition: TargetAndTransition) => void;
   start: (definition: TargetAndTransition) => Promise<unknown>;
@@ -102,6 +106,17 @@ function getTransition(entry: MappingEntry): Transition {
     duration: duration / 1000,
     ease: "preset" in easing ? EASING_CURVES[easing.preset] : easing.cubicBezier,
   };
+}
+
+function shouldUseReducedMotion(
+  entry: MappingEntry,
+  options: InputPlaybackOptions = {},
+) {
+  return (
+    options.reducedMotion === true &&
+    entry.accessibility?.reducedMotion !== undefined &&
+    entry.accessibility.reducedMotion !== "none"
+  );
 }
 
 function stopInputControls(controls: InputPreviewControls) {
@@ -248,10 +263,33 @@ async function playInputShake(
   });
 }
 
-export async function playInputPreviewAnimation(
+async function playReducedInputMotion(
   entry: MappingEntry,
   controls: InputPreviewControls,
 ) {
+  const isRequiredField = entry.id === "input-attention-requiredField";
+
+  stopInputControls(controls);
+  setInputState(controls, {
+    container: neutralContainer,
+    field: errorField,
+    label: neutralLabel,
+    message: isRequiredField ? visibleMessage : hiddenMessage,
+  });
+  await waitForNextFrame();
+  await wait(getPreviewChoreography(entry).holdInitialMs);
+}
+
+export async function playInputPreviewAnimation(
+  entry: MappingEntry,
+  controls: InputPreviewControls,
+  options: InputPlaybackOptions = {},
+) {
+  if (shouldUseReducedMotion(entry, options)) {
+    await playReducedInputMotion(entry, controls);
+    return;
+  }
+
   if (entry.id === "input-stateChange-focus") {
     await playInputFocus(entry, controls);
     return;

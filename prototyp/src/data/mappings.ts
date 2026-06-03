@@ -54,6 +54,9 @@ export const mappings: MappingDatabase = [
         times:  [0, 0.15, 0.30, 0.45, 0.60, 0.80, 1.0],
       },
     },
+    accessibility: {
+      reducedMotion: "replace",
+    },
     rationale: {
       short:
         "Die horizontale Schüttelbewegung greift auf die vertraute " +
@@ -83,6 +86,9 @@ export const mappings: MappingDatabase = [
       // Bewusst Attention statt Feedback: Die Animation wird systeminitiiert
       // ausgelöst und ist keine unmittelbare Reaktion auf einen Button-Klick.
     },
+    accessibility: {
+      reducedMotion: "shorten",
+    },
     rationale: {
       short:
         "Das wiederholte, gleichmäßige Pulsieren fordert Aufmerksamkeit ein, " +
@@ -110,6 +116,9 @@ export const mappings: MappingDatabase = [
       duration: 1000,
       scaleFactor: 0.04, // 1.0 → 1.04 → 1.0
       iterations: Infinity,
+    },
+    accessibility: {
+      reducedMotion: "static",
     },
     rationale: {
       short:
@@ -209,6 +218,9 @@ export const mappings: MappingDatabase = [
         mass: 0.9,
       },
     },
+    accessibility: {
+      reducedMotion: "replace",
+    },
     rationale: {
       short:
         "Der Toast fährt von unten ein und federt leicht nach. Der " +
@@ -253,6 +265,9 @@ export const mappings: MappingDatabase = [
           },
         },
       ],
+    },
+    accessibility: {
+      reducedMotion: "replace",
     },
     rationale: {
       short:
@@ -300,6 +315,9 @@ export const mappings: MappingDatabase = [
         },
       ],
     },
+    accessibility: {
+      reducedMotion: "replace",
+    },
     rationale: {
       short:
         "Der Toast gleitet langsam von unten herein und setzt nach der Ankunft " +
@@ -345,6 +363,9 @@ export const mappings: MappingDatabase = [
         },
       ],
     },
+    accessibility: {
+      reducedMotion: "replace",
+    },
     rationale: {
       short:
         "Der Toast fährt ruhig von unten ein und gibt zwei subtile Scale-Impulse. " +
@@ -381,6 +402,9 @@ export const mappings: MappingDatabase = [
       iterations: 1,
       opacity: [0, 1],
     },
+    accessibility: {
+      reducedMotion: "replace",
+    },
     rationale: {
       short:
         "Das Modal wächst leicht auf seine finale Größe und wird dabei " +
@@ -413,6 +437,9 @@ export const mappings: MappingDatabase = [
       // eigenes Layer-/Panel-Mapping geeigneter.
       opacity: [1, 0],
     },
+    accessibility: {
+      reducedMotion: "replace",
+    },
     rationale: {
       short:
         "Das Modal schrumpft leicht und wird ausgeblendet. Die Verkleinerung " +
@@ -443,6 +470,9 @@ export const mappings: MappingDatabase = [
       translateFrom: "bottom",
       iterations: 1,
       opacity: [0, 1],
+    },
+    accessibility: {
+      reducedMotion: "replace",
     },
     rationale: {
       short:
@@ -475,6 +505,9 @@ export const mappings: MappingDatabase = [
       iterations: 1,
       opacity: [1, 0],
     },
+    accessibility: {
+      reducedMotion: "replace",
+    },
     rationale: {
       short:
         "Das Modal fährt wie ein Sheet nach unten aus. Die komplementäre " +
@@ -505,6 +538,9 @@ export const mappings: MappingDatabase = [
       iterations: 1,
       opacity: [0, 1],
     },
+    accessibility: {
+      reducedMotion: "replace",
+    },
     rationale: {
       short:
         "Das Modal fährt von links ein und signalisiert horizontale " +
@@ -534,6 +570,9 @@ export const mappings: MappingDatabase = [
       translateTo: "right",
       iterations: 1,
       opacity: [1, 0],
+    },
+    accessibility: {
+      reducedMotion: "replace",
     },
     rationale: {
       short:
@@ -598,6 +637,9 @@ export const mappings: MappingDatabase = [
         values: [0, -5, 5, -5, 5, 0],
         times:  [0, 0.2, 0.4, 0.6, 0.8, 1.0],
       },
+    },
+    accessibility: {
+      reducedMotion: "replace",
     },
     rationale: {
       short:
@@ -721,6 +763,9 @@ export const mappings: MappingDatabase = [
         times:  [0, 0.2, 0.4, 0.6, 0.8, 1.0],
       },
     },
+    accessibility: {
+      reducedMotion: "replace",
+    },
     rationale: {
       short:
         "Der Shake signalisiert, dass dieses Feld ausgefüllt werden muss, " +
@@ -756,6 +801,9 @@ export const mappings: MappingDatabase = [
       direction: "x",
       trackFactor: 1.0, // volle komponenteneigene Shimmer-Strecke
       iterations: Infinity,
+    },
+    accessibility: {
+      reducedMotion: "static",
     },
     rationale: {
       short:

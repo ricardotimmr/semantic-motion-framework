@@ -4,73 +4,14 @@ Diese Datei sammelt die noch offenen Punkte, die das Framework vor dem eigentlic
 
 ## Offene Reihenfolge
 
-1. `motionPhases` semantisch und technisch finalisieren.
-2. Reduced-Motion-Strategie im Framework festlegen.
-3. Komponentenspezifische Renderer-Regeln dokumentieren oder modellieren.
-4. Explizites Scale-Modell prüfen und entscheiden.
-5. Sichtbar zurückgestuftes Card-/Panel-Layer-Mapping prüfen oder umsetzen.
-6. Kleine fachliche Mapping-Checks erledigen.
-7. Framework-Dokumentation mit dem finalen Datenmodell synchronisieren.
-8. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen.
+1. Komponentenspezifische Renderer-Regeln dokumentieren oder modellieren.
+2. Explizites Scale-Modell prüfen und entscheiden.
+3. Sichtbar zurückgestuftes Card-/Panel-Layer-Mapping prüfen oder umsetzen.
+4. Kleine fachliche Mapping-Checks erledigen.
+5. Framework-Dokumentation mit dem finalen Datenmodell synchronisieren.
+6. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen.
 
-## 1. `motionPhases` semantisch und technisch finalisieren
-
-Status: Offen.
-
-Aktueller Befund:
-
-- `motionPhases` ist eingeführt und löst die früheren Toast-Sonderfälle sauberer.
-- Die drei mehrphasigen Toast-Mappings nutzen das Modell.
-- POC 03 und POC 04 können `motionPhases` bereits rendern bzw. exportieren.
-- Ein paar Regeln sind aber noch nicht ausdrücklich finalisiert.
-
-Offene Entscheidungen:
-
-- Bedeutet Top-Level-`duration` bei `motionPhases` die Summe der Phasendauern ohne Delay?
-- Werden `delay`-Werte in Phasen zur Gesamtzeit gezählt oder nur als Playback-Verzögerung verstanden?
-- Gilt `iterations` auf Top-Level für die komplette Phasensequenz?
-- Dürfen Phasen eigene `easing`-Werte haben, obwohl CSS-Export nur eingeschränkt phasenspezifische Easing-Kurven abbilden kann?
-- Darf eine Phase gleichzeitig `keyframes`, `scaleKeyframes` und `opacityKeyframes` verwenden, oder braucht es dafür ein gemeinsames Zeitraster?
-
-Empfehlung:
-
-- Top-Level-`duration` = Summe der Phasendauern ohne Delay.
-- Phasen-`delay` = zusätzlicher Startabstand, nicht Teil der semantischen Bewegungsdauer.
-- `iterations` wiederholt die komplette Sequenz, nicht einzelne Phasen.
-- Mehrere Keyframe-Typen in einer Phase nur erlauben, wenn sie dasselbe `times`-Raster verwenden oder später ein gemeinsames Keyframe-Modell eingeführt wird.
-- CSS-Export soll bei phasenspezifischem Easing entweder warnen oder bewusst approximieren.
-
-Akzeptanzkriterium:
-
-- Die Regeln stehen in `types.ts`, Validierung und ADR-Dokumentation konsistent.
-
-## 2. Reduced-Motion-Strategie im Framework festlegen
-
-Status: Offen.
-
-Aktueller Befund:
-
-- Accessibility ist in mehreren Rationales und Dokumenten erwähnt.
-- Besonders relevant sind endlose oder wiederholte Animationen:
-  - `button-attention-persistent`
-  - `skeleton-attention-loading`
-  - weitere Mappings mit `iterations > 1` oder `Infinity`
-- Aktuell gibt es aber kein maschinenlesbares Feld, das dem Editor sagt, wie Reduced Motion behandelt werden soll.
-
-TODO:
-
-- Entscheiden, ob Reduced Motion nur Renderer-Regel bleibt oder im Mapping modelliert wird.
-- Mögliche Datenmodell-Ergänzung:
-  - `accessibility.reducedMotion: "none" | "static" | "shorten" | "replace"`
-  - oder ein kleineres Feld wie `reducedMotionStrategy`
-- Für wiederholte und endlose Animationen eine konkrete reduzierte Alternative definieren.
-- Editor soll später anzeigen können, wenn ein Mapping besondere Reduced-Motion-Behandlung braucht.
-
-Akzeptanzkriterium:
-
-- Für alle wiederholten/endlosen Mappings ist klar, was bei `prefers-reduced-motion` passiert.
-
-## 3. Komponentenspezifische Renderer-Regeln dokumentieren oder modellieren
+## 1. Komponentenspezifische Renderer-Regeln dokumentieren oder modellieren
 
 Status: Offen.
 
@@ -99,7 +40,7 @@ Akzeptanzkriterium:
 
 - Der Editor kann Input- und Modal-Sonderlogik implementieren, ohne dass unklar ist, ob diese Logik Datenmodell oder Renderer-Verantwortung ist.
 
-## 4. Explizites Scale-Modell prüfen und entscheiden
+## 2. Explizites Scale-Modell prüfen und entscheiden
 
 Status: Offen.
 
@@ -129,7 +70,7 @@ Akzeptanzkriterium:
 
 - Vor neuen Card-/Panel-Mappings ist klar, wie Scale semantisch modelliert wird.
 
-## 5. Sichtbar zurückgestuftes Card-/Panel-Layer-Mapping prüfen oder umsetzen
+## 3. Sichtbar zurückgestuftes Card-/Panel-Layer-Mapping prüfen oder umsetzen
 
 Status: Optional, aber fachlich sinnvoll.
 
@@ -166,7 +107,7 @@ Akzeptanzkriterium:
 
 - `hierarchy-toBackground` ist an mindestens einer Komponente sichtbar als Zurückstufung und nicht als Exit interpretierbar.
 
-## 6. Kleine fachliche Mapping-Checks erledigen
+## 4. Kleine fachliche Mapping-Checks erledigen
 
 Status: Offen.
 
@@ -195,7 +136,7 @@ TODO:
 - Visuell prüfen, ob der Success-Zustand wahrnehmbar genug ist.
 - Falls zu schwach, eher kleinen Success-Indikator oder Border-Feedback ergänzen statt das gesamte Input-Feld stärker zu skalieren.
 
-## 7. Framework-Dokumentation synchronisieren
+## 5. Framework-Dokumentation synchronisieren
 
 Status: Offen.
 
@@ -220,7 +161,7 @@ Akzeptanzkriterium:
 
 - Dokumentation, Mapping-Datenbank und Typsystem widersprechen sich nicht.
 
-## 8. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen
+## 6. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen
 
 Status: Offen, sobald der eigentliche Editor/Hauptprototyp gebaut wird.
 
@@ -245,6 +186,8 @@ Akzeptanzkriterium:
 
 - Review-Artefakt `mappings.rationale-review.ts` aus dem produktiven `src/data`-Kontext entfernt.
 - Mapping-Validierung aus POC 02 in den Framework-Kern verschoben und um numerische Parameterregeln erweitert.
+- `motionPhases` semantisch finalisiert: Top-Level-Dauer, Phasen-Delay, Sequenz-Iterations, gemeinsames Keyframe-Raster und CSS-Approximation geregelt.
+- Reduced-Motion-Strategie als Accessibility-Metadatum modelliert, relevante Mappings markiert und in POC 03 testbar gemacht.
 - `button-feedback-success` Begründung ohne Aufwärtsbewegung geschärft.
 - `hierarchy-toBackground` Kommentar und Begründung präzisiert.
 - Spring-Kommentar in `types.ts` präzisiert.

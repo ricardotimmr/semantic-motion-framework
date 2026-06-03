@@ -146,6 +146,38 @@ h1 {
   margin-bottom: 0.75rem;
 }
 
+.preview-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.motion-switch {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid var(--line);
+  padding: 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.motion-switch:hover {
+  color: var(--ink);
+  border-color: rgba(28, 28, 30, 0.36);
+}
+
+.motion-switch input {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--ink);
+}
+
 .replay-button {
   height: 32px;
   border: 1px solid var(--line);
