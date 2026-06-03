@@ -14,7 +14,7 @@ import {
   getOutOfScopeCombinations,
   getSupportedComponents,
 } from "../../../prototyp/src/framework/classifier";
-import { validateMappingDatabase } from "./validation";
+import { validateMappingDatabase } from "../../../prototyp/src/framework/validation";
 
 describe("POC 02 mapping database validation", () => {
   it("validates the current mapping database without structural errors", () => {

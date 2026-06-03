@@ -386,7 +386,8 @@ export interface AnimationParams {
 
   /**
    * Anzahl der Wiederholungen der Animation.
-   * 0 oder 1 = wird einmal abgespielt.
+   * Wenn weggelassen oder 1, wird die Animation einmal abgespielt.
+   * Werte größer als 1 wiederholen die Animation entsprechend oft.
    * Infinity = läuft in einer Schleife bis zum programmatischen Stopp.
    */
   iterations?: number | typeof Infinity;

@@ -14,7 +14,7 @@ import {
   getMappingFor,
   getOutOfScopeCombinations,
 } from "../../../prototyp/src/framework/classifier";
-import { validateMappingDatabase } from "./validation";
+import { validateMappingDatabase } from "../../../prototyp/src/framework/validation";
 
 type ComponentSummary = {
   component: ComponentId;
