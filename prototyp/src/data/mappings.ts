@@ -1,7 +1,7 @@
 /**
  * Semantic Motion Framework – Mapping-Datenbank (v2)
  *
- * Komponenten: button, toggle, toast, modal, input, skeleton
+ * Komponenten: button, toggle, toast, modal, card, input, skeleton
  * Dimensionen: feedback, stateChange, direction, hierarchy, attention
  */
 
@@ -594,6 +594,72 @@ export const mappings: MappingDatabase = [
         "(Zacks & Tversky 2001). Duration 280ms: identisch zu exit.",
       references: ["Peirce1931", "Ware2012", "ZacksTversky2001"],
       signType: "index",
+    },
+  },
+
+  // -------------------------------------------------------------------------
+  // CARD
+  // -------------------------------------------------------------------------
+
+  {
+    id: "card-hierarchy-toForeground",
+    component: "card",
+    dimension: "hierarchy",
+    subcategory: "toForeground",
+    params: {
+      easing: { preset: "easeOut" },
+      duration: 220,
+      scaleFactor: 0.04, // 0.96 → 1.0
+      scaleMode: "scaleIn",
+      iterations: 1,
+      opacity: [0.78, 1],
+    },
+    rationale: {
+      short:
+        "Die Card wächst leicht auf ihre volle Größe und gewinnt Deckkraft. " +
+        "Dadurch wirkt sie näher und wichtiger, ohne ihre Position im Layout " +
+        "zu verlassen.",
+      source:
+        "Ikon (Peirce): Skalierung und Deckkraftzunahme ähneln physikalischer " +
+        "Annäherung und höherer visueller Präsenz. Größe und Kontrast sind " +
+        "präattentiv wahrnehmbare Merkmale (Treisman & Gelade 1980). " +
+        "Ware (2012) beschreibt räumliche Nähe und visuelle Gewichtung als " +
+        "Relevanzsignale. Ease-Out: Ankommen als Vordergrundsignal " +
+        "(Zacks & Tversky 2001). Anders als beim Modal bleibt die Card im " +
+        "Layoutkontext sichtbar und wird nur priorisiert.",
+      references: ["Peirce1931", "TreismanGelade1980", "Ware2012", "ZacksTversky2001"],
+      signType: "icon",
+    },
+  },
+
+  {
+    id: "card-hierarchy-toBackground",
+    component: "card",
+    dimension: "hierarchy",
+    subcategory: "toBackground",
+    params: {
+      easing: { preset: "easeInOut" },
+      duration: 220,
+      scaleFactor: 0.03, // 1.0 → 0.97
+      scaleMode: "scaleOut",
+      iterations: 1,
+      opacity: [1, 0.68],
+    },
+    rationale: {
+      short:
+        "Die Card wird leicht kleiner und verliert etwas Deckkraft, bleibt " +
+        "aber sichtbar. So tritt sie als sekundäre Ebene zurück, ohne als " +
+        "geschlossen oder entfernt verstanden zu werden.",
+      source:
+        "Ikon (Peirce): Verkleinerung und reduzierte Deckkraft ähneln " +
+        "physikalischem Zurücktreten. Die Card bleibt sichtbar, deshalb " +
+        "kommuniziert die Animation Hierarchieverlust und nicht Exit. " +
+        "Treisman & Gelade (1980) stützen Größe und Kontrast als früh " +
+        "wahrnehmbare visuelle Merkmale; Ware (2012) verbindet räumliche " +
+        "Nähe mit wahrgenommener Relevanz. Ease-In-Out vermeidet abruptes " +
+        "Verschwinden und hält den Übergang als Layout-Repriorisierung lesbar.",
+      references: ["Peirce1931", "TreismanGelade1980", "Ware2012"],
+      signType: "icon",
     },
   },
 

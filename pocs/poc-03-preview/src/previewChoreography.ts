@@ -15,6 +15,12 @@ const choreographyByMappingId: Partial<Record<string, PreviewChoreography>> = {
   "modal-hierarchy-toBackground": {
     holdInitialMs: 260,
   },
+  "card-hierarchy-toForeground": {
+    holdInitialMs: 160,
+  },
+  "card-hierarchy-toBackground": {
+    holdInitialMs: 220,
+  },
   "modal-direction-enter": {
     holdInitialMs: 140,
   },

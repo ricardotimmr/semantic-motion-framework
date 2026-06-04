@@ -8,7 +8,7 @@ Dieses Verzeichnis validiert eine Preview-Komponente, die Mapping-Einträge als 
 
 ## Scope
 
-Aktueller Stand: implementierter Preview-POC für alle sechs Framework-Komponenten.
+Aktueller Stand: implementierter Preview-POC für alle sieben Framework-Komponenten.
 
 Enthalten:
 
@@ -50,13 +50,13 @@ Validieren, dass die Mapping-Datenbank aus POC 2 direkt als Animationsquelle fü
 
 - Wie wird der Animation-State zurückgesetzt, damit sie erneut abgespielt werden kann? (`key`-Trick in React vs. imperative Framer Motion Controls)
 - Wie wird sichergestellt, dass bei sehr schnellen Auswahländerungen keine Animationen übereinander laufen?
-- Müssen die Preview-Komponenten für die sechs Framework-Komponenten identisch strukturiert sein, oder gibt es komponentenspezifische Besonderheiten?
+- Müssen die Preview-Komponenten für die sieben Framework-Komponenten identisch strukturiert sein, oder gibt es komponentenspezifische Besonderheiten?
 
 ### Erfolgskriterien
 
 - Auswahl einer neuen Kombination löst die Animation sofort aus
 - Wiederholungs-Button funktioniert zuverlässig
-- Alle sechs Framework-Komponenten spielen ihre Animation korrekt ab
+- Alle sieben Framework-Komponenten spielen ihre Animation korrekt ab
 - Die Animationsparameter kommen ausschließlich aus der Mapping-Datenbank, keine hardcodierten Werte in den Preview-Komponenten
 
 ### Abgrenzung
@@ -66,9 +66,12 @@ Kein Code-Export, kein vollständiges Editor-UI, keine Begründungstexte im UI (
 ### Ergebnis
 
 - Auswahloptionen werden aus der Mapping-Datenbank generiert.
-- Button, Toggle, Toast, Modal, Input und Skeleton erhalten jeweils einen `MappingEntry` als Animationsquelle.
+- Button, Toggle, Toast, Modal, Card, Input und Skeleton erhalten jeweils einen `MappingEntry` als Animationsquelle.
 - Bei jeder Auswahländerung wird die laufende Animation gestoppt, zurückgesetzt und neu abgespielt.
 - Der Replay-Button spielt dieselbe Mapping-Animation erneut ab, ohne Seitenreload.
 - Die Preview nutzt imperative Framer-Motion-Controls statt React-Remount per `key`.
 - Spring-Easing wird über `springConfig` behandelt.
 - Mehrphasige Toast-Mappings werden über `motionPhases` generisch gerendert.
+- Card-Hierarchie wird als relationaler Stack dargestellt: Die betroffene Card
+  nutzt die Mapping-Parameter, eine zweite Card zeigt nur die
+  Renderer-Choreografie des Prioritätswechsels.

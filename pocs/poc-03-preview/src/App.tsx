@@ -14,6 +14,7 @@ import {
   getMappingsForDimension,
   getSubcategoriesForDimension,
 } from "../../../prototyp/src/framework/classifier";
+import { playCardPreviewAnimation } from "./cardMotionAdapter";
 import { playMappingAnimation } from "./motionAdapter";
 import { playInputPreviewAnimation } from "./inputMotionAdapter";
 
@@ -235,7 +236,7 @@ function PreviewPanel({
   const controls = useAnimationControls();
 
   useEffect(() => {
-    if (entry.component === "input") {
+    if (entry.component === "input" || entry.component === "card") {
       return;
     }
 
@@ -266,6 +267,13 @@ function PreviewPanel({
         ) : null}
         {entry.component === "modal" ? (
           <PreviewModal controls={controls} entry={entry} />
+        ) : null}
+        {entry.component === "card" ? (
+          <PreviewCard
+            entry={entry}
+            reducedMotion={reducedMotion}
+            replayKey={replayKey}
+          />
         ) : null}
         {entry.component === "toast" ? (
           <PreviewToast controls={controls} entry={entry} />
@@ -326,6 +334,67 @@ function PreviewModal({
       <p>{formatLabel(entry.subcategory)}</p>
       <button type="button">Bestätigen</button>
     </motion.div>
+  );
+}
+
+function PreviewCard({
+  entry,
+  reducedMotion,
+  replayKey,
+}: {
+  entry: MappingEntry;
+  reducedMotion: boolean;
+  replayKey: number;
+}) {
+  const affectedControls = useAnimationControls();
+  const counterpartControls = useAnimationControls();
+  const isBackground = entry.subcategory === "toBackground";
+
+  useEffect(() => {
+    void playCardPreviewAnimation(
+      entry,
+      {
+        affected: affectedControls,
+        counterpart: counterpartControls,
+      },
+      { reducedMotion },
+    );
+  }, [affectedControls, counterpartControls, entry, reducedMotion, replayKey]);
+
+  return (
+    <div className="demo-card-stack">
+      <motion.article animate={affectedControls} className="demo-card affected">
+        <span>{formatLabel(entry.subcategory)}</span>
+        <strong>
+          {isBackground ? "Aktive Card tritt zurück" : "Gewählte Card"}
+        </strong>
+        <p>
+          {isBackground
+            ? "Diese Card bleibt sichtbar, tritt aber zurück."
+            : "Diese Card übernimmt sichtbar den Vordergrund."}
+        </p>
+      </motion.article>
+      <motion.article
+        animate={counterpartControls}
+        className="demo-card counterpart"
+      >
+        <span>Kontext</span>
+        <strong>
+          {isBackground
+            ? "Neue Vordergrund-Card"
+            : "Vorherige Vordergrund-Card"}
+        </strong>
+        <p>
+          {isBackground
+            ? "Eine andere Card übernimmt die Vordergrundrolle."
+            : "Die vorherige Card wird sekundär."}
+        </p>
+      </motion.article>
+      <div className="demo-card ghost">
+        <span>Layout</span>
+        <strong>Weitere Card</strong>
+      </div>
+    </div>
   );
 }
 

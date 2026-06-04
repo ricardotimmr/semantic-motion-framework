@@ -45,6 +45,7 @@ const previewSizes: Record<ComponentId, PreviewSize> = {
   toast: { width: 360, height: 78 },
   input: { width: 320, height: 48 },
   skeleton: { width: 360, height: 0 },
+  card: { width: 240, height: 148 },
 };
 
 function waitForNextFrame() {

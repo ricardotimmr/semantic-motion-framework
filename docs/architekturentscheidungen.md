@@ -350,4 +350,47 @@ Diese Entscheidung gilt nur, solange interne Teilziele komponentenspezifische Ei
 - `icon`
 - `content`
 
-Besonders bei möglichen Erweiterungen wie Card-, Panel-, Sidebar- oder gestapelten Layer-Mappings kann ein explizites Target-Modell sinnvoll werden. Vorher reicht die dokumentierte Renderer-Konvention.
+Besonders bei möglichen Erweiterungen wie Panel-, Sidebar- oder gestapelten Layer-Mappings kann ein explizites Target-Modell sinnvoll werden. Die ergänzten Card-Hierarchie-Mappings bleiben im aktuellen Stand bewusst beim generischen Hauptelement-Modell.
+
+---
+
+## ADR-13: Card als gezielte Ergänzung für sichtbare Hierarchie-Zurückstufung
+
+### Entscheidung
+
+`card` wird als siebte Framework-Komponente ergänzt, aber bewusst nur für die Hierarchie-Dimension modelliert:
+
+- `card-hierarchy-toForeground`
+- `card-hierarchy-toBackground`
+
+Für Card werden keine zusätzlichen Feedback-, Direction-, State-Change- oder Attention-Mappings eingeführt.
+
+### Begründung
+
+`modal-hierarchy-toBackground` blendet das Modal bewusst vollständig aus, weil ein halbtransparent sichtbares geschlossenes Modal UX-seitig missverständlich wäre. Dadurch kann das Modal zwar Hierarchieverlust und Fokusentfernung zeigen, aber nicht den theoretisch sauberen Fall, in dem ein Element sichtbar bleibt und trotzdem in der Priorität zurücktritt.
+
+Cards eignen sich dafür besser: Sie sind häufig Teil eines sichtbaren Layouts, können im Kontext anderer Cards bestehen bleiben und durch reduzierte Größe, Deckkraft und visuelles Gewicht als sekundär wahrgenommen werden. Damit schließt Card eine Lücke in der Hierarchie-Dimension, ohne das Modal-Mapping künstlich umzudeuten.
+
+### Modellierung
+
+Die Card-Mappings verwenden dieselben generischen Parameter wie andere Hierarchie-Mappings:
+
+- `scaleFactor`
+- `scaleMode`
+- `opacity`
+- `easing`
+- `duration`
+
+Schatten, z-index und benachbarte Cards werden nicht im Mapping modelliert. Diese Darstellung bleibt Renderer-Verantwortung. Das Mapping beschreibt nur die semantische Repriorisierung des animierten Hauptelements.
+
+Die Preview darf deshalb eine zweite Card als Kontext animieren. Diese
+Gegenbewegung macht die Hierarchierelation sichtbar, ist aber keine zusätzliche
+Mapping-Aussage. Die Mapping-Parameter gelten weiterhin für die betroffene
+Card; z-index, Schatten und benachbarte Cards bleiben komponentenspezifische
+Renderer-Choreografie.
+
+### Abgrenzung
+
+Die Ergänzung von Card erweitert nicht den Anspruch des Frameworks auf vollständige Komponentenabdeckung. Card wird nur aufgenommen, weil sie eine spezifische theoretische Lücke sichtbar macht: `hierarchy-toBackground` als sichtbare Zurückstufung statt Exit.
+
+Weitere Card-Mappings wären eine eigene Erweiterung und gehören nicht zum aktuellen Scope.

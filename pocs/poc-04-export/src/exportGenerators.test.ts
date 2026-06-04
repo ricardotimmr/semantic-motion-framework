@@ -174,4 +174,18 @@ describe("POC 04 export generators", () => {
     expect(backgroundCode).toContain("scale: 1, // Startgröße");
     expect(backgroundCode).toContain("scale: 0.96");
   });
+
+  it("exports card hierarchy background as visible reprioritization, not exit", () => {
+    const entry = getMappingById("card-hierarchy-toBackground");
+
+    expect(entry).not.toBeNull();
+
+    const framerCode = generateFramerMotionCode(entry!);
+    const cssCode = generateCSSCode(entry!);
+
+    expect(framerCode).toContain("scale: 0.97");
+    expect(framerCode).toContain("opacity: 0.68");
+    expect(cssCode).toContain("scale(0.97)");
+    expect(cssCode).toContain("opacity: 0.68");
+  });
 });

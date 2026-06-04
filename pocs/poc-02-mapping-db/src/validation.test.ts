@@ -23,8 +23,8 @@ describe("POC 02 mapping database validation", () => {
   it("validates the current mapping database without structural errors", () => {
     const report = validateMappingDatabase();
 
-    expect(report.totalEntries).toBe(24);
-    expect(report.uniqueIds).toBe(24);
+    expect(report.totalEntries).toBe(26);
+    expect(report.uniqueIds).toBe(26);
     expect(report.errors).toEqual([]);
   });
 
@@ -71,6 +71,7 @@ describe("POC 02 mapping database validation", () => {
       "toggle",
       "toast",
       "modal",
+      "card",
       "input",
       "skeleton",
     ]);
@@ -117,5 +118,16 @@ describe("POC 02 mapping database validation", () => {
     expect(errors).toContain(
       "modal-hierarchy-toBackground: scaleFactor must be greater than 0",
     );
+  });
+
+  it("includes card hierarchy mappings for visible layer reprioritization", () => {
+    const foreground = getMappingFor("card", "hierarchy", "toForeground");
+    const background = getMappingFor("card", "hierarchy", "toBackground");
+
+    expect(foreground?.id).toBe("card-hierarchy-toForeground");
+    expect(foreground?.params.scaleMode).toBe("scaleIn");
+    expect(background?.id).toBe("card-hierarchy-toBackground");
+    expect(background?.params.scaleMode).toBe("scaleOut");
+    expect(background?.params.opacity).toEqual([1, 0.68]);
   });
 });

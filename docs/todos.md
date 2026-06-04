@@ -4,49 +4,11 @@ Diese Datei sammelt die noch offenen Punkte, die das Framework vor dem eigentlic
 
 ## Offene Reihenfolge
 
-1. Sichtbar zurückgestuftes Card-/Panel-Layer-Mapping prüfen oder umsetzen.
-2. Kleine fachliche Mapping-Checks erledigen.
-3. Framework-Dokumentation mit dem finalen Datenmodell synchronisieren.
-4. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen.
+1. Kleine fachliche Mapping-Checks erledigen.
+2. Framework-Dokumentation mit dem finalen Datenmodell synchronisieren.
+3. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen.
 
-## 1. Sichtbar zurückgestuftes Card-/Panel-Layer-Mapping prüfen oder umsetzen
-
-Status: Optional, aber fachlich sinnvoll.
-
-Aktueller Befund:
-
-- `modal-hierarchy-toBackground` blendet das Modal bewusst aus.
-- Ein halbtransparent sichtbares Modal nach dem Schließen wäre UX-seitig missverständlich.
-- Ein echtes sichtbares Zurücktreten eignet sich eher für Card, Panel, Sidebar oder gestapelte Ebenen.
-
-Mögliche Umsetzung:
-
-- Neue Komponente oder neues Beispiel:
-  - `card`
-  - `panel`
-  - `layer`
-- Mappings:
-  - `card-hierarchy-toForeground`
-  - `card-hierarchy-toBackground`
-- ToBackground könnte z. B. Deckkraft, Schatten und Scale reduzieren, ohne das Element vollständig zu entfernen.
-
-Vorher klären:
-
-- Passt `card` oder `panel` besser zum Scope der Bachelorarbeit?
-- Soll dafür `COMPONENT_IDS` erweitert werden?
-- Muss die Gliederung angepasst werden, weil bisher sechs Komponenten argumentiert werden?
-- Ist der Mehrwert groß genug, um den Scope zu erweitern?
-
-Empfehlung:
-
-- Nur umsetzen, wenn du die Hierarchie-Dimension im Editor stärker zeigen willst.
-- Wenn ja, zuerst O2/Scale-Modell entscheiden.
-
-Akzeptanzkriterium:
-
-- `hierarchy-toBackground` ist an mindestens einer Komponente sichtbar als Zurückstufung und nicht als Exit interpretierbar.
-
-## 2. Kleine fachliche Mapping-Checks erledigen
+## 1. Kleine fachliche Mapping-Checks erledigen
 
 Status: Offen.
 
@@ -75,7 +37,7 @@ TODO:
 - Visuell prüfen, ob der Success-Zustand wahrnehmbar genug ist.
 - Falls zu schwach, eher kleinen Success-Indikator oder Border-Feedback ergänzen statt das gesamte Input-Feld stärker zu skalieren.
 
-## 3. Framework-Dokumentation synchronisieren
+## 2. Framework-Dokumentation synchronisieren
 
 Status: Offen.
 
@@ -87,20 +49,21 @@ Aktueller Befund:
   - Opacity als Sichtbarkeitsparameter
   - Input-spezifische Renderer-Regeln
   - explizites `scaleMode`
+  - Card als gezielte Hierarchie-Ergänzung
 - Einige Dokumente können dadurch ältere Formulierungen enthalten.
 
 TODO:
 
 - `docs/framework-konzept.md` gegen `types.ts` und `mappings.ts` prüfen.
 - Mapping-Tabellen und Beispiele auf `motionPhases` aktualisieren.
-- Falls Card/Panel ergänzt wird, Gliederung und Scope-Argumentation aktualisieren.
+- Falls weitere Panel-/Layer-Erweiterungen ergänzt werden, Gliederung und Scope-Argumentation aktualisieren.
 - `docs/pocs.md` nur anpassen, wenn es als aktuelle Planung gelesen werden soll.
 
 Akzeptanzkriterium:
 
 - Dokumentation, Mapping-Datenbank und Typsystem widersprechen sich nicht.
 
-## 4. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen
+## 3. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen
 
 Status: Offen, sobald der eigentliche Editor/Hauptprototyp gebaut wird.
 
@@ -129,6 +92,7 @@ Akzeptanzkriterium:
 - Reduced-Motion-Strategie als Accessibility-Metadatum modelliert, relevante Mappings markiert und in POC 03 testbar gemacht.
 - Komponentenspezifische Renderer-Regeln für interne Teilziele als ADR dokumentiert.
 - Explizites Scale-Modell eingeführt: `scaleFactor` wird über `scaleMode` als `pulse`, `scaleIn` oder `scaleOut` interpretiert.
+- Card als siebte Komponente ergänzt, um sichtbares `hierarchy-toBackground` als Zurückstufung statt Exit abzubilden.
 - `button-feedback-success` Begründung ohne Aufwärtsbewegung geschärft.
 - `hierarchy-toBackground` Kommentar und Begründung präzisiert.
 - Spring-Kommentar in `types.ts` präzisiert.

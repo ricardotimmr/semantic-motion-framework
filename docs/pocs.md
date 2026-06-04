@@ -65,7 +65,7 @@ Validieren, dass die theoretisch hergeleitete Taxonomie in eine typsichere TypeS
 ### Datenstruktur (Entwurf)
 
 ```typescript
-type ComponentId = 'button' | 'toggle' | 'toast' | 'modal' | 'input' | 'skeleton'
+type ComponentId = 'button' | 'toggle' | 'toast' | 'modal' | 'card' | 'input' | 'skeleton'
 
 type Dimension = 'feedback' | 'stateChange' | 'direction' | 'hierarchy' | 'attention'
 
@@ -126,7 +126,7 @@ Validieren, dass die Mapping-Datenbank aus POC 2 direkt als Animationsquelle fü
 
 ### Aufgaben
 
-- Preview-Komponenten für Button, Modal und Toast bauen
+- Preview-Komponenten für alle Framework-Komponenten bauen
 - Jede Komponente nimmt einen `MappingEntry` als Prop entgegen und spielt die dort definierten `AnimationParams` ab
 - Auswahl-UI bauen: Dropdown oder Button-Gruppe für Komponente und Bedeutungsdimension, direkt aus der Mapping-Datenbank generiert (keine hardcodierten Labels)
 - Animation wird bei jeder Änderung der Auswahl automatisch neu ausgelöst
@@ -136,13 +136,13 @@ Validieren, dass die Mapping-Datenbank aus POC 2 direkt als Animationsquelle fü
 
 - Wie wird der Animation-State zurückgesetzt, damit sie erneut abgespielt werden kann? (`key`-Trick in React vs. imperative Framer Motion Controls)
 - Wie wird sichergestellt, dass bei sehr schnellen Auswahländerungen keine Animationen übereinander laufen?
-- Müssen die Preview-Komponenten für die sechs Framework-Komponenten identisch strukturiert sein, oder gibt es komponentenspezifische Besonderheiten?
+- Müssen die Preview-Komponenten für die sieben Framework-Komponenten identisch strukturiert sein, oder gibt es komponentenspezifische Besonderheiten?
 
 ### Erfolgskriterien
 
 - Auswahl einer neuen Kombination löst die Animation sofort aus
 - Wiederholungs-Button funktioniert zuverlässig
-- Alle drei Komponenten (Button, Modal, Toast) spielen ihre Animation korrekt ab
+- Alle Framework-Komponenten spielen ihre Animation korrekt ab
 - Die Animationsparameter kommen ausschließlich aus der Mapping-Datenbank, keine hardcodierten Werte in den Preview-Komponenten
 
 ### Abgrenzung

@@ -77,9 +77,9 @@ Zugang: [https://www.oreilly.com/library/view/microinteractions/9781491945912/](
 
 Relevanz: hoch
 
-Saffer beschreibt das Trigger-Rules-Feedback-Loops-Modell für kleinteilige Interaktionen. Mikrointeraktionen sind der unmittelbare Anwendungskontext des Frameworks: Button-Klicks, Toast-Benachrichtigungen, Toggle-Zustandswechsel. Das Modell liefert die strukturelle Beschreibungsebene, auf der Animationen als Feedback-Mechanismus eingeordnet werden.
+Saffer beschreibt das Trigger-Rules-Feedback-Loops-Modell für kleinteilige Interaktionen. Mikrointeraktionen sind der unmittelbare Anwendungskontext des Frameworks: Button-Klicks, Toast-Benachrichtigungen, Toggle-Zustandswechsel und vergleichbare UI-Statuswechsel. Das Modell liefert die strukturelle Beschreibungsebene, auf der Animationen als Feedback-Mechanismus eingeordnet werden.
 
-Einsatz in der Arbeit: Theoriekapitel Microinteractions; Grundlage für die Komponentenauswahl (Button, Toggle, Toast, Modal).
+Einsatz in der Arbeit: Theoriekapitel Microinteractions; Grundlage für die Komponentenauswahl im Framework.
 
 ---
 
@@ -180,7 +180,7 @@ Zugang: [https://www.wiley.com/en-us/About+Face%3A+The+Essentials+of+Interaction
 
 Relevanz: mittel
 
-About Face behandelt ausführlich Verhaltensmuster von UI-Elementen und liefert konzeptuelle Werkzeuge für Zustandswechsel, Navigation und Feedback. Nützlich für die Verortung der vier Framework-Komponenten (Button, Toggle, Toast, Modal) in der IxD-Literatur.
+About Face behandelt ausführlich Verhaltensmuster von UI-Elementen und liefert konzeptuelle Werkzeuge für Zustandswechsel, Navigation, Feedback und Hierarchie. Nützlich für die Verortung der Framework-Komponenten in der IxD-Literatur.
 
 ---
 

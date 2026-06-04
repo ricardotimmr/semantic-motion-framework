@@ -262,6 +262,62 @@ h1 {
   font-size: 0.8rem;
 }
 
+.demo-card-stack {
+  position: relative;
+  width: min(560px, calc(100% - 1.5rem));
+  min-height: 268px;
+}
+
+.demo-card {
+  position: absolute;
+  top: 54px;
+  left: calc(50% - 120px);
+  width: 240px;
+  min-height: 148px;
+  border: 1px solid var(--line);
+  background: rgba(247, 241, 227, 0.92);
+  padding: 1rem;
+  box-shadow: 0 18px 52px rgba(28, 28, 30, 0.12);
+  transform-origin: center;
+}
+
+.demo-card.ghost {
+  top: 104px;
+  left: calc(50% - 198px);
+  z-index: 0;
+  opacity: 0.36;
+  transform: scale(0.86);
+  box-shadow: none;
+}
+
+.demo-card.affected,
+.demo-card.counterpart {
+  will-change: transform, opacity;
+}
+
+.demo-card span {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.demo-card strong {
+  display: block;
+  margin-bottom: 0.55rem;
+  font-size: 1rem;
+}
+
+.demo-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
 .demo-toast {
   position: absolute;
   left: calc(50% - 180px);

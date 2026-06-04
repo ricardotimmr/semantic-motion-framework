@@ -328,7 +328,7 @@ Metapher.
 
 **Wahrnehmungspsychologische Grundlage:** Größe ist ein präattentives Merkmal (Treisman & Gelade 1980). Skalierung kommuniziert deshalb Hierarchie ohne bewusste Verarbeitung. Ware (2012) beschreibt, wie räumliche Nähe mit Relevanz assoziiert wird.
 
-**Gilt für Komponenten:** Modal (Erscheinen als primärer Layer), Toast (sekundäre Benachrichtigung), Button (primary vs. secondary)
+**Gilt für Komponenten:** Modal (Erscheinen als primärer Layer), Card (sichtbare Repriorisierung im Layout), Toast (sekundäre Benachrichtigung), Button (primary vs. secondary)
 
 ---
 
@@ -361,6 +361,14 @@ Metapher.
 | Amplitude | Scale 1.0 → 0.96 + Opacity leicht reduzieren | Minimale Verkleinerung signalisiert Rückzug ohne Verschwinden |
 | Iterations | 1 | |
 | Zeichentyp | Ikon | |
+
+**Komponentenabhängige Abgrenzung:** Bei Cards kann diese Bedeutung sichtbar
+als Zurückstufung innerhalb eines Layouts dargestellt werden: Die Card wird
+etwas kleiner und verliert Deckkraft, bleibt aber als sekundäre Ebene sichtbar.
+Bei Modals ist dieselbe sichtbare Zurückstufung UX-seitig problematisch, weil
+ein geschlossenes, halbtransparent sichtbares Modal missverständlich wäre. Das
+Modal-Mapping operationalisiert Hierarchieverlust deshalb als Entfernen aus dem
+aktiven Fokus, während das Card-Mapping die sichtbare Zurückstufung abbildet.
 
 ---
 
@@ -416,9 +424,66 @@ Metapher.
 
 ---
 
+### Komponente: Card
+
+Die Card ergänzt das Framework gezielt für die Hierarchie-Dimension. Anders als
+ein Modal ist eine Card Teil eines sichtbaren Layouts und kann deshalb in ihrer
+Priorität zurückgestuft werden, ohne die UI zu verlassen. Dadurch eignet sie
+sich, um `hierarchy-toBackground` als tatsächliches Zurücktreten und nicht als
+Exit zu demonstrieren.
+
+**Gilt für Dimensionen:** Hierarchie (toForeground, toBackground)
+
+In der Preview wird Card-Hierarchie relational dargestellt: Eine zweite Card
+kann als Kontext mitanimiert werden, damit Vordergrund und Hintergrund als
+Prioritätswechsel lesbar werden. Diese Kontextbewegung ist Renderer-Logik; das
+Mapping beschreibt weiterhin die Repriorisierung der betroffenen Card.
+
+---
+
+#### Card / Hierarchie / In den Vordergrund
+
+**Bedeutung:** Eine Card wird zur primären Ebene innerhalb eines sichtbaren
+Card- oder Panel-Kontexts.
+
+| Parameter | Wert | Begründung |
+|---|---|---|
+| Easing | Ease-Out `[0.0, 0.0, 0.2, 1.0]` | Ankommen als Vordergrundsignal |
+| Duration | 220ms | Kurz genug für Layout-Kontext, aber wahrnehmbar |
+| Direction | none | Keine räumliche Navigation; lokale Repriorisierung |
+| Amplitude | Scale 0.96→1.0 + Opacity 0.78→1.0 | Größere und kontrastreichere Card wirkt näher und wichtiger |
+| Iterations | 1 | |
+| Zeichentyp | Ikon | Skalierung und Deckkraft ähneln physikalischer Annäherung |
+
+**Für Editor-Begründungstext:** Die Card wächst leicht auf ihre volle Größe und
+gewinnt Deckkraft. Dadurch wirkt sie näher und wichtiger, ohne ihre Position im
+Layout zu verlassen.
+
+---
+
+#### Card / Hierarchie / In den Hintergrund
+
+**Bedeutung:** Eine Card verliert Priorität, bleibt aber als sekundäre Ebene im
+Layout sichtbar.
+
+| Parameter | Wert | Begründung |
+|---|---|---|
+| Easing | Ease-In-Out `[0.4, 0.0, 0.2, 1.0]` | Ruhige Repriorisierung ohne Exit-Charakter |
+| Duration | 220ms | Identisch zum Vordergrundwechsel für Paarkonsistenz |
+| Direction | none | Keine Navigation, keine Entfernung aus dem Layout |
+| Amplitude | Scale 1.0→0.97 + Opacity 1.0→0.68 | Verkleinerung und reduzierte Deckkraft signalisieren Rücktritt |
+| Iterations | 1 | |
+| Zeichentyp | Ikon | Verkleinerung ähnelt physikalischem Zurücktreten |
+
+**Für Editor-Begründungstext:** Die Card wird leicht kleiner und verliert etwas
+Deckkraft, bleibt aber sichtbar. So tritt sie als sekundäre Ebene zurück, ohne
+als geschlossen oder entfernt verstanden zu werden.
+
+---
+
 ### Komponente: Input Field
 
-Das Input Field ist die einzige Komponente im Framework, bei der der Nutzer aktiv im Element ist, während Animationen ausgelöst werden können. Das unterscheidet sie fundamental von den anderen interaktiven Komponenten: Beim Button, Toggle, Toast oder Modal ist die Nutzeraktion abgeschlossen oder das Element systeminitiiert, bevor die Animation beginnt. Beim Input Field kann die Animation während der laufenden Interaktion stattfinden, etwa wenn eine Validierung in Echtzeit ausgelöst wird.
+Das Input Field ist die einzige Komponente im Framework, bei der der Nutzer aktiv im Element ist, während Animationen ausgelöst werden können. Das unterscheidet sie fundamental von den anderen interaktiven Komponenten: Beim Button, Toggle, Toast, Modal oder Card ist die Nutzeraktion abgeschlossen oder das Element systeminitiiert, bevor die Animation beginnt. Beim Input Field kann die Animation während der laufenden Interaktion stattfinden, etwa wenn eine Validierung in Echtzeit ausgelöst wird.
 
 Diese Besonderheit hat eine direkte Konsequenz für die Animationsparameter: Animationen am Input Field müssen kürzer und subtiler sein als an anderen Komponenten, weil sie den laufenden Eingabefluss nicht unterbrechen dürfen. Hochamplitudige oder langandauernde Animationen (wie der volle Button-Error-Shake) wären während aktiver Eingabe störend. Der Error-Shake wird deshalb für das Input Field in Duration und Amplitude reduziert.
 
@@ -639,6 +704,8 @@ Die folgende Tabelle gibt einen Überblick aller geplanten Mappings. Die vollst�
 | Modal | Hierarchie | In den Hintergrund | Ease-In | 250ms | none | Scale 1.0→0.96 | Ikon |
 | Modal | Direction | Enter | Ease-Out | 350ms | y (von unten) | Volle Höhe | Index |
 | Modal | Direction | Exit | Ease-In | 280ms | y (nach unten) | Volle Höhe | Index |
+| Card | Hierarchie | In den Vordergrund | Ease-Out | 220ms | none | Scale 0.96→1.0 + Opacity 0.78→1.0 | Ikon |
+| Card | Hierarchie | In den Hintergrund | Ease-In-Out | 220ms | none | Scale 1.0→0.97 + Opacity 1.0→0.68 | Ikon |
 | Input Field | Feedback | Success | Ease-Out | 175ms | none | Scale 1.0→1.02→1.0 | Ikon/Index |
 | Input Field | Feedback | Error | Sharp | 275ms | x (Shake) | ±5px | Index |
 | Input Field | Feedback | Warning | Ease-In-Out | 300ms | none | Helper-Text: Opacity + y-Offset | Ikon |
@@ -658,4 +725,4 @@ Die folgende Tabelle gibt einen Überblick aller geplanten Mappings. Die vollst�
 
 **Accessibility:** Alle Animationen müssen `prefers-reduced-motion` respektieren. Das Framework definiert keine statischen Alternativzustände; diese sind in der Editor-Implementierung zu ergänzen.
 
-**Scope:** Das Framework deckt sechs Komponenten und fünf Bedeutungsdimensionen ab. Es erhebt keinen Anspruch auf Vollständigkeit für alle UI-Komponenten oder alle denkbaren Bedeutungsdimensionen. Mit dem Skeleton Loader sind alle drei Peirce-Zeichentypen (Ikon, Index, Symbol) im Framework vertreten.
+**Scope:** Das Framework deckt sieben Komponenten und fünf Bedeutungsdimensionen ab. Es erhebt keinen Anspruch auf Vollständigkeit für alle UI-Komponenten oder alle denkbaren Bedeutungsdimensionen. Card wurde gezielt ergänzt, um sichtbare Hierarchie-Zurückstufung darzustellen; daraus folgt kein Anspruch, Card-Mappings für alle Dimensionen vollständig abzudecken. Mit dem Skeleton Loader sind alle drei Peirce-Zeichentypen (Ikon, Index, Symbol) im Framework vertreten.

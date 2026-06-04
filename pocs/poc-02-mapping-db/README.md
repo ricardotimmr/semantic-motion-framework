@@ -48,7 +48,7 @@ Validieren, dass die theoretisch hergeleitete Taxonomie in eine typsichere TypeS
 ### Datenstruktur (Entwurf)
 
 ```typescript
-type ComponentId = 'button' | 'toggle' | 'toast' | 'modal' | 'input' | 'skeleton'
+type ComponentId = 'button' | 'toggle' | 'toast' | 'modal' | 'card' | 'input' | 'skeleton'
 
 type Dimension = 'feedback' | 'stateChange' | 'direction' | 'hierarchy' | 'attention'
 
@@ -100,7 +100,7 @@ Die ergänzte UI ist bewusst kein Editor, sondern nur ein Validierungsdashboard.
 
 ### Ergebnis
 
-- Die aktuelle Mapping-Datenbank enthält 24 Einträge mit 24 eindeutigen IDs.
+- Die aktuelle Mapping-Datenbank enthält 26 Einträge mit 26 eindeutigen IDs.
 - Jeder Eintrag ist über `getMapping(...)` und `getMappingById(...)` erreichbar.
 - Jeder Eintrag enthält `rationale.source` und `rationale.references`.
 - Kombinationen außerhalb des definierten Scopes geben `null` zurück.

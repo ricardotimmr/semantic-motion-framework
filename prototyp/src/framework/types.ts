@@ -16,8 +16,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * Die sechs UI-Komponenten, die das Framework abdeckt.
+ * Die sieben UI-Komponenten, die das Framework abdeckt.
  * Jede Komponente hat ihre eigene Menge gültiger Dimensions-/Subkategorie-Kombinationen.
+ *
+ * card – Ergänzt Hierarchie-Mappings, bei denen ein Element sichtbar
+ *        zurückgestuft bleibt statt wie ein Modal aus dem Fokus entfernt zu werden.
  *
  * skeleton – Ergänzt als konkretes Beispiel für den Symbol-Zeichentyp
  *            nach Peirce. Die Shimmer-Animation ist rein konventionell,
@@ -28,6 +31,7 @@ export const COMPONENT_IDS = [
   "toggle",
   "toast",
   "modal",
+  "card",
   "input",
   "skeleton",
 ] as const;
@@ -509,6 +513,7 @@ export type ReferenceKey =
   | "Peirce1931"
   | "Chandler2007"
   | "Norman2013"
+  | "TreismanGelade1980"
   | "Ware2012"
   | "ZacksTversky2001"
   | "BartramWareCalvert2003"

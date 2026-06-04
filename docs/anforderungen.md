@@ -30,7 +30,7 @@ Jede Anforderung ist mit Priorität (hoch / mittel) und der Quelle aus der Stake
 
 **FA-01: Komponentenauswahl**
 
-Der Editor ermöglicht die Auswahl einer UI-Komponente aus einer vordefinierten Liste: Button, Toggle, Toast, Modal, Input und Skeleton Loader. Die Auswahl bestimmt, welche semantischen Mappings und Bedeutungsdimensionen angezeigt werden.
+Der Editor ermöglicht die Auswahl einer UI-Komponente aus einer vordefinierten Liste: Button, Toggle, Toast, Modal, Card, Input und Skeleton Loader. Die Auswahl bestimmt, welche semantischen Mappings und Bedeutungsdimensionen angezeigt werden.
 
 Priorität: hoch  
 Quelle: Profil A (Designer), Profil B (Entwickler)
@@ -84,7 +84,7 @@ Quelle: Profil B
 
 **FA-07: Mapping-Datenbank als Kern des Frameworks**
 
-Das System basiert auf einer strukturierten Mapping-Datenbank, die Animationsparameter (Easing, Duration, Direction, Amplitude) auf Bedeutungsdimensionen (Feedback, State Change, Direction, Hierarchie, Aufmerksamkeit) abbildet. Die Datenbank muss vollständig für die sechs definierten Komponenten vorliegen. Jeder Eintrag ist auf eine Quelle aus dem theoretischen Rahmen zurückführbar.
+Das System basiert auf einer strukturierten Mapping-Datenbank, die Animationsparameter (Easing, Duration, Direction, Amplitude) auf Bedeutungsdimensionen (Feedback, State Change, Direction, Hierarchie, Aufmerksamkeit) abbildet. Die Datenbank muss vollständig für die sieben definierten Komponenten vorliegen. Jeder Eintrag ist auf eine Quelle aus dem theoretischen Rahmen zurückführbar.
 
 Priorität: hoch  
 Quelle: Betreuer, Lehrende und Studierende (HCI/IxD)
@@ -171,7 +171,7 @@ Quelle: Betreuer, Lehrende und Studierende (HCI/IxD)
 
 **NFA-08: Scope-Begrenzung als Designprinzip**
 
-Der Editor beschränkt sich auf sechs Komponenten und die im Framework definierten Bedeutungsdimensionen. Erweiterungen des Funktionsumfangs über diesen Scope hinaus sind für den Prototyp ausgeschlossen, um den Demonstrationscharakter zu erhalten.
+Der Editor beschränkt sich auf sieben Komponenten und die im Framework definierten Bedeutungsdimensionen. Erweiterungen des Funktionsumfangs über diesen Scope hinaus sind für den Prototyp ausgeschlossen, um den Demonstrationscharakter zu erhalten.
 
 Priorität: hoch  
 Quelle: Betreuer
@@ -185,7 +185,7 @@ Die folgenden Punkte wurden als potenziell relevant identifiziert, liegen aber e
 - Persistenz von Nutzersitzungen oder gespeicherten Auswahlen
 - Permalink-System zum Teilen von Animationsauswahlen
 - Empirische Validierung der Bedeutungszuordnungen durch Nutzertests
-- Unterstutzung weiterer UI-Komponenten über die sechs definierten hinaus
+- Unterstützung weiterer UI-Komponenten über die sieben definierten hinaus
 - Integration in bestehende Design-Tools (Figma-Plugin o.a.)
 
 ---
@@ -288,7 +288,7 @@ Editor öffnen (keine Registrierung, kein Onboarding)
   |
   v
 Komponente auswählen
-[Button | Toggle | Toast | Modal | Input | Skeleton]
+[Button | Toggle | Toast | Modal | Card | Input | Skeleton]
   |
   v
 Bedeutungsdimension auswählen
