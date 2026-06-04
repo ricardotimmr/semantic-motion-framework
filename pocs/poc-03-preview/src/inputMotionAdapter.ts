@@ -53,6 +53,11 @@ const warningField: TargetAndTransition = {
   backgroundColor: "rgba(247, 241, 227, 0.72)",
 };
 
+const successField: TargetAndTransition = {
+  borderColor: "rgba(47, 122, 86, 0.72)",
+  backgroundColor: "rgba(235, 247, 239, 0.72)",
+};
+
 const errorField: TargetAndTransition = {
   borderColor: "rgba(139, 46, 46, 0.62)",
   backgroundColor: "rgba(247, 241, 227, 0.72)",
@@ -64,6 +69,10 @@ const neutralLabel: TargetAndTransition = {
 
 const focusedLabel: TargetAndTransition = {
   color: "rgba(47, 84, 70, 0.95)",
+};
+
+const successLabel: TargetAndTransition = {
+  color: "rgba(47, 122, 86, 0.95)",
 };
 
 const hiddenMessage: TargetAndTransition = {
@@ -150,9 +159,9 @@ async function playInputFocus(
   stopInputControls(controls);
   setInputState(controls, {
     container: neutralContainer,
-    field: neutralField,
-    label: neutralLabel,
-    message: hiddenMessage,
+    field: successField,
+    label: successLabel,
+    message: visibleMessage,
   });
   await waitForNextFrame();
   await wait(getPreviewChoreography(entry).holdInitialMs);
@@ -235,6 +244,33 @@ async function playInputSuccess(
   });
 }
 
+async function playInputRequiredField(
+  entry: MappingEntry,
+  controls: InputPreviewControls,
+) {
+  const transition = getTransition(entry);
+  const scaleFactor = entry.params.scaleFactor ?? 0.015;
+
+  stopInputControls(controls);
+  setInputState(controls, {
+    container: neutralContainer,
+    field: warningField,
+    label: focusedLabel,
+    message: visibleMessage,
+  });
+  await waitForNextFrame();
+  await wait(getPreviewChoreography(entry).holdInitialMs);
+
+  await controls.container.start({
+    scale: [1, 1 + scaleFactor, 1],
+    transition: {
+      ...transition,
+      repeat: Math.max((entry.params.iterations ?? 1) - 1, 0),
+      times: [0, 0.5, 1],
+    },
+  });
+}
+
 async function playInputShake(
   entry: MappingEntry,
   controls: InputPreviewControls,
@@ -242,14 +278,13 @@ async function playInputShake(
   const transition = getTransition(entry);
   const values = entry.params.keyframes?.values ?? [0, 0];
   const times = entry.params.keyframes?.times;
-  const isRequiredField = entry.id === "input-attention-requiredField";
 
   stopInputControls(controls);
   setInputState(controls, {
     container: neutralContainer,
     field: errorField,
     label: neutralLabel,
-    message: isRequiredField ? visibleMessage : hiddenMessage,
+    message: hiddenMessage,
   });
   await waitForNextFrame();
   await wait(getPreviewChoreography(entry).holdInitialMs);
@@ -272,8 +307,8 @@ async function playReducedInputMotion(
   stopInputControls(controls);
   setInputState(controls, {
     container: neutralContainer,
-    field: errorField,
-    label: neutralLabel,
+    field: isRequiredField ? warningField : errorField,
+    label: isRequiredField ? focusedLabel : neutralLabel,
     message: isRequiredField ? visibleMessage : hiddenMessage,
   });
   await waitForNextFrame();
@@ -310,10 +345,12 @@ export async function playInputPreviewAnimation(
     return;
   }
 
-  if (
-    entry.id === "input-feedback-error" ||
-    entry.id === "input-attention-requiredField"
-  ) {
+  if (entry.id === "input-attention-requiredField") {
+    await playInputRequiredField(entry, controls);
+    return;
+  }
+
+  if (entry.id === "input-feedback-error") {
     await playInputShake(entry, controls);
     return;
   }

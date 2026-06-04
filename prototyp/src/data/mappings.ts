@@ -95,7 +95,7 @@ export const mappings: MappingDatabase = [
       short:
         "Das wiederholte, gleichmäßige Pulsieren fordert Aufmerksamkeit ein, " +
         "ohne Dringlichkeit zu signalisieren. Es endet nach drei Zyklen " +
-        "und unterscheidet sich damit vom dauerhaften Puls eines ausstehenden Pflichtfelds.",
+        "und unterscheidet sich damit von persistenten Aufmerksamkeitssignalen.",
       source:
         "Attention-Dimension (nicht Feedback): Das Signal ist systeminitiiert, " +
         "nicht Reaktion auf eine abgeschlossene Nutzeraktion. " +
@@ -615,15 +615,18 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        "Die minimale Ausdehnung und die sofortige Rückkehr zur Ursprungsgröße " +
-        "signalisiert, dass die Eingabe valide ist, ohne den Tippfluss " +
-        "zu unterbrechen.",
+        "Die minimale Ausdehnung und die unterstützende Success-Markierung " +
+        "an Feld und Label signalisieren, dass die Eingabe valide ist, " +
+        "ohne den Tippfluss zu unterbrechen.",
       source:
         "Ikon/Index (Peirce): leichte Expansion als Positivsignal. " +
+        "Die komponentenspezifische Success-Markierung an Border und Label " +
+        "wirkt als visueller Zustands-Signifier (Norman 2013) und unterstützt " +
+        "das Motion-Signal, ohne selbst primärer Bewegungsparameter zu sein. " +
         "Ease-Out: Abklingen (Zacks & Tversky 2001). Duration 175ms: " +
         "kürzer als button-feedback-success (250ms), weil Eingabe aktiv " +
         "sein kann (Head 2016). scaleFactor 0.02: minimal, subtiler als Button.",
-      references: ["Peirce1931", "ZacksTversky2001", "Head2016"],
+      references: ["Peirce1931", "Norman2013", "ZacksTversky2001", "Head2016"],
       signType: "icon/index",
     },
   },
@@ -759,35 +762,32 @@ export const mappings: MappingDatabase = [
     dimension: "attention",
     subcategory: "requiredField",
     params: {
-      easing: { preset: "sharp" },
-      duration: 325,
-      direction: "x",
-      translatePx: 6,
-      iterations: 1,
-      keyframes: {
-        values: [0, -6, 6, -6, 6, 0],
-        times:  [0, 0.2, 0.4, 0.6, 0.8, 1.0],
-      },
+      easing: { preset: "easeInOut" },
+      duration: 450,
+      scaleFactor: 0.015, // 1.0 → 1.015 → 1.0
+      scaleMode: "pulse",
+      iterations: 3,
     },
     accessibility: {
-      reducedMotion: "replace",
+      reducedMotion: "shorten",
     },
     rationale: {
       short:
-        "Der Shake signalisiert, dass dieses Feld ausgefüllt werden muss, " +
-        "bevor das Formular abgesendet werden kann. Die Bewegung zieht " +
-        "die Aufmerksamkeit auf das Feld, ohne eine Fehlermeldung zu überlagern.",
+        "Das Feld pulsiert dreimal subtil und lenkt die Aufmerksamkeit auf " +
+        "eine ausstehende Pflichtangabe. Die Wiederholung macht den Zustand " +
+        "wahrnehmbar, ohne die laufende Orientierung im Formular zu unterbrechen.",
       source:
-        "Index (Peirce): horizontaler Shake als Ablehnungsindex (Ware 2012). " +
-        "Attention statt allgemeines Feedback: Nach einer fehlgeschlagenen " +
-        "Formularabgabe fordert nicht die gesamte Aktion Bewertung ein, sondern " +
-        "ein konkretes Feld Aufmerksamkeit und Korrektur. " +
-        "translatePx ±6px: etwas mehr als input-feedback-error (±5px), " +
-        "weil dieser Shake von einer Submit-Aktion ausgelöst wird. " +
-        "Duration 325ms: zwischen input-feedback-error (275ms) und " +
-        "button-feedback-error (350ms), damit das Feld auffällt, ohne den " +
-        "Formularfluss übermäßig zu blockieren (Head 2016).",
-      references: ["Peirce1931", "Ware2012", "Head2016"],
+        "Index (Peirce): wiederholte Bewegung verweist auf einen ausstehenden " +
+        "Zustand, der Aufmerksamkeit benötigt. Attention-Dimension: Das Signal " +
+        "markiert ein konkretes Pflichtfeld als handlungsrelevant, statt eine " +
+        "Eingabe inhaltlich zu bewerten. Bartram et al. (2003) zeigen, dass " +
+        "einfache Bewegungsattribute Aufmerksamkeit zuverlässig lenken können. " +
+        "Ease-In-Out erzeugt ein gleichmäßiges, nicht abruptes Signal; drei " +
+        "Iterationen machen die Aufmerksamkeitspflicht erkennbar, ohne eine " +
+        "dauerhafte Ablenkung zu erzeugen. Duration 450ms pro Zyklus bleibt " +
+        "im Rahmen einer wahrnehmbaren, aber zurückhaltenden Microinteraction " +
+        "(Head 2016).",
+      references: ["Peirce1931", "BartramWareCalvert2003", "Head2016"],
       signType: "index",
     },
   },

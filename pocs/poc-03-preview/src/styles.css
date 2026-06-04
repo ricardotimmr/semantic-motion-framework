@@ -364,6 +364,10 @@ h1 {
   color: rgba(128, 82, 0, 0.86);
 }
 
+.demo-input.success .input-message {
+  color: rgba(47, 122, 86, 0.94);
+}
+
 .demo-skeleton {
   position: relative;
   width: min(360px, calc(100% - 2rem));

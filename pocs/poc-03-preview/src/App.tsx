@@ -424,6 +424,11 @@ function PreviewInput({
           Eingabe prüfen
         </motion.span>
       ) : null}
+      {entry.subcategory === "success" ? (
+        <motion.span animate={messageControls} className="input-message">
+          Eingabe valide
+        </motion.span>
+      ) : null}
       {entry.subcategory === "requiredField" ? (
         <motion.span animate={messageControls} className="input-message">
           Pflichtfeld

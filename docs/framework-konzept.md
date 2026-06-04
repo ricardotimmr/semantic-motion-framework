@@ -430,18 +430,22 @@ Diese Besonderheit hat eine direkte Konsequenz für die Animationsparameter: Ani
 
 **Bedeutung:** Die Eingabe ist valide. Das Feld signalisiert, dass der Inhalt akzeptiert wird.
 
-**Leitprinzip:** Subtile, nach außen gerichtete Bewegung. Kein dominantes Signal, weil der Nutzer möglicherweise noch weiter tippt. Ease-Out als Abklingkurve.
+**Leitprinzip:** Subtile, nach außen gerichtete Bewegung, unterstützt durch
+eine visuelle Success-Markierung an Border und Label. Kein dominantes Signal,
+weil der Nutzer möglicherweise noch weiter tippt. Ease-Out als Abklingkurve.
 
 | Parameter | Wert | Begründung |
 |---|---|---|
 | Easing | Ease-Out `[0.0, 0.0, 0.2, 1.0]` | Abklingen als Signal für Abschluss |
 | Duration | 150–200ms | Kürzer als Button-Success, weil Eingabe aktiv sein kann |
 | Direction | none | Keine Richtungskomponente; nur Zustandsänderung |
-| Amplitude | Scale 1.0→1.02→1.0 oder Border-Transition | Minimal; visuell wahrnehmbar ohne ablenkend zu sein |
+| Amplitude | Scale 1.0→1.02→1.0 + Success-Markierung an Border/Label | Minimal; visuell wahrnehmbar ohne ablenkend zu sein |
 | Iterations | 1 | |
 | Zeichentyp | Ikon/Index | Leichte Expansion als Ikon für Öffnen; grüne Border als Index für Akzeptanz |
 
-**Für Editor-Begründungstext:** Die minimale Ausdehnung und die sofortige Rückkehr zur Ursprungsgröße signalisiert, dass die Eingabe valide ist, ohne den Tippfluss zu unterbrechen.
+**Für Editor-Begründungstext:** Die minimale Ausdehnung und die unterstützende
+Success-Markierung an Feld und Label signalisieren, dass die Eingabe valide ist,
+ohne den Tippfluss zu unterbrechen.
 
 ---
 
@@ -525,20 +529,27 @@ Diese Besonderheit hat eine direkte Konsequenz für die Animationsparameter: Ani
 
 #### Input Field / Aufmerksamkeit / Pflichtfeld-Hinweis
 
-**Bedeutung:** Ein Pflichtfeld wurde bei der Formularabgabe leer gelassen. Das Feld macht auf sich aufmerksam, ohne dass der Nutzer das Feld explizit berührt hat.
+**Bedeutung:** Ein Pflichtfeld ist handlungsrelevant und soll im Formular
+gezielt Aufmerksamkeit erhalten.
 
-**Leitprinzip:** Identisch zum Button-Error-Shake, weil die Semantik dieselbe ist: Ablehnung einer Formularabgabe. Amplitude etwas höher als beim Echtzeit-Feedback-Error, weil dieser Shake von einer Formular-Submit-Aktion ausgelöst wird, nicht von laufender Eingabe.
+**Leitprinzip:** Subtiler, wiederholter Pulse statt Shake. Die Bewegung
+fordert Aufmerksamkeit für einen ausstehenden Pflichtfeldzustand ein, ohne eine
+Eingabe inhaltlich zu bewerten. Die Wiederholung macht den Zustand
+wahrnehmbar, bleibt aber zeitlich begrenzt.
 
 | Parameter | Wert | Begründung |
 |---|---|---|
-| Easing | Sharp `[0.36, 0.07, 0.19, 0.97]` | |
-| Duration | 300–350ms | |
-| Direction | x (horizontal, alternierend) | |
-| Amplitude | ±6px | Etwas mehr als Echtzeit-Error, weil der Kontext eine abgeschlossene Aktion ist |
-| Iterations | 1 | |
-| Zeichentyp | Index | |
+| Easing | Ease-In-Out `[0.4, 0.0, 0.2, 1.0]` | Gleichmäßiges, nicht abruptes Aufmerksamkeitssignal |
+| Duration | 450ms pro Zyklus | Wahrnehmbar, aber zurückhaltend |
+| Direction | none | Keine Richtungs- oder Ablehnungskonnotation |
+| Amplitude | Scale 1.0→1.015→1.0 | Subtiler Pulse des Feldkontexts |
+| Iterations | 3 | Wiederholung als Aufmerksamkeitsmarker, aber nicht persistent |
+| Zeichentyp | Index | Wiederholte Bewegung verweist auf einen ausstehenden Zustand |
 
-**Für Editor-Begründungstext:** Der Shake signalisiert, dass dieses Feld ausgefüllt werden muss, bevor das Formular abgesendet werden kann. Die Bewegung zieht die Aufmerksamkeit auf das Feld, ohne eine Fehlermeldung zu überlagern.
+**Für Editor-Begründungstext:** Das Feld pulsiert dreimal subtil und lenkt die
+Aufmerksamkeit auf eine ausstehende Pflichtangabe. Die Wiederholung macht den
+Zustand wahrnehmbar, ohne die laufende Orientierung im Formular zu
+unterbrechen.
 
 ---
 
@@ -644,7 +655,7 @@ Die folgende Tabelle gibt einen Überblick aller geplanten Mappings. Die vollst�
 | Input Field | Feedback | Warning | Ease-In-Out | 300ms | none | Helper-Text: Opacity + y-Offset | Ikon |
 | Input Field | State Change | Focus | Ease-Out | 175ms | none | Border-Transition + Label | Ikon |
 | Input Field | State Change | Blur | Ease-In | 210ms | none | Border-Rücktransition | Ikon |
-| Input Field | Aufmerksamkeit | Pflichtfeld-Hinweis | Sharp | 325ms | x (Shake) | ±6px | Index |
+| Input Field | Aufmerksamkeit | Pflichtfeld-Hinweis | Ease-In-Out | 450ms | none | Scale 1.0→1.015→1.0, 3 Zyklen | Index |
 | Skeleton Loader | Aufmerksamkeit | Laden | Linear | 1500ms | x (Shimmer) | Volle Breite | **Symbol** |
 | Skeleton Loader | Aufmerksamkeit | Aufgelöst | Ease-Out | 350ms | none | Opacity 1→0 | Ikon |
 

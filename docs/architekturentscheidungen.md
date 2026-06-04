@@ -325,6 +325,7 @@ Interne Teilziele wie Border, Label, Helper-Text, Shadow, Backdrop oder Containe
 
 - `input-stateChange-focus`: Das Mapping beschreibt den semantischen Übergang in den Fokuszustand. Der Renderer darf diesen Zustand über Border, Label, Shadow und Container-Zustand darstellen.
 - `input-stateChange-blur`: Das Mapping beschreibt den Verlust des Fokus. Der Renderer setzt die entsprechenden Teilziele zurück.
+- `input-feedback-success`: Das Mapping beschreibt ein sehr subtiles Success-Feedback. Der Renderer darf den minimalen Pulse durch Border- und Label-Markierung stützen, damit die Bestätigung wahrnehmbar bleibt, ohne das Feld stärker zu bewegen.
 - `input-feedback-warning`: Das Mapping beschreibt eine Warnung während der Eingabe. Der Renderer darf dafür einen Helper-Text mit lokalem y-Offset und Opacity einblenden.
 - `modal-hierarchy-toBackground`: Das Mapping beschreibt den Fokusverlust und das Zurücktreten des Modals. Beim Modal wird diese Bedeutung als Entfernen/Ausblenden gerendert, weil ein halbtransparent sichtbares geschlossenes Modal UX-seitig missverständlich wäre.
 

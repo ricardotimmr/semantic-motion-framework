@@ -4,78 +4,10 @@ Diese Datei sammelt die noch offenen Punkte, die das Framework vor dem eigentlic
 
 ## Offene Reihenfolge
 
-1. Sichtbar zurückgestuftes Card-/Panel-Layer-Mapping prüfen oder umsetzen.
-2. Kleine fachliche Mapping-Checks erledigen.
-3. Framework-Dokumentation mit dem finalen Datenmodell synchronisieren.
-4. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen.
+1. Framework-Dokumentation mit dem finalen Datenmodell synchronisieren.
+2. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen.
 
-## 1. Sichtbar zurückgestuftes Card-/Panel-Layer-Mapping prüfen oder umsetzen
-
-Status: Optional, aber fachlich sinnvoll.
-
-Aktueller Befund:
-
-- `modal-hierarchy-toBackground` blendet das Modal bewusst aus.
-- Ein halbtransparent sichtbares Modal nach dem Schließen wäre UX-seitig missverständlich.
-- Ein echtes sichtbares Zurücktreten eignet sich eher für Card, Panel, Sidebar oder gestapelte Ebenen.
-
-Mögliche Umsetzung:
-
-- Neue Komponente oder neues Beispiel:
-  - `card`
-  - `panel`
-  - `layer`
-- Mappings:
-  - `card-hierarchy-toForeground`
-  - `card-hierarchy-toBackground`
-- ToBackground könnte z. B. Deckkraft, Schatten und Scale reduzieren, ohne das Element vollständig zu entfernen.
-
-Vorher klären:
-
-- Passt `card` oder `panel` besser zum Scope der Bachelorarbeit?
-- Soll dafür `COMPONENT_IDS` erweitert werden?
-- Muss die Gliederung angepasst werden, weil bisher sechs Komponenten argumentiert werden?
-- Ist der Mehrwert groß genug, um den Scope zu erweitern?
-
-Empfehlung:
-
-- Nur umsetzen, wenn du die Hierarchie-Dimension im Editor stärker zeigen willst.
-- Wenn ja, zuerst O2/Scale-Modell entscheiden.
-
-Akzeptanzkriterium:
-
-- `hierarchy-toBackground` ist an mindestens einer Komponente sichtbar als Zurückstufung und nicht als Exit interpretierbar.
-
-## 2. Kleine fachliche Mapping-Checks erledigen
-
-Status: Offen.
-
-### K1. `input-attention-requiredField` final einordnen
-
-Aktueller Befund:
-
-- Das Mapping nutzt einen Shake und wird nach fehlgeschlagenem Submit ausgelöst.
-- Es kann oberflächlich als Feedback gelesen werden.
-- Die aktuelle Attention-Einordnung ist plausibel, weil ein konkretes Feld Aufmerksamkeit einfordert.
-
-TODO:
-
-- Rationale final prüfen.
-- Falls nötig noch klarer formulieren: feldbezogener Aufmerksamkeitsmarker nach Submit, nicht allgemeines Error-Feedback.
-
-### K2. `input-feedback-success` visuell prüfen
-
-Aktueller Befund:
-
-- `scaleFactor: 0.02` ist bewusst subtil.
-- Es könnte in der Preview aber zu schwach sein.
-
-TODO:
-
-- Visuell prüfen, ob der Success-Zustand wahrnehmbar genug ist.
-- Falls zu schwach, eher kleinen Success-Indikator oder Border-Feedback ergänzen statt das gesamte Input-Feld stärker zu skalieren.
-
-## 3. Framework-Dokumentation synchronisieren
+## 1. Framework-Dokumentation synchronisieren
 
 Status: Offen.
 
@@ -93,14 +25,13 @@ TODO:
 
 - `docs/framework-konzept.md` gegen `types.ts` und `mappings.ts` prüfen.
 - Mapping-Tabellen und Beispiele auf `motionPhases` aktualisieren.
-- Falls Card/Panel ergänzt wird, Gliederung und Scope-Argumentation aktualisieren.
 - `docs/pocs.md` nur anpassen, wenn es als aktuelle Planung gelesen werden soll.
 
 Akzeptanzkriterium:
 
 - Dokumentation, Mapping-Datenbank und Typsystem widersprechen sich nicht.
 
-## 4. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen
+## 2. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen
 
 Status: Offen, sobald der eigentliche Editor/Hauptprototyp gebaut wird.
 
@@ -120,6 +51,36 @@ TODO:
 Akzeptanzkriterium:
 
 - Der Editor nutzt dieselben Framework-Regeln wie POC 03/04 und führt keine neuen parallelen Sonderlogiken ein.
+
+## Optional: Weitere UI-Komponenten als Framework-Erweiterung prüfen
+
+Status: Optional, nach dem Hauptprototyp oder im Ausblick.
+
+Aktueller Befund:
+
+- Das Card-Experiment wurde als Branch geprüft und nicht für den Framework-Kern empfohlen.
+- Die bestehende Komponentenmenge deckt alle fünf Bedeutungsdimensionen und die Peirce-Trichotomie bereits ab.
+- Weitere Komponenten könnten trotzdem als spätere Erweiterung interessant sein, falls sie eine echte semantische Lücke schließen.
+
+Mögliche Kandidaten:
+
+- Badge oder Notification-Dot für Aufmerksamkeit.
+- Page/View Transition für Direction.
+- Drawer oder Sidebar für Direction/Hierarchy.
+- Panel oder Layer für sichtbare Zurückstufung.
+
+TODO:
+
+- Nur prüfen, wenn der Hauptprototyp stabil ist.
+- Für jede mögliche Ergänzung klären:
+  - Welche bisher nicht abgedeckte semantische Qualität wird ergänzt?
+  - Entsteht eine neue Mapping-Logik oder nur eine Dopplung?
+  - Muss dafür das Datenmodell erweitert werden?
+  - Ist der Mehrwert groß genug, um den Scope zu erweitern?
+
+Akzeptanzkriterium:
+
+- Eine neue Komponente wird nur aufgenommen, wenn sie eine klar begründete theoretische Lücke schließt und nicht nur ein weiteres Beispiel für eine bereits abgedeckte Dimension ist.
 
 ## Erledigt
 
@@ -141,3 +102,5 @@ Akzeptanzkriterium:
 - Export nach Mapping-Review geprüft: POC 04 Tests und POC 05 Build erfolgreich.
 - Input-Focus/Blur in POC 03 auf Framer-Motion-Controls umgestellt.
 - Generisches Phasenmodell `motionPhases` eingeführt und in POC 03/04 umgesetzt.
+- `input-attention-requiredField` von Error-Shake auf dreifachen Attention-Pulse umgestellt und Rationale geschärft.
+- `input-feedback-success` mit unterstützender Success-Markierung in der Preview geschärft und Rationale synchronisiert.
