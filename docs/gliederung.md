@@ -67,7 +67,7 @@ Herleitung aus dem theoretischen Rahmen: Semiotik (Bedeutungsbeziehung), Wahrneh
 Feedback (Success, Error, Warning), State Change, Direction (Forward, Backward), Hierarchie und Priorität, Aufmerksamkeit. Für jede Dimension: Kurzdefinition, zugehörige Peirce-Klassifikation, Differenzierung zu benachbarten Dimensionen. Abgrenzung zwischen Direction und State Change als exemplarische Trennschärfe-Diskussion.
 
 ### 3.3 Die Mapping-Datenbank
-Animationsparameter als Kodierungsebene: Easing, Duration, Direction, Amplitude. Herleitung jedes Parameters aus dem theoretischen Rahmen. Datenstruktur: TypeScript-Typen und Schema. Zwei Textebenen je Eintrag: nutzergerichteter Begründungstext (Norman-Sprache) als Standardanzeige und wissenschaftliche Detailbegründung (Peirce-Zeichentyp, Wahrnehmungsgrundlage, Quellen) als optionale Detailansicht. Wissenschaftliche Nachvollziehbarkeit: Keine Zuordnung ohne Quellenverankerung.
+Animationsparameter als Kodierungsebene: Easing, Duration, Direction, Translation, Scale, Opacity, Iterations und Motion-Phasen. Herleitung jedes Parameters aus dem theoretischen Rahmen. Datenstruktur: TypeScript-Typen und Schema. Zwei Textebenen je Eintrag: nutzergerichteter Begründungstext (Norman-Sprache) als Standardanzeige und wissenschaftliche Detailbegründung (Peirce-Zeichentyp, Wahrnehmungsgrundlage, Quellen) als optionale Detailansicht. Wissenschaftliche Nachvollziehbarkeit: Keine Zuordnung ohne Quellenverankerung.
 
 ### 3.4 Die sechs UI-Komponenten
 Auswahlprinzip: Button, Toggle, Toast und Modal decken zentrale Interaktionskategorien ab (Aktion, Zustand, Benachrichtigung, Fokusunterbrechung). Input ergänzt Validierungs- und Fokuszustände während laufender Eingabe. Der Skeleton Loader ergänzt den Symbol-Typ der Peirce-Trichotomie, der in den anderen Komponenten nicht dominant vertreten ist — seine Shimmer-Animation hat keine ikonische oder indexikalische Grundlage, sondern ist reine Konvention. Damit wird die vollständige Trichotomie (Ikon, Index, Symbol) in der praktischen Demonstration des Frameworks abgedeckt. Tabellarische Darstellung: je Komponente relevante Bedeutungsdimensionen und ein exemplarisches Mapping mit Parameterwerten.
@@ -110,7 +110,7 @@ Warum keine Nutzerstudie durchgeführt wurde. Was das für die Aussagekraft bede
 Animationsbedeutungen sind nicht universell. Eco: kulturelle Konventionalität von Bedeutung. Direction Bias als kulturspezifisches Beispiel.
 
 #### 5.2.3 Accessibility
-WCAG 2.1 SC 2.3.3 und `prefers-reduced-motion` als offene Anforderung an das Framework.
+WCAG 2.1 SC 2.3.3 und `prefers-reduced-motion` als Anforderung an das Framework. Reduced-Motion-Strategien werden im Mapping modelliert; die konkrete reduzierte Darstellung bleibt Teil der prototypischen Umsetzung.
 
 #### 5.2.4 Scope-Begrenzung des Prototyps
 Sechs Komponenten, fünf Bedeutungsdimensionen. Was bewusst ausgelassen wurde und warum.

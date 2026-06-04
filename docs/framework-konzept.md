@@ -10,7 +10,7 @@ Das Framework besteht aus drei Ebenen:
 
 **Bedeutungsdimensionen:** Die fünf semantischen Kategorien, in die UI-Animationen eingeteilt werden. Jede Dimension beschreibt, was eine Animation kommuniziert.
 
-**Animationsparameter:** Die technischen Variablen, über die eine Animation gestaltet wird. Easing, Duration, Direction, Amplitude und Iterations sind die Parameter, die im Framework als bedeutungstragende Einheiten behandelt werden.
+**Animationsparameter:** Die technischen Variablen, über die eine Animation gestaltet wird. Easing, Duration, Direction, Translation, Scale, Opacity, Iterations und Motion-Phasen sind die Parameter, die im Framework als bedeutungstragende Einheiten behandelt werden.
 
 **Mapping:** Die Zuordnung von Animationsparametern zu Bedeutungsdimensionen. Jeder Eintrag in der Mapping-Datenbank ist eine begründete Zuordnung, die auf semiotischen und wahrnehmungspsychologischen Prinzipien basiert.
 
@@ -69,11 +69,18 @@ Das Framework behandelt folgende Parameter als bedeutungstragende Einheiten:
 - y-Achse (vertikal): Kommuniziert Hierarchie, Erscheinen von oben/unten, Schwerkraft.
 - none: Keine Richtungskomponente. Für Skalierungs- und Opazitätsanimationen.
 
-**Amplitude** (px oder Skalierungsfaktor): Bestimmt das Ausmaß der Bewegung.
+**Amplitude / Bewegungsmaß** (Translation, Scale oder Track): Bestimmt das Ausmaß der Bewegung.
 
 - Klein (2–4px / 0.95–1.05): Subtil, nicht störend. Für sekundäre Feedbacks.
 - Mittel (6–10px / 0.9–1.1): Wahrnehmbar, ohne zu dominieren. Für primäre Feedbacks.
 - Groß (12px+ / 0.8–1.2): Dringend, nicht zu übersehen. Für kritische Fehler und Warnungen. Sparsam einsetzen.
+
+Für Skalierungen wird `scaleFactor` immer zusammen mit `scaleMode`
+interpretiert. Dadurch bleibt das numerische Delta eindeutig:
+
+- `pulse`: 1.0 → 1.0 + scaleFactor → 1.0
+- `scaleIn`: 1.0 - scaleFactor → 1.0
+- `scaleOut`: 1.0 → 1.0 - scaleFactor
 
 **Opacity / Deckkraft**: Ergänzender Sichtbarkeitsparameter. Opacity ist
 keine Bewegung im räumlichen Sinn, aber ein zeitbasierter Übergang von
@@ -98,8 +105,20 @@ Animationsoption.
 **Iterations**: Wie oft eine Animation wiederholt wird.
 
 - 1: Einmalig. Standard für die meisten Animationen.
-- 2–3: Wiederholend. Für persistente Aufmerksamkeit.
+- 2–3: Wiederholend, aber zeitlich begrenzt. Für nicht-persistente Aufmerksamkeitssignale.
 - Endlos: Für laufende Prozesse (Loading-States). Muss manuell gestoppt werden.
+
+**Motion-Phasen:** Mehrphasige Animationen werden als explizite Sequenz
+modelliert. Dadurch beschreibt die Mapping-Datenbank nicht nur die
+Gesamtdauer, sondern auch die semantischen Einzelschritte, etwa Toast-Einfahrt
+plus Shake, y-Nudge oder Scale-Impulse. Die Top-Level-Duration entspricht der
+Summe der Phasendauern ohne technische Delays.
+
+**Reduced Motion:** Accessibility wird als maschinenlesbare Metadatenebene
+modelliert. `accessibility.reducedMotion` beschreibt, ob ein Mapping bei
+`prefers-reduced-motion` normal laufen kann, verkürzt, ersetzt oder statisch
+dargestellt werden soll. Diese Strategien sind keine alternativen Stilvarianten,
+sondern reduzierte Darstellungen derselben semantischen Aussage.
 
 ---
 
@@ -125,18 +144,21 @@ bewusst kein Feedback-Warning-Mapping.
 
 **Bedeutung:** Die Aktion war erfolgreich. Das System hat die Eingabe akzeptiert.
 
-**Leitprinzip:** Aufwärtsbewegung und Expansion. Physikalisch und kulturell mit Wachstum und Bestätigung assoziiert. Ease-Out als Abklingkurve kommuniziert, dass die Aktion abgeschlossen ist.
+**Leitprinzip:** Subtile Expansion. Die leichte Ausdehnung kommuniziert eine
+positive Reaktion, ohne eine räumliche Richtung zu behaupten. Ease-Out als
+Abklingkurve kommuniziert, dass die Aktion abgeschlossen ist.
 
 | Parameter | Wert | Begründung |
 |---|---|---|
 | Easing | Ease-Out `[0.0, 0.0, 0.2, 1.0]` | Abklingen als Signal für Abschluss (Zacks & Tversky 2001) |
 | Duration | 200–300ms | Unmittelbar, aber wahrnehmbar |
-| Direction | y (kurz aufwärts) oder none | Aufwärtsbewegung als Positivassoziation (Ware 2012) |
+| Direction | none | Keine Richtungskomponente; die Bestätigung wird über Scale und Easing getragen |
 | Amplitude | Klein bis mittel (Scale 1.0 → 1.05 → 1.0) | Subtile Bestätigung, kein Jubel |
 | Iterations | 1 | Einmaliges Signal |
-| Zeichentyp | Ikon / Index | Scale-Up ähnelt Öffnen; Aufwärtsbewegung als kultureller Index für Positives |
+| Zeichentyp | Ikon / Index | Scale-Up ähnelt Öffnen und verweist als Reaktion auf den Abschluss der Aktion |
 
-**Für Editor-Begründungstext:** Die sanfte Ausdehnung und das schnelle Abklingen signalisieren, dass eine Aktion erfolgreich abgeschlossen wurde. Die aufwärtsgerichtete Bewegung greift auf eine kulturell verankerte Assoziation zwischen Aufwärts und Positiv zurück.
+**Für Editor-Begründungstext:** Die sanfte Ausdehnung und das schnelle
+Abklingen signalisieren, dass eine Aktion erfolgreich abgeschlossen wurde.
 
 ---
 
@@ -194,7 +216,7 @@ modelliert.
 
 **Wahrnehmungspsychologische Grundlage:** Ease-In-Out kommuniziert physikalische Plausibilität (Zacks & Tversky 2001: symmetrische Ereignisstruktur). Object Continuity: Das Element bleibt als dasselbe Objekt erkennbar, auch wenn es seinen Zustand wechselt.
 
-**Gilt für Komponenten:** Toggle, Button (toggled state), Modal (Tab-Wechsel)
+**Gilt für Komponenten:** Toggle, Input Field.
 
 **Abgrenzung zu Direction:** State Change hat keine Richtungskonnotation. Wenn eine Zustandsänderung gleichzeitig eine Vorwärts- oder Rückwärtsbewegung impliziert, gehört sie zu Direction, nicht zu State Change.
 
@@ -238,9 +260,11 @@ modelliert.
 
 **Semiotischer Typ:** Index. Bewegungsrichtung als kausaler Verweis auf Navigationsrichtung (Direction Bias, Ware 2012; Halpern & Kelly 1993).
 
-**Wahrnehmungspsychologische Grundlage:** In Schriftkulturen mit Links-rechts-Leserichtung ist Rechts mit Vorwärts und Links mit Rückwärts assoziiert. Diese Konvention ist in iOS, Android und den meisten Webanwendungen etabliert. Vertikal gilt: Von oben erscheinend als hereinkommend, nach unten verschwindend als weggehend.
+**Wahrnehmungspsychologische Grundlage:** In Schriftkulturen mit Links-rechts-Leserichtung ist Rechts mit Vorwärts und Links mit Rückwärts assoziiert. Diese Konvention ist in iOS, Android und den meisten Webanwendungen etabliert. Vertikal gilt im Modal-/Sheet-Kontext: Von unten erscheinend als hereinkommende Oberfläche, nach unten verschwindend als weggehende Oberfläche.
 
-**Gilt für Komponenten:** Modal (Enter/Exit), Navigation, Drawer, Sheet
+**Gilt für Komponenten:** Im aktuellen Framework Modal. Navigation, Drawer und
+Sheet sind verwandte Anwendungsfälle, aber nicht als eigene Komponenten
+modelliert.
 
 **Kontextunterscheidung:** Direction umfasst im Framework zwei verwandte, aber
 unterschiedliche Richtungskontexte. Horizontale Direction beschreibt primär
@@ -252,9 +276,9 @@ Navigationsrichtung und Sheet-/Surface-Öffnung unterscheiden.
 
 ---
 
-#### 3a. Direction / Enter (Vorwärts)
+#### 3a. Direction / Enter
 
-**Bedeutung:** Ein neues Element erscheint und repräsentiert eine tiefere Navigationsstufe oder einen neuen Kontext.
+**Bedeutung:** Ein neues Element erscheint und repräsentiert je nach Kontext eine tiefere Navigationsstufe oder eine neu geöffnete Oberfläche.
 
 | Parameter | Wert | Begründung |
 |---|---|---|
@@ -267,16 +291,16 @@ Navigationsrichtung und Sheet-/Surface-Öffnung unterscheiden.
 
 ---
 
-#### 3b. Direction / Exit (Vorwärts verlassen)
+#### 3b. Direction / Exit
 
-**Bedeutung:** Das aktuelle Element verlässt den Sichtbereich, weil der Nutzer vorwärts navigiert hat.
+**Bedeutung:** Das aktuelle Element verlässt den Sichtbereich, weil der Nutzer vorwärts navigiert oder eine geöffnete Oberfläche geschlossen wird.
 
 | Parameter | Wert | Begründung |
 |---|---|---|
 | Easing | Ease-In `[0.4, 0.0, 1.0, 1.0]` | Verlassen: langsam starten, schnell ausfahren |
 | Duration | 250–300ms | Kürzer als Enter: das Verlassende ist nicht mehr der Fokus |
-| Direction | x (nach links ausfahren) | Umgekehrte Richtung zum Enter, kommuniziert Bewegungsrichtung |
-| Amplitude | Volle Breite | |
+| Direction | x (nach links ausfahren) oder y (nach unten ausfahren) | Komplementär zum jeweiligen Enter-Kontext |
+| Amplitude | Volle Breite oder Höhe des Elements | |
 | Iterations | 1 | |
 | Zeichentyp | Index | |
 
@@ -328,7 +352,9 @@ Metapher.
 
 **Wahrnehmungspsychologische Grundlage:** Größe ist ein präattentives Merkmal (Treisman & Gelade 1980). Skalierung kommuniziert deshalb Hierarchie ohne bewusste Verarbeitung. Ware (2012) beschreibt, wie räumliche Nähe mit Relevanz assoziiert wird.
 
-**Gilt für Komponenten:** Modal (Erscheinen als primärer Layer), Toast (sekundäre Benachrichtigung), Button (primary vs. secondary)
+**Gilt für Komponenten:** Im aktuellen Framework Modal. Sichtbar
+zurückgestufte Card-/Panel-Layer wurden als mögliche Erweiterung geprüft, aber
+nicht in den Framework-Kern aufgenommen.
 
 ---
 
@@ -351,14 +377,16 @@ Metapher.
 
 #### 4b. Hierarchie / In den Hintergrund
 
-**Bedeutung:** Ein Element tritt zurück, bleibt aber im Hintergrund sichtbar. Der Vordergrund übernimmt.
+**Bedeutung:** Ein Element verliert Vordergrundpriorität und tritt aus dem
+aktiven Fokus zurück. Beim Modal wird dieser Hierarchieverlust als Ausblenden
+und Entfernen aus dem aktiven Fokus operationalisiert.
 
 | Parameter | Wert | Begründung |
 |---|---|---|
 | Easing | Ease-In `[0.4, 0.0, 1.0, 1.0]` | Zurücktreten |
 | Duration | 200–300ms | |
 | Direction | none | |
-| Amplitude | Scale 1.0 → 0.96 + Opacity leicht reduzieren | Minimale Verkleinerung signalisiert Rückzug ohne Verschwinden |
+| Amplitude | Scale 1.0 → 0.96 + Opacity 1.0 → 0 | Verkleinerung und Ausblenden signalisieren Fokusverlust beim Modal |
 | Iterations | 1 | |
 | Zeichentyp | Ikon | |
 
@@ -372,7 +400,9 @@ Metapher.
 
 **Wahrnehmungspsychologische Grundlage:** Bewegung ist das stärkste präattentive Merkmal (Treisman & Gelade 1980). Bartram et al. (2003) zeigen, dass Aufmerksamkeitsbewegungen wirksam sind, wenn sie wahrnehmbar, aber nicht ablenkend gestaltet sind. Die Grenze zwischen nützlicher Aufmerksamkeitslenkung und störender Ablenkung ist ein kritischer Designparameter.
 
-**Gilt für Komponenten:** Toast (eingehende Benachrichtigung), Badge, Notification-Dot, Button (Pulsen bei ungesehener Aktion)
+**Gilt für Komponenten:** Button, Toast, Input Field, Skeleton Loader. Badge
+und Notification-Dot sind mögliche spätere Erweiterungen, aber nicht Teil des
+aktuellen Framework-Kerns.
 
 **Kritischer Hinweis:** Aufmerksamkeitsanimationen sollten sparsam eingesetzt werden. Mehr als eine gleichzeitig aktive Aufmerksamkeitsanimation überlädt das präattentive System und macht die Priorisierung unmöglich.
 
@@ -384,14 +414,16 @@ Metapher.
 
 | Parameter | Wert | Begründung |
 |---|---|---|
-| Easing | Ease-Out `[0.0, 0.0, 0.2, 1.0]` | Ankommen und Abklingen |
-| Duration | 250–350ms (Einfahrt) + 150ms (leichter Bounce) | |
+| Easing | Ease-Out `[0.0, 0.0, 0.2, 1.0]` | Ruhiges Ankommen und Abklingen |
+| Duration | 760ms als Phasensequenz | Einfahrt plus zwei subtile Scale-Impulse |
 | Direction | y (von oben oder unten, je nach Toast-Position) | Erscheinen aus dem Bildschirmrand |
-| Amplitude | Volle Höhe des Elements + leichter Überschwinger (Spring) | Spring kommuniziert "neu angekommen" |
+| Amplitude | Volle Höhe des Elements + Scale-Impulse | Subtile Impulse lenken Aufmerksamkeit ohne Feedback-Spring |
 | Iterations | 1 | |
 | Zeichentyp | Index | Erscheinen als kausaler Verweis auf neue Information |
 
-**Für Editor-Begründungstext:** Das Element fährt aus dem Bildschirmrand ein und federt leicht nach. Der Überschwinger signalisiert, dass etwas Neues angekommen ist, und ist wirksamer als ein einfaches Einblenden.
+**Für Editor-Begründungstext:** Das Element fährt aus dem Bildschirmrand ein
+und gibt zwei subtile Scale-Impulse. Dadurch wird neue Information sichtbar,
+ohne ein positives Feedback auf eine Nutzeraktion zu simulieren.
 
 ---
 
@@ -479,9 +511,9 @@ ohne den Tippfluss zu unterbrechen.
 | Easing | Ease-In-Out `[0.4, 0.0, 0.2, 1.0]` | Gleichmäßig, nicht dringend |
 | Duration | 300ms | |
 | Direction | none | |
-| Amplitude | Opacity-Transition des Hinweistexts 0→1 oder Border-Farbtransition | Kein Bewegungselement; nur Zustandsübergang |
+| Amplitude | Helper-Text: Opacity 0→1 plus kleiner lokaler y-Offset im Renderer | Sichtbarkeit und lokales Ankommen des Hinweistexts |
 | Iterations | 1 | |
-| Zeichentyp | Symbol | Farbkonvention (Orange/Gelb als Warnung) ist kulturell erlernt |
+| Zeichentyp | Ikon | Erscheinen des Helper-Texts als lokales Ankommen |
 
 **Für Editor-Begründungstext:** Die sanfte Einblendung des Warnhinweises vermeidet Unterbrechung, macht aber deutlich, dass die Eingabe überarbeitet werden sollte.
 
@@ -517,9 +549,9 @@ ohne den Tippfluss zu unterbrechen.
 | Parameter | Wert | Begründung |
 |---|---|---|
 | Easing | Ease-In `[0.4, 0.0, 1.0, 1.0]` | Zurücktreten in den Ruhezustand |
-| Duration | 150ms | Kürzer als Focus; Blur ist weniger bedeutsam |
+| Duration | 210ms | Ruhige Rücktransition; weniger betont als Focus, aber klar wahrnehmbar |
 | Direction | none | |
-| Amplitude | Border-Rücktransition zum Ruhezustand | |
+| Amplitude | Rücktransition von Border, Shadow und Label zum Ruhezustand | |
 | Iterations | 1 | |
 | Zeichentyp | Ikon | |
 
@@ -632,31 +664,33 @@ Ist die Animation eine Reaktion auf eine Nutzeraktion?
 
 ## 5. Vollständige Mapping-Tabelle
 
-Die folgende Tabelle gibt einen Überblick aller geplanten Mappings. Die vollständige Implementierung liegt in der Mapping-Datenbank unter `prototyp/src/data/mappings.ts`.
+Die folgende Tabelle gibt einen Überblick aller aktuellen Mappings. Die vollständige Implementierung liegt in der Mapping-Datenbank unter `prototyp/src/data/mappings.ts`.
 
 | Komponente | Dimension | Subkategorie | Easing | Duration | Direction | Amplitude | Zeichentyp |
 |---|---|---|---|---|---|---|---|
-| Button | Feedback | Success | Ease-Out | 250ms | y (kurz) | Scale 1.0→1.05→1.0 | Ikon/Index |
+| Button | Feedback | Success | Ease-Out | 250ms | none | Scale 1.0→1.05→1.0 | Ikon/Index |
 | Button | Feedback | Error | Sharp | 350ms | x (Shake) | ±8px | Index |
 | Button | Aufmerksamkeit | Warning | Ease-In-Out | 600ms | none | Scale 1.0→1.03→1.0, 3 Zyklen | Index |
-| Button | Aufmerksamkeit | Persistierend | Ease-In-Out | 1000ms | none | Scale 1.0→1.04 | Index |
-| Toggle | State Change | On | Ease-In-Out | 220ms | x | Volle Breite | Ikon |
-| Toggle | State Change | Off | Ease-In-Out | 220ms | x (umgekehrt) | Volle Breite | Ikon |
-| Toast | Feedback | Success | Ease-Out | 300ms | y (von unten) | Volle Höhe + Spring | Index |
-| Toast | Feedback | Error | Sharp | 350ms | y + x (Shake) | Volle Höhe + ±6px | Index |
-| Toast | Feedback | Warning | Ease-In-Out | 400ms | y (von unten) | Volle Höhe | Index |
-| Toast | Aufmerksamkeit | Einmalig | Ease-Out | 760ms | y (von unten) | Volle Höhe + Scale-Impulse | Index |
-| Modal | Hierarchie | In den Vordergrund | Ease-Out | 300ms | none | Scale 0.95→1.0 + Opacity | Ikon |
-| Modal | Hierarchie | In den Hintergrund | Ease-In | 250ms | none | Scale 1.0→0.96 | Ikon |
-| Modal | Direction | Enter | Ease-Out | 350ms | y (von unten) | Volle Höhe | Index |
-| Modal | Direction | Exit | Ease-In | 280ms | y (nach unten) | Volle Höhe | Index |
-| Input Field | Feedback | Success | Ease-Out | 175ms | none | Scale 1.0→1.02→1.0 | Ikon/Index |
+| Button | Aufmerksamkeit | Persistierend | Ease-In-Out | 1000ms | none | Scale 1.0→1.04→1.0, unendlich | Index |
+| Toggle | State Change | Toggle On | Ease-In-Out | 220ms | x | trackFactor 1.0 | Ikon |
+| Toggle | State Change | Toggle Off | Ease-In-Out | 220ms | x | trackFactor -1.0 | Ikon |
+| Toast | Feedback | Success | Spring | 300ms | y | Einfahrt von unten + Opacity 0→1 + Spring | Index |
+| Toast | Feedback | Error | Sharp | 320ms | y + x | motionPhases: Einfahrt + Shake ±6px | Index |
+| Toast | Feedback | Warning | Ease-In-Out | 420ms | y | motionPhases: Einfahrt + y-Nudge -5px | Index |
+| Toast | Aufmerksamkeit | OneShot | Ease-Out | 760ms | y | motionPhases: Einfahrt + zwei Scale-Impulse | Index |
+| Modal | Hierarchie | To Foreground | Ease-Out | 300ms | none | Scale 0.95→1.0 + Opacity 0→1 | Ikon |
+| Modal | Hierarchie | To Background | Ease-In | 250ms | none | Scale 1.0→0.96 + Opacity 1→0 | Ikon |
+| Modal | Direction | Enter | Ease-Out | 350ms | y | Einfahrt von unten + Opacity 0→1 | Index |
+| Modal | Direction | Exit | Ease-In | 280ms | y | Ausfahrt nach unten + Opacity 1→0 | Index |
+| Modal | Direction | Back Enter | Ease-Out | 350ms | x | Einfahrt von links + Opacity 0→1 | Index |
+| Modal | Direction | Back Exit | Ease-In | 280ms | x | Ausfahrt nach rechts + Opacity 1→0 | Index |
+| Input Field | Feedback | Success | Ease-Out | 175ms | none | Scale 1.0→1.02→1.0 + Success-Markierung | Ikon/Index |
 | Input Field | Feedback | Error | Sharp | 275ms | x (Shake) | ±5px | Index |
-| Input Field | Feedback | Warning | Ease-In-Out | 300ms | none | Helper-Text: Opacity + y-Offset | Ikon |
-| Input Field | State Change | Focus | Ease-Out | 175ms | none | Border-Transition + Label | Ikon |
-| Input Field | State Change | Blur | Ease-In | 210ms | none | Border-Rücktransition | Ikon |
+| Input Field | Feedback | Warning | Ease-In-Out | 300ms | none | Helper-Text: Opacity 0→1 + y-Offset im Renderer | Ikon |
+| Input Field | State Change | Focus | Ease-Out | 175ms | none | Border/Shadow/Label-Transition im Renderer | Ikon |
+| Input Field | State Change | Blur | Ease-In | 210ms | none | Rücktransition von Border/Shadow/Label | Ikon |
 | Input Field | Aufmerksamkeit | Pflichtfeld-Hinweis | Ease-In-Out | 450ms | none | Scale 1.0→1.015→1.0, 3 Zyklen | Index |
-| Skeleton Loader | Aufmerksamkeit | Laden | Linear | 1500ms | x (Shimmer) | Volle Breite | **Symbol** |
+| Skeleton Loader | Aufmerksamkeit | Laden | Linear | 1500ms | x | trackFactor 1.0, unendlich | Symbol |
 | Skeleton Loader | Aufmerksamkeit | Aufgelöst | Ease-Out | 350ms | none | Opacity 1→0 | Ikon |
 
 ---
@@ -667,6 +701,9 @@ Die folgende Tabelle gibt einen Überblick aller geplanten Mappings. Die vollst�
 
 **Kulturelle Grenzen:** Direction-Mappings (Links/Rechts als Vorwärts/Rückwärts) gelten für westliche Schriftkulturen mit Links-rechts-Leserichtung. In arabischen oder hebräischen Kontexten wäre die Richtungskonvention umzukehren.
 
-**Accessibility:** Alle Animationen müssen `prefers-reduced-motion` respektieren. Das Framework definiert keine statischen Alternativzustände; diese sind in der Editor-Implementierung zu ergänzen.
+**Accessibility:** Alle Animationen müssen `prefers-reduced-motion`
+respektieren. Das Framework enthält dafür maschinenlesbare
+Reduced-Motion-Strategien; die konkrete reduzierte Darstellung wird im Renderer
+des Editors umgesetzt.
 
 **Scope:** Das Framework deckt sechs Komponenten und fünf Bedeutungsdimensionen ab. Es erhebt keinen Anspruch auf Vollständigkeit für alle UI-Komponenten oder alle denkbaren Bedeutungsdimensionen. Mit dem Skeleton Loader sind alle drei Peirce-Zeichentypen (Ikon, Index, Symbol) im Framework vertreten.

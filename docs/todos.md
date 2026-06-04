@@ -4,34 +4,9 @@ Diese Datei sammelt die noch offenen Punkte, die das Framework vor dem eigentlic
 
 ## Offene Reihenfolge
 
-1. Framework-Dokumentation mit dem finalen Datenmodell synchronisieren.
-2. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen.
+1. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen.
 
-## 1. Framework-Dokumentation synchronisieren
-
-Status: Offen.
-
-Aktueller Befund:
-
-- Das Datenmodell wurde mehrfach geschärft:
-  - `translateFrom` / `translateTo`
-  - `motionPhases`
-  - Opacity als Sichtbarkeitsparameter
-  - Input-spezifische Renderer-Regeln
-  - explizites `scaleMode`
-- Einige Dokumente können dadurch ältere Formulierungen enthalten.
-
-TODO:
-
-- `docs/framework-konzept.md` gegen `types.ts` und `mappings.ts` prüfen.
-- Mapping-Tabellen und Beispiele auf `motionPhases` aktualisieren.
-- `docs/pocs.md` nur anpassen, wenn es als aktuelle Planung gelesen werden soll.
-
-Akzeptanzkriterium:
-
-- Dokumentation, Mapping-Datenbank und Typsystem widersprechen sich nicht.
-
-## 2. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen
+## 1. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen
 
 Status: Offen, sobald der eigentliche Editor/Hauptprototyp gebaut wird.
 
@@ -84,6 +59,7 @@ Akzeptanzkriterium:
 
 ## Erledigt
 
+- Framework-Dokumentation mit dem finalen Datenmodell synchronisiert.
 - Review-Artefakt `mappings.rationale-review.ts` aus dem produktiven `src/data`-Kontext entfernt.
 - Mapping-Validierung aus POC 02 in den Framework-Kern verschoben und um numerische Parameterregeln erweitert.
 - `motionPhases` semantisch finalisiert: Top-Level-Dauer, Phasen-Delay, Sequenz-Iterations, gemeinsames Keyframe-Raster und CSS-Approximation geregelt.
