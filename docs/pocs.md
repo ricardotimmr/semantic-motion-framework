@@ -8,6 +8,8 @@ Die POCs validieren die technischen und konzeptuellen Grundlagen des Frameworks 
 
 Die POCs bauen aufeinander auf. POC 2 setzt POC 1 voraus, POC 3 setzt POC 2 voraus, und so weiter. Jeder POC landet in einem eigenen Ordner unter `/pocs/` im Repository und wird nicht in die spätere Editor-Implementierung kopiert, sondern als Referenz behalten.
 
+Hinweis: Dieses Dokument beschreibt die POC-Planung und zentrale Entwicklungsstände. Die finale Framework-Struktur ist in `prototyp/src/framework/types.ts` und `prototyp/src/data/mappings.ts` definiert. Wenn sich POC-Entwürfe und finale Framework-Dateien unterscheiden, gelten die Framework-Dateien als aktueller Stand.
+
 ---
 
 ## POC 1: Basis-Animationssystem
@@ -62,7 +64,9 @@ Validieren, dass die theoretisch hergeleitete Taxonomie in eine typsichere TypeS
 - Lookup-Funktion implementieren: `getMapping(component, dimension, subcategory)` gibt einen Mapping-Eintrag zurück
 - Unit-Tests für die Lookup-Funktion schreiben: alle gültigen Kombinationen testen, ungültige Kombinationen abfangen
 
-### Datenstruktur (Entwurf)
+### Datenstruktur (initialer Entwurf)
+
+Der folgende Ausschnitt beschreibt den frühen Strukturentwurf. Das finale Datenmodell enthält inzwischen zusätzliche Felder wie `translateFrom`, `translateTo`, `scaleMode`, `motionPhases`, Opacity-Keyframes und Reduced-Motion-Metadaten. Der aktuelle Stand liegt in `prototyp/src/framework/types.ts`.
 
 ```typescript
 type ComponentId = 'button' | 'toggle' | 'toast' | 'modal' | 'input' | 'skeleton'
@@ -126,7 +130,7 @@ Validieren, dass die Mapping-Datenbank aus POC 2 direkt als Animationsquelle fü
 
 ### Aufgaben
 
-- Preview-Komponenten für Button, Modal und Toast bauen
+- Preview-Komponenten für alle sechs Framework-Komponenten bauen
 - Jede Komponente nimmt einen `MappingEntry` als Prop entgegen und spielt die dort definierten `AnimationParams` ab
 - Auswahl-UI bauen: Dropdown oder Button-Gruppe für Komponente und Bedeutungsdimension, direkt aus der Mapping-Datenbank generiert (keine hardcodierten Labels)
 - Animation wird bei jeder Änderung der Auswahl automatisch neu ausgelöst
@@ -142,7 +146,7 @@ Validieren, dass die Mapping-Datenbank aus POC 2 direkt als Animationsquelle fü
 
 - Auswahl einer neuen Kombination löst die Animation sofort aus
 - Wiederholungs-Button funktioniert zuverlässig
-- Alle drei Komponenten (Button, Modal, Toast) spielen ihre Animation korrekt ab
+- Alle sechs Framework-Komponenten spielen ihre Animation korrekt ab
 - Die Animationsparameter kommen ausschließlich aus der Mapping-Datenbank, keine hardcodierten Werte in den Preview-Komponenten
 
 ### Abgrenzung
@@ -178,12 +182,12 @@ Validieren, dass aus den Mapping-Parametern syntaktisch korrekter, direkt nutzba
 
 const errorFeedback = {
   animate: {
-    x: [0, -8, 8, -8, 8, 0],   // Amplitude: 8px - wahrnehmbar, nicht störend
+    x: [0, -8, 8, -8, 8, -4, 0], // Amplitude: 8px - wahrnehmbar, nicht störend
   },
   transition: {
-    duration: 0.4,               // 400ms - ausreichend für Fehlerwahrnehmung
-    ease: [0.36, 0.07, 0.19, 0.97], // cubicBezier - scharfe, abrupte Bewegung
-    times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+    duration: 0.35,              // 350ms - ausreichend für Fehlerwahrnehmung
+    ease: [0.4, 0.0, 0.6, 1.0],  // cubicBezier - scharfe, abrupte Bewegung
+    times: [0, 0.15, 0.3, 0.45, 0.6, 0.8, 1],
   },
 }
 ```
@@ -196,22 +200,23 @@ const errorFeedback = {
 
 @keyframes smf-button-error {
   0%   { transform: translateX(0); }
-  20%  { transform: translateX(-8px); }
-  40%  { transform: translateX(8px); }
-  60%  { transform: translateX(-8px); }
-  80%  { transform: translateX(8px); }
+  15%  { transform: translateX(-8px); }
+  30%  { transform: translateX(8px); }
+  45%  { transform: translateX(-8px); }
+  60%  { transform: translateX(8px); }
+  80%  { transform: translateX(-4px); }
   100% { transform: translateX(0); }
 }
 
 .smf-button-error {
-  animation: smf-button-error 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation: smf-button-error 0.35s cubic-bezier(0.4, 0.0, 0.6, 1.0) both;
 }
 ```
 
 ### Technische Entscheidungen die hier getroffen werden
 
 - Werden Framer-Motion- und CSS-Output aus denselben `AnimationParams` generiert oder haben sie separate Parametersets?
-- Wie werden komplexe Animationen (z.B. Keyframe-Sequenzen beim Shake) in der `AnimationParams`-Struktur aus POC 2 repräsentiert? Gegebenenfalls muss das Datenmodell angepasst werden.
+- Wie werden komplexe Animationen wie Keyframes, Spring und `motionPhases` aus denselben `AnimationParams` in Framer Motion und CSS übersetzt?
 - Wie wird die Korrektheit des generierten Codes sichergestellt? (Manueller Test oder einfacher Syntax-Check)
 
 ### Erfolgskriterien
@@ -241,7 +246,7 @@ Dieser POC beantwortet die Frage, die keiner der anderen POCs beantwortet: Funkt
 
 ### Aufgaben
 
-- Einfaches Single-Page-Layout bauen mit: Komponentenauswahl (nur Button), semantische Mapping-Auswahl (nur Feedback/Success und Feedback/Error), Echtzeit-Preview aus POC 3, Semantische Begründung aus `rationale.short`, Code-Export (Framer Motion) aus POC 4 mit Copy-to-Clipboard
+- Einfaches Single-Page-Layout bauen mit: Komponentenauswahl (nur Button), semantische Mapping-Auswahl (nur Feedback/Success und Feedback/Error), Echtzeit-Preview aus POC 3, Semantische Begründung aus `rationale.short`, Code-Export (Framer Motion und CSS) aus POC 4 mit Copy-to-Clipboard
 - Alle Teile kommen aus den bestehenden POC-Implementierungen, kein neuer Code außer dem Layout-Wrapper
 - Das Layout muss nicht schön sein, aber es muss die Nutzungskette vollständig abbilden
 
@@ -260,7 +265,7 @@ Dieser POC beantwortet die Frage, die keiner der anderen POCs beantwortet: Funkt
 
 ### Abgrenzung
 
-Nur Button, nur zwei semantische Mappings (Success und Error). Keine Toggle, kein Modal, kein Toast in diesem POC. Keine CSS-Export-Option. Kein responsives Layout. Ziel ist Funktionsnachweis, nicht Vollständigkeit.
+Nur Button, nur zwei semantische Mappings (Success und Error). Keine Toggle, kein Modal, kein Toast in diesem POC. Keine vollständige responsive Ausarbeitung. Ziel ist Funktionsnachweis, nicht Vollständigkeit.
 
 ---
 

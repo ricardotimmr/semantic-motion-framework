@@ -84,7 +84,7 @@ Quelle: Profil B
 
 **FA-07: Mapping-Datenbank als Kern des Frameworks**
 
-Das System basiert auf einer strukturierten Mapping-Datenbank, die Animationsparameter (Easing, Duration, Direction, Amplitude) auf Bedeutungsdimensionen (Feedback, State Change, Direction, Hierarchie, Aufmerksamkeit) abbildet. Die Datenbank muss vollständig für die sechs definierten Komponenten vorliegen. Jeder Eintrag ist auf eine Quelle aus dem theoretischen Rahmen zurückführbar.
+Das System basiert auf einer strukturierten Mapping-Datenbank, die Animationsparameter wie Easing, Duration, Direction, Translation, Scale, Opacity, Iterations und Motion-Phasen auf Bedeutungsdimensionen (Feedback, State Change, Direction, Hierarchie, Aufmerksamkeit) abbildet. Die Datenbank muss vollständig für die sechs definierten Komponenten vorliegen. Jeder Eintrag ist auf eine Quelle aus dem theoretischen Rahmen zurückführbar.
 
 Priorität: hoch  
 Quelle: Betreuer, Lehrende und Studierende (HCI/IxD)
@@ -185,7 +185,7 @@ Die folgenden Punkte wurden als potenziell relevant identifiziert, liegen aber e
 - Persistenz von Nutzersitzungen oder gespeicherten Auswahlen
 - Permalink-System zum Teilen von Animationsauswahlen
 - Empirische Validierung der Bedeutungszuordnungen durch Nutzertests
-- Unterstutzung weiterer UI-Komponenten über die sechs definierten hinaus
+- Unterstützung weiterer UI-Komponenten über die sechs definierten hinaus
 - Integration in bestehende Design-Tools (Figma-Plugin o.a.)
 
 ---
