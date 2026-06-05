@@ -138,9 +138,14 @@
   color: var(--ink);
 }
 
-.side-link.active {
+.side-link.active,
+.side-link.passing {
   font-weight: 500;
   padding-left: 12px;
+}
+
+.side-link.passing:not(.active) {
+  font-weight: 400;
 }
 
 .side-active-indicator {

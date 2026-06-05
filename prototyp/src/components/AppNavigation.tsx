@@ -1,4 +1,10 @@
-import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import type { PageId, PageProps } from '../pages/pageTypes';
 
 type NavItem = {
@@ -17,6 +23,8 @@ const navItems: NavItem[] = [
   { id: 'ueberDasProjekt', label: 'Über das Projekt' },
 ];
 
+const navigationTransitionMs = 320;
+
 function AppNavigation({
   children,
   currentPage,
@@ -26,8 +34,10 @@ function AppNavigation({
   const sideRefs = useRef<Partial<Record<PageId, HTMLButtonElement | null>>>(
     {},
   );
+  const previousPageRef = useRef<PageId>(currentPage);
   const [topIndicator, setTopIndicator] = useState({ left: 0, width: 0 });
   const [sideIndicatorTop, setSideIndicatorTop] = useState(0);
+  const [passingPageIds, setPassingPageIds] = useState<PageId[]>([]);
 
   useLayoutEffect(() => {
     const updateIndicators = () => {
@@ -52,6 +62,52 @@ function AppNavigation({
     window.addEventListener('resize', updateIndicators);
 
     return () => window.removeEventListener('resize', updateIndicators);
+  }, [currentPage]);
+
+  useEffect(() => {
+    const previousPage = previousPageRef.current;
+    const previousIndex = navItems.findIndex(
+      (item) => item.id === previousPage,
+    );
+    const currentIndex = navItems.findIndex((item) => item.id === currentPage);
+
+    previousPageRef.current = currentPage;
+
+    if (
+      previousIndex === -1 ||
+      currentIndex === -1 ||
+      previousIndex === currentIndex
+    ) {
+      setPassingPageIds([]);
+      return undefined;
+    }
+
+    const start = Math.min(previousIndex, currentIndex);
+    const end = Math.max(previousIndex, currentIndex);
+    const pathIds = navItems.slice(start, end + 1).map((item) => item.id);
+
+    setPassingPageIds(pathIds);
+
+    const distance = Math.abs(currentIndex - previousIndex);
+    const timeouts = pathIds.map((id) => {
+      const pageIndex = navItems.findIndex((item) => item.id === id);
+      const step = Math.abs(pageIndex - previousIndex);
+      const releaseProgress = Math.min(1, (step + 0.45) / distance);
+      const releaseDelay =
+        step === 0
+          ? 70
+          : Math.round(releaseProgress * navigationTransitionMs);
+
+      return window.setTimeout(() => {
+        setPassingPageIds((activeIds) =>
+          activeIds.filter((activeId) => activeId !== id),
+        );
+      }, releaseDelay);
+    });
+
+    return () => {
+      timeouts.forEach((timeout) => window.clearTimeout(timeout));
+    };
   }, [currentPage]);
 
   return (
@@ -102,9 +158,13 @@ function AppNavigation({
             />
             {navItems.map((item) => (
               <button
-                className={
-                  currentPage === item.id ? 'side-link active' : 'side-link'
-                }
+                className={[
+                  'side-link',
+                  currentPage === item.id ? 'active' : '',
+                  passingPageIds.includes(item.id) ? 'passing' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
                 ref={(node) => {
