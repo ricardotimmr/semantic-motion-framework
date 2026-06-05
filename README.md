@@ -1,88 +1,149 @@
-# semantic-motion-framework
+# Semantic Motion Framework
 
-> **Bachelor Arbeit · 2026**  
-> Theoriegestütztes Framework und interaktiver Editor zur semantischen Klassifikation von UI-Animationen, umgesetzt mit React, TypeScript & Framer Motion.
+> Bachelorarbeit 2026  
+> Theoriegestütztes Framework zur semantischen Klassifikation von UI-Animationen und prototypischer Editor zur Operationalisierung des Frameworks.
 
----
+## Kurzbeschreibung
 
-## Über das Projekt
+UI-Animationen werden in der Praxis häufig intuitiv, ästhetisch oder anhand bestehender Design-Systeme eingesetzt. Systeme wie Material Design, Apple HIG oder IBM Carbon beschreiben sehr gut, wie Animationen gestaltet werden können. Sie erklären aber nur begrenzt, warum eine bestimmte Bewegung eine bestimmte Bedeutung transportiert.
 
-Animationen werden überwiegend intuitiv oder auf Basis ästhetischer Konventionen eingesetzt, anstatt auf einer theoretischen Grundlage zu beruhen. Große Design-Systeme wie Material Design 3, Apple HIG oder IBM Carbon beschreiben *welche* Animationen verwendet werden sollen, liefern aber keine theoretisch begründete Antwort darauf, *warum* eine bestimmte Bewegung eine bestimmte Bedeutung transportiert.
+Das Semantic Motion Framework setzt genau an dieser Stelle an. Es klassifiziert UI-Animationen nicht nur nach technischen Parametern, sondern nach ihrer semantischen Funktion. Animationen werden als Bedeutungsträger verstanden, die Feedback, Zustandswechsel, Richtung, Hierarchie oder Aufmerksamkeit kommunizieren können.
 
-Diese Arbeit entwickelt ein theorie-gestütztes Framework, das UI-Animationen nach ihrer **semantischen Bedeutung** klassifiziert, und demonstriert dieses Framework in einem interaktiven Prototyp: dem **Semantic Motion Editor**.
+Der Prototyp demonstriert das Framework in einem browserbasierten Editor. Ziel ist nicht ein produktionsreifes Tool, sondern ein nachvollziehbares Demonstrationsartefakt für die Bachelorarbeit.
 
-## Wissenschaftlicher Beitrag
+## Forschungsrahmen
 
-Diese Arbeit liefert einen systematischen Ansatz zur Betrachtung von UI-Animationen als Bedeutungsträger, indem Motion Design, Semiotik und Wahrnehmungspsychologie in einem gemeinsamen Framework zusammengeführt werden.
-
----
-
-## Theoretische Grundlagen
-
-Das Framework stützt sich auf drei Theoriebereiche:
+Die Arbeit verbindet drei theoretische Ebenen:
 
 | Bereich | Konzepte | Schlüsselquellen |
 |---|---|---|
-| **Semiotik** | Ikon, Index, Symbol (Peirce); Signifikant / Signifikat (Saussure) | Peirce, C. S. (1931). *Collected Papers*. Harvard University Press. |
-| **Wahrnehmungspsychologie** | Präattentive Verarbeitung, Direction Bias, Object Continuity | Treisman & Gelade (1980). *A feature-integration theory of attention.* Cognitive Psychology. |
-| **Motion Design** | Disney-Prinzipien (Easing, Anticipation, Followthrough), Timing als semantischer Träger | Johnston & Thomas (1981). *The Illusion of Life.* Abbeville Press. |
+| Semiotik | Ikon, Index, Symbol nach Peirce; kulturelle Konvention von Zeichen | Peirce, C. S. (1931). *Collected Papers*. Harvard University Press. |
+| Wahrnehmungspsychologie | Präattentive Verarbeitung, Aufmerksamkeit, Direction Bias, Ereignisstruktur | Treisman & Gelade (1980). *A feature-integration theory of attention.* Cognitive Psychology. |
+| Motion Design | Easing, Timing, Anticipation, Slow In, Slow Out als semantische Gestaltungsparameter | Thomas & Johnston (1981). *The Illusion of Life.* Abbeville Press. |
 
----
+Die zentrale Idee ist, dass Animationsparameter nicht nur ästhetische Entscheidungen sind. Sie sollen semantisch kongruent zur Bedeutung gewählt werden, die eine UI-Komponente kommunizieren soll.
 
-## Prototyp: Semantic Motion Editor
+## Aktueller Framework-Scope
 
-Ein browserbasiertes Tool, das das Framework direkt implementiert:
+Der aktuelle Framework-Kern umfasst:
 
-- **Komponente wählen** — Button, Toggle, Toast, Modal
-- **Motion-Pattern auswählen** — aus der Mapping-Datenbank des Frameworks
-- **Animation in Echtzeit erleben** — mit semantischer Begründung
-- **Code exportieren** — als Framer Motion oder CSS
+- 6 UI-Komponenten: Button, Toggle, Toast, Modal, Input und Skeleton
+- 5 Bedeutungsdimensionen: Feedback, State Change, Direction, Hierarchy und Attention
+- 24 Mapping-Einträge
+- Peirce-Klassifikation pro Mapping
+- nutzergerichtete Kurzbegründung und wissenschaftliche Detailbegründung
+- maschinenlesbare Animationsparameter
+- Reduced-Motion-Metadaten für relevante Mappings
+- zentrale Validierung der Mapping-Datenbank
 
-Kern des Tools ist eine strukturierte **Mapping-Datenbank**, die Animationsparameter auf semantische Bedeutungsdimensionen abbildet (Feedback, State Change, Direction, Hierarchie, Aufmerksamkeit).
+Die Mapping-Datenbank liegt in:
 
----
+```text
+prototyp/src/data/mappings.ts
+```
 
-## Tech Stack
+Die Typen und Framework-Regeln liegen in:
 
-| | |
+```text
+prototyp/src/framework/types.ts
+prototyp/src/framework/classifier.ts
+prototyp/src/framework/validation.ts
+```
+
+## Datenmodell
+
+Ein Mapping verbindet eine UI-Komponente, eine Bedeutungsdimension und eine Subkategorie mit konkreten Animationsparametern.
+
+Beispielhaft modelliert das Framework:
+
+- Easing-Presets und Spring-Konfigurationen
+- Duration und Delay
+- Translation über Pixelwerte oder größenabhängige Distanzen
+- Scale über `scaleFactor` und `scaleMode`
+- Opacity als unterstützenden Sichtbarkeitsparameter
+- wiederholte Animationen über `iterations`
+- mehrphasige Animationen über `motionPhases`
+- Reduced-Motion-Strategien über Accessibility-Metadaten
+
+Mehrphasige Animationen werden explizit über `motionPhases` modelliert. Das betrifft zum Beispiel Toast-Animationen, die zuerst einfahren und danach ein sekundäres Signal wie Shake, Nudge oder Pulse zeigen.
+
+## Prototyp
+
+Der Hauptprototyp befindet sich in:
+
+```text
+prototyp/
+```
+
+Er wird mit React, TypeScript, Vite und Framer Motion umgesetzt.
+
+Der aktuelle Prototyp ist als Vier-Seiten-Struktur angelegt:
+
+- Startseite
+- Editor
+- Framework-Karte
+- Über das Projekt
+
+Die Startseite ist bereits als Informations- und Einstiegsebene umgesetzt. Die weiteren Seiten sind strukturell angelegt und werden im Verlauf der Editor-Implementierung ausgebaut.
+
+## POCs
+
+Die POCs im Ordner `pocs/` wurden genutzt, um zentrale technische und konzeptuelle Fragen vor der Hauptimplementierung zu prüfen.
+
+| POC | Zweck |
 |---|---|
-| **Framework** | React + Vite |
-| **Sprache** | TypeScript |
-| **Animation** | Framer Motion |
-| **Styling** | CSS |
+| POC 01 | Basis-Animationssystem mit Framer Motion |
+| POC 02 | Mapping-Datenbank und Validierung |
+| POC 03 | Echtzeit-Preview aller Mapping-Einträge |
+| POC 04 | Framer-Motion- und CSS-Code-Export |
+| POC 05 | Integration von Auswahl, Preview, Begründung und Export |
 
----
+Die POCs sind Entwicklungsartefakte. Der aktuelle Framework-Stand wird durch die Dateien im `prototyp/src/framework` und `prototyp/src/data` definiert.
 
 ## Projektstruktur
 
-```
+```text
 semantic-motion-framework/
-├── src/
-│   ├── framework/          # Mapping-Datenbank & Klassifikationslogik
-│   ├── components/         # UI-Komponenten (Button, Modal, Toast, …)
-│   ├── editor/             # Semantic Motion Editor (Hauptprototyp)
-│   └── theory/             # Theoretische Dokumentation als TS-Typen
-├── docs/                   # Begleitende Dokumentation
+├── docs/                    # Konzept, Theorie, Anforderungen und Arbeitsdokumentation
+├── pocs/                    # isolierte Proofs of Concept
+├── prototyp/                # Hauptprototyp des Semantic Motion Editors
+│   ├── src/
+│   │   ├── components/      # übergreifende UI-Komponenten des Prototyps
+│   │   ├── data/            # Mapping-Datenbank
+│   │   ├── framework/       # Typen, Classifier und Validierung
+│   │   └── pages/           # Startseite, Editor, Framework-Karte, Über das Projekt
+│   └── package.json
+├── thesis/                  # Materialien zur schriftlichen Ausarbeitung
 └── README.md
 ```
 
->  Struktur vorläufig, wird im Verlauf der Arbeit angepasst.
+## Lokale Entwicklung
 
----
+```bash
+cd prototyp
+npm install
+npm run dev
+```
+
+Build prüfen:
+
+```bash
+cd prototyp
+npm run build
+```
+
+Hinweis: Die verwendete Vite-Version erwartet Node.js 20.19 oder neuer beziehungsweise Node.js 22.12 oder neuer. Mit älteren Node-Versionen kann der Build trotz Warnung funktionieren, die Umgebung sollte für die Abgabe aber aktualisiert werden.
 
 ## Abgrenzung
 
-Diese Arbeit führt **keine empirische Nutzerstudie** durch. Der wissenschaftliche Beitrag liegt in der theoretischen Herleitung und Systematisierung des Frameworks. Der Prototyp ist **Demonstration**, nicht Evaluation.
+Die Arbeit enthält keine empirische Nutzerstudie. Die Mappings sind theoretisch hergeleitet und im Prototyp demonstriert, aber nicht empirisch validiert.
 
----
-
-## Status
-
-**In Entwicklung** — Bachelor Thesis, voraussichtlicher Abschluss: 2026
-
----
+Der Prototyp ist kein produktionsreifes Design-Tool. Er dient dazu, das Framework praktisch erfahrbar zu machen und die Forschungsfrage zur Operationalisierung zu beantworten.
 
 ## Autor
 
-**Ricardo Timm**  
-Bachelor Thesis · TH Köln · Betreuer: Prof. Christian Noss
+Ricardo Timm  
+Bachelorarbeit, TH Köln, 2026
+
+Erstprüfer: Prof. Christian Noss  
+Zweitprüfer: Prof. Dr. Hoai Viet Nguyen

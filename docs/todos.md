@@ -27,6 +27,27 @@ Akzeptanzkriterium:
 
 - Der Editor nutzt dieselben Framework-Regeln wie POC 03/04 und führt keine neuen parallelen Sonderlogiken ein.
 
+## Laufende Pflege: README synchronisieren
+
+Status: Laufend.
+
+Aktueller Befund:
+
+- Die README ist die erste Orientierung für das Repository.
+- Framework, POCs und Prototyp ändern sich während der Umsetzung weiter.
+- Die README sollte deshalb nicht erst am Ende einmalig korrigiert werden.
+
+TODO:
+
+- Nach größeren Änderungen an Framework, Prototyp, POCs oder Projektstruktur prüfen, ob die README noch stimmt.
+- Komponentenliste, Mapping-Anzahl, Tech Stack und Projektstruktur aktuell halten.
+- Prototypstatus ehrlich beschreiben: Demonstrationsartefakt, kein produktionsreifes Tool.
+- Vor Abgabe final prüfen, ob README, `docs/`, Code und Wiki denselben Stand kommunizieren.
+
+Akzeptanzkriterium:
+
+- Die README gibt jederzeit grob korrekt wieder, was das Projekt aktuell enthält und was bewusst nicht geleistet wird.
+
 ## Optional: Weitere UI-Komponenten als Framework-Erweiterung prüfen
 
 Status: Optional, nach dem Hauptprototyp oder im Ausblick.
