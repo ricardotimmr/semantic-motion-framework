@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import AppNavigation from './components/AppNavigation';
+import Editor from './pages/Editor';
+import FrameworkKarte from './pages/FrameworkKarte';
+import Startseite from './pages/Startseite';
+import UeberDasProjekt from './pages/UeberDasProjekt';
+import type { PageId } from './pages/pageTypes';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState<PageId>('startseite');
+
+  let pageContent = <Startseite onNavigate={setCurrentPage} />;
+
+  if (currentPage === 'editor') {
+    pageContent = <Editor />;
+  }
+
+  if (currentPage === 'frameworkKarte') {
+    pageContent = <FrameworkKarte />;
+  }
+
+  if (currentPage === 'ueberDasProjekt') {
+    pageContent = <UeberDasProjekt />;
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <AppNavigation currentPage={currentPage} onNavigate={setCurrentPage}>
+      {pageContent}
+    </AppNavigation>
+  );
 }
 
-export default App
+export default App;
