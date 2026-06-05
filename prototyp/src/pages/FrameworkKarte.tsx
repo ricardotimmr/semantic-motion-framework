@@ -1,12 +1,5 @@
-import AppNavigation from '../components/AppNavigation';
-import type { PageProps } from './pageTypes';
-
-function FrameworkKarte({ currentPage, onNavigate }: PageProps) {
-  return (
-    <AppNavigation currentPage={currentPage} onNavigate={onNavigate}>
-      <main className="main-content empty-page" />
-    </AppNavigation>
-  );
+function FrameworkKarte() {
+  return <main className="main-content empty-page" />;
 }
 
 export default FrameworkKarte;

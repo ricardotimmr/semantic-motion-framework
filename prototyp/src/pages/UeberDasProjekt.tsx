@@ -1,12 +1,5 @@
-import AppNavigation from '../components/AppNavigation';
-import type { PageProps } from './pageTypes';
-
-function UeberDasProjekt({ currentPage, onNavigate }: PageProps) {
-  return (
-    <AppNavigation currentPage={currentPage} onNavigate={onNavigate}>
-      <main className="main-content empty-page" />
-    </AppNavigation>
-  );
+function UeberDasProjekt() {
+  return <main className="main-content empty-page" />;
 }
 
 export default UeberDasProjekt;

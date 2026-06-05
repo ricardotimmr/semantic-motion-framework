@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './App.css';
+import AppNavigation from './components/AppNavigation';
 import Editor from './pages/Editor';
 import FrameworkKarte from './pages/FrameworkKarte';
 import Startseite from './pages/Startseite';
@@ -8,24 +9,26 @@ import type { PageId } from './pages/pageTypes';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageId>('startseite');
-  const pageProps = {
-    currentPage,
-    onNavigate: setCurrentPage,
-  };
+
+  let pageContent = <Startseite onNavigate={setCurrentPage} />;
 
   if (currentPage === 'editor') {
-    return <Editor {...pageProps} />;
+    pageContent = <Editor />;
   }
 
   if (currentPage === 'frameworkKarte') {
-    return <FrameworkKarte {...pageProps} />;
+    pageContent = <FrameworkKarte />;
   }
 
   if (currentPage === 'ueberDasProjekt') {
-    return <UeberDasProjekt {...pageProps} />;
+    pageContent = <UeberDasProjekt />;
   }
 
-  return <Startseite {...pageProps} />;
+  return (
+    <AppNavigation currentPage={currentPage} onNavigate={setCurrentPage}>
+      {pageContent}
+    </AppNavigation>
+  );
 }
 
 export default App;

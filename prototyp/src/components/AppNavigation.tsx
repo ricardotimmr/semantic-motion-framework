@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import type { PageId, PageProps } from '../pages/pageTypes';
 
 type NavItem = {
@@ -22,6 +22,38 @@ function AppNavigation({
   currentPage,
   onNavigate,
 }: AppNavigationProps) {
+  const topRefs = useRef<Partial<Record<PageId, HTMLButtonElement | null>>>({});
+  const sideRefs = useRef<Partial<Record<PageId, HTMLButtonElement | null>>>(
+    {},
+  );
+  const [topIndicator, setTopIndicator] = useState({ left: 0, width: 0 });
+  const [sideIndicatorTop, setSideIndicatorTop] = useState(0);
+
+  useLayoutEffect(() => {
+    const updateIndicators = () => {
+      const topButton = topRefs.current[currentPage];
+      const sideButton = sideRefs.current[currentPage];
+
+      if (topButton) {
+        setTopIndicator({
+          left: topButton.offsetLeft,
+          width: topButton.offsetWidth,
+        });
+      }
+
+      if (sideButton) {
+        setSideIndicatorTop(
+          sideButton.offsetTop + sideButton.offsetHeight / 2 - 2.5,
+        );
+      }
+    };
+
+    updateIndicators();
+    window.addEventListener('resize', updateIndicators);
+
+    return () => window.removeEventListener('resize', updateIndicators);
+  }, [currentPage]);
+
   return (
     <div className="app-page">
       <header className="top-tabs" aria-label="Hauptnavigation">
@@ -30,11 +62,22 @@ function AppNavigation({
             className={currentPage === item.id ? 'tab-item active' : 'tab-item'}
             key={item.id}
             onClick={() => onNavigate(item.id)}
+            ref={(node) => {
+              topRefs.current[item.id] = node;
+            }}
             type="button"
           >
             {item.label}
           </button>
         ))}
+        <span
+          aria-hidden="true"
+          className="top-tab-indicator"
+          style={{
+            transform: `translateX(${topIndicator.left}px)`,
+            width: topIndicator.width,
+          }}
+        />
       </header>
 
       <div className="app-shell">
@@ -52,6 +95,11 @@ function AppNavigation({
 
           <nav className="side-nav" aria-label="Seiten">
             <div className="side-nav-label">Seiten</div>
+            <span
+              aria-hidden="true"
+              className="side-active-indicator"
+              style={{ transform: `translateY(${sideIndicatorTop}px)` }}
+            />
             {navItems.map((item) => (
               <button
                 className={
@@ -59,11 +107,11 @@ function AppNavigation({
                 }
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
+                ref={(node) => {
+                  sideRefs.current[item.id] = node;
+                }}
                 type="button"
               >
-                {currentPage === item.id ? (
-                  <span className="active-dot" />
-                ) : null}
                 {item.label}
               </button>
             ))}
