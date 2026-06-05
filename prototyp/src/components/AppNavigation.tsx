@@ -140,12 +140,11 @@ function AppNavigation({
         <aside className="sidebar" aria-label="Projektbereich">
           <div className="wordmark">
             <div className="wordmark-title">
-              S<span>M</span>F
-            </div>
-            <div className="wordmark-subtitle">
-              Semantic Motion
+              <span>S</span>emantic
               <br />
-              Framework
+              <span>M</span>otion
+              <br />
+              <span>F</span>ramework
             </div>
           </div>
 

@@ -4,9 +4,9 @@
 
 html {
   min-width: 320px;
-  background: #f7f1e3;
-  color: #1c1c1e;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f8f9f6;
+  color: #111827;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -17,7 +17,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background: #f7f1e3;
+  background: #f8f9f6;
 }
 
 a {
@@ -38,6 +38,6 @@ button {
 
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid #8b2e2e;
+  outline: 2px solid #f02d00;
   outline-offset: 2px;
 }

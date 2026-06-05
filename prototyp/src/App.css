@@ -1,11 +1,11 @@
 :root {
-  --bg: #f7f1e3;
-  --ink: #1c1c1e;
-  --red: #8b2e2e;
-  --border: rgba(28, 28, 30, 0.13);
-  --muted: rgba(28, 28, 30, 0.48);
-  --soft: rgba(28, 28, 30, 0.045);
-  --softer: rgba(28, 28, 30, 0.025);
+  --bg: #f8f9f6;
+  --ink: #111827;
+  --red: #f02d00;
+  --border: rgba(17, 24, 39, 0.13);
+  --muted: rgba(17, 24, 39, 0.5);
+  --soft: rgba(17, 24, 39, 0.045);
+  --softer: rgba(17, 24, 39, 0.025);
 }
 
 #root {
@@ -42,11 +42,17 @@
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  transition: color 180ms ease;
+  transition:
+    background 180ms ease,
+    color 180ms ease;
 }
 
-.tab-item:hover,
 .tab-item.active {
+  color: var(--ink);
+}
+
+.tab-item:hover {
+  background: var(--softer);
   color: var(--ink);
 }
 
@@ -86,21 +92,15 @@
 }
 
 .wordmark-title {
-  font-size: 1.3125rem;
+  color: var(--ink);
+  font-size: 0.875rem;
   font-weight: 500;
-  letter-spacing: -0.03em;
-  line-height: 1;
+  letter-spacing: -0.01em;
+  line-height: 1.12;
 }
 
 .wordmark-title span {
   color: var(--red);
-}
-
-.wordmark-subtitle {
-  margin-top: 0.1875rem;
-  color: var(--muted);
-  font-size: 0.59375rem;
-  line-height: 1.4;
 }
 
 .side-nav {
@@ -129,12 +129,17 @@
   font-size: 0.75rem;
   text-align: left;
   transition:
+    background 180ms ease,
     color 180ms ease,
     padding-left 320ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.side-link:hover,
 .side-link.active {
+  color: var(--ink);
+}
+
+.side-link:hover {
+  background: var(--softer);
   color: var(--ink);
 }
 
@@ -231,6 +236,12 @@
   font-family: inherit;
   font-size: 0.75rem;
   font-weight: 500;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
 }
 
 .button-primary {
@@ -239,9 +250,21 @@
   color: var(--bg);
 }
 
+.button-primary:hover {
+  background: var(--red);
+  box-shadow: 0 8px 18px rgba(17, 24, 39, 0.1);
+  transform: translateY(-1px);
+}
+
 .button-secondary {
   border: 0.5px solid var(--border);
   color: var(--ink);
+}
+
+.button-secondary:hover {
+  border-color: rgba(17, 24, 39, 0.22);
+  background: var(--soft);
+  transform: translateY(-1px);
 }
 
 .easing-card {
@@ -282,6 +305,10 @@
   font-size: 0.65625rem;
   line-height: 1;
   padding: 0.25rem 0.65rem;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
 }
 
 .easing-tab:last-child {
@@ -292,6 +319,11 @@
   border-color: var(--ink);
   background: var(--ink);
   color: var(--bg);
+}
+
+.easing-tab:not(.active):hover {
+  background: var(--soft);
+  color: var(--ink);
 }
 
 .curve-area {
@@ -384,6 +416,16 @@
   letter-spacing: 0.06em;
   padding: 0.35rem 0.8rem;
   text-transform: uppercase;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.easing-card-foot button:hover {
+  border-color: rgba(17, 24, 39, 0.22);
+  background: var(--soft);
 }
 
 .demo-note {
@@ -532,6 +574,12 @@
   border: 0;
   background: transparent;
   padding: 0;
+  transition: color 180ms ease;
+}
+
+.page-footer a:hover,
+.footer-link-button:hover {
+  color: var(--ink);
 }
 
 .page-footer div {
@@ -559,6 +607,7 @@
     border-top: 0;
   }
 }
+
 
 @media (max-width: 820px) {
   .top-tabs {

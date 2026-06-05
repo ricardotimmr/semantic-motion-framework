@@ -1,3 +1,4 @@
+import { motion, useAnimationControls, useReducedMotion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import type { PageId } from './pageTypes';
 
@@ -110,9 +111,25 @@ function Startseite({ onNavigate }: StartseiteProps) {
   const [selectedEasing, setSelectedEasing] = useState<EasingKey>('easeOut');
   const [playKey, setPlayKey] = useState(0);
   const [dotProgress, setDotProgress] = useState(0);
+  const replayControls = useAnimationControls();
+  const shouldReduceMotion = useReducedMotion();
   const easing = easingDemos[selectedEasing];
   const safeProgress = Math.min(Math.max(dotProgress, 0), 1.045);
   const dotLeft = `calc(${safeProgress * 100}% + ${3 - safeProgress * 22}px)`;
+
+  const replayDemo = () => {
+    setPlayKey((current) => current + 1);
+
+    if (!shouldReduceMotion) {
+      void replayControls.start({
+        scale: [1, 1.05, 1],
+        transition: {
+          duration: 0.25,
+          ease: [0, 0, 0.2, 1],
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     let frame = 0;
@@ -211,12 +228,15 @@ function Startseite({ onNavigate }: StartseiteProps) {
 
           <div className="easing-card-foot">
             <p>{easing.message}</p>
-            <button
+            <motion.button
+              animate={replayControls}
+              className="replay-button"
               type="button"
-              onClick={() => setPlayKey((current) => current + 1)}
+              onClick={replayDemo}
+              whileHover={shouldReduceMotion ? undefined : { y: -1 }}
             >
               Abspielen
-            </button>
+            </motion.button>
           </div>
           <p className="demo-note">
             Hinweis: Die Demo visualisiert die Kurven didaktisch verstärkt. Die
