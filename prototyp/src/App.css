@@ -175,6 +175,27 @@
   flex-direction: column;
 }
 
+.page-transition-shell {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+  background: var(--bg);
+}
+
+.page-transition-panel {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  background: var(--bg);
+  grid-area: 1 / 1;
+  will-change: opacity, transform;
+}
+
+.page-transition-panel > .main-content {
+  min-width: 0;
+}
+
 .empty-page {
   min-height: calc(100vh - 39px);
   background: var(--bg);
@@ -828,9 +849,176 @@
   color: var(--bg);
 }
 
+.about-page {
+  min-height: calc(100vh - 39px);
+}
+
+.about-header {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1fr);
+  gap: 3rem;
+  align-items: end;
+  border-bottom: 0.5px solid var(--border);
+  padding: 2.5rem 3rem;
+}
+
+.about-header h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 4vw, 3.55rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+}
+
+.about-header h1 em {
+  color: var(--red);
+  font-style: italic;
+}
+
+.about-header > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.72;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+  border-bottom: 0.5px solid var(--border);
+}
+
+.about-research {
+  border-right: 0.5px solid var(--border);
+  padding: 2rem 3rem;
+}
+
+.about-research > p:not(.section-label) {
+  max-width: 46rem;
+  margin: 0 0 1rem;
+  color: rgba(17, 24, 39, 0.62);
+  font-size: 0.8125rem;
+  line-height: 1.72;
+}
+
+.about-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1.75rem;
+  border-top: 0.5px solid var(--border);
+  border-left: 0.5px solid var(--border);
+}
+
+.about-meta-row {
+  min-height: 4.8rem;
+  border-right: 0.5px solid var(--border);
+  border-bottom: 0.5px solid var(--border);
+  padding: 0.85rem 1rem;
+}
+
+.about-meta-row span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--muted);
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.about-meta-row strong {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.about-limitations {
+  padding: 2rem 3rem;
+}
+
+.about-limitation {
+  border-top: 0.5px solid var(--border);
+  padding: 1rem 0;
+}
+
+.about-limitation:last-child {
+  border-bottom: 0.5px solid var(--border);
+}
+
+.about-limitation h2 {
+  margin: 0 0 0.4rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.about-limitation p {
+  margin: 0;
+  color: rgba(17, 24, 39, 0.58);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.about-links {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+  gap: 3rem;
+  padding: 2rem 3rem;
+}
+
+.about-links h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.about-links p:not(.section-label) {
+  max-width: 40rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.72;
+}
+
+.about-link-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 0.5px solid var(--border);
+}
+
+.about-link-list a {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-between;
+  border-bottom: 0.5px solid var(--border);
+  padding: 1rem 0;
+  transition:
+    color 180ms ease,
+    padding-left 180ms ease;
+}
+
+.about-link-list a:hover {
+  color: var(--red);
+  padding-left: 0.35rem;
+}
+
+.about-link-list span:first-child {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.about-link-list span:last-child {
+  color: var(--muted);
+  font-size: 0.6875rem;
+  text-align: right;
+}
+
 @media (max-width: 1120px) {
   .hero-section,
-  .quote-section {
+  .quote-section,
+  .about-header,
+  .about-content,
+  .about-links {
     grid-template-columns: 1fr;
   }
 
@@ -848,6 +1036,11 @@
 
   .framework-map-entries {
     grid-template-columns: 1fr;
+  }
+
+  .about-research {
+    border-right: 0;
+    border-bottom: 0.5px solid var(--border);
   }
 }
 
@@ -884,6 +1077,10 @@
   .dimension-band,
   .quote-section,
   .framework-map-header,
+  .about-header,
+  .about-research,
+  .about-limitations,
+  .about-links,
   .page-footer {
     padding-right: 1.25rem;
     padding-left: 1.25rem;
@@ -941,6 +1138,20 @@
 
   .framework-map-dimension {
     border-bottom: 0.5px solid var(--border);
+  }
+
+  .about-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .about-link-list a {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .about-link-list span:last-child {
+    text-align: left;
   }
 }
 
