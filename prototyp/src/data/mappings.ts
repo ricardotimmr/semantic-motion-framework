@@ -1,5 +1,5 @@
 /**
- * Semantic Motion Framework – Mapping-Datenbank (v2)
+ * Semantic Motion Framework - Mapping-Datenbank (v2)
  *
  * Komponenten: button, toggle, toast, modal, input, skeleton
  * Dimensionen: feedback, stateChange, direction, hierarchy, attention
@@ -190,7 +190,7 @@ export const mappings: MappingDatabase = [
         "verhindern eine irreführende Hierarchie zwischen den Zuständen.",
       source:
         "Ikon (Peirce): Umkehrung der Toggle-On-Bewegung. Ease-In-Out und " +
-        "Duration identisch zu toggleOn: Konsistenzprinzip – asymmetrische " +
+        "Duration identisch zu toggleOn: Konsistenzprinzip, asymmetrische " +
         "Parameter würden eine semantisch falsche Gewichtung der Zustände " +
         "erzeugen (Norman 2013, signifier consistency).",
       references: ["Peirce1931", "Norman2013"],
@@ -280,7 +280,7 @@ export const mappings: MappingDatabase = [
       source:
         "Index (Peirce): horizontaler Shake als Ablehnungsindex " +
         "(Ware 2012, Direction Bias). Sharp easing: Abruptheit verstärkt " +
-        "Fehlercharakter – kein Follow-Through, keine Freudigkeit. " +
+        "Fehlercharakter, kein Follow-Through, keine Freudigkeit. " +
         "Zweiphasige Animation: Staging-Prinzip (Heer & Robertson 2007). " +
         "Duration 320ms: kürzer als warning, betont Unmittelbarkeit.",
       references: ["Peirce1931", "Ware2012", "HeerRobertson2007"],
@@ -328,7 +328,7 @@ export const mappings: MappingDatabase = [
         "Aufmerksamkeit erwünscht ist, aber keine sofortige Aktion erforderlich.",
       source:
         "Index (Peirce): Erscheinen aus dem Bildschirmrand. Ease-In-Out: " +
-        "keine Abruptheit, kein Follow-Through – ruhige Mitteilung ohne " +
+        "keine Abruptheit, kein Follow-Through, ruhige Mitteilung ohne " +
         "emotionale Valenz. Duration 420ms + delay 80ms: langsamer als " +
         "success (300ms) und error (320ms). Der anschließende y-Nudge " +
         "setzt ein moderates Warnsignal ohne Fehler-Shake oder positiven Spring " +
@@ -376,7 +376,7 @@ export const mappings: MappingDatabase = [
         "das Ergebnis einer Nutzeraktion zu kommunizieren.",
       source:
         "Attention-Dimension: systeminitiiertes Signal ohne vorherige " +
-        "Nutzeraktion – strukturell verschieden von toast-feedback-success. " +
+        "Nutzeraktion, strukturell verschieden von toast-feedback-success. " +
         "Ease-Out statt Spring: kein Follow-Through, ruhigere Ankunft " +
         "ohne positive Energie. Duration 760ms: genug Zeit für Einfahrt und " +
         "zwei subtile Scale-Impulse, ohne Dringlichkeit zu erzeugen. " +
@@ -522,7 +522,7 @@ export const mappings: MappingDatabase = [
         "Die Bewegung beschreibt kein horizontales Vorwärts-/Rückwärtsnavigieren, " +
         "sondern das Schließen einer vertikal eingeführten Oberfläche. " +
         "Ease-In: Verlassen als Aufbaukurve (Zacks & Tversky 2001). " +
-        "Duration 280ms: kürzer als Enter – das Verlassende ist nicht " +
+        "Duration 280ms: kürzer als Enter, das Verlassende ist nicht " +
         "mehr der Fokus (Head 2016).",
       references: ["Peirce1931", "ZacksTversky2001", "Head2016", "AppleHIG", "MaterialDesign3"],
       signType: "index",
@@ -552,7 +552,7 @@ export const mappings: MappingDatabase = [
         "Rückwärtsnavigation. Es unterscheidet sich damit von der vertikalen " +
         "Sheet-Öffnung des normalen Enter-Mappings.",
       source:
-        "Index (Peirce): Direction Bias – Bewegung von links kodiert " +
+        "Index (Peirce): Direction Bias, Bewegung von links kodiert " +
         "Rückwärtsbewegung in Schriftkulturen mit Links-rechts-Leserichtung " +
         "(Ware 2012). Ease-Out: Ankommen (Zacks & Tversky 2001). " +
         "Komplementäres horizontales Navigationspaar zu modal-direction-backExit. " +
@@ -749,7 +749,7 @@ export const mappings: MappingDatabase = [
         "als Zustandswechsel lesbar bleibt. Trotz längerer Dauer wirkt Blur " +
         "durch Ease-In und Rücknahme von Ring/Label passiver als Focus. " +
         "Bewusste Asymmetrie zu input-stateChange-focus (Ease-Out): " +
-        "Focus ist aktives Ankommen, Blur ist passives Zurücktreten – " +
+        "Focus ist aktives Ankommen, Blur ist passives Zurücktreten, " +
         "keine gleichwertigen Zustände (Norman 2013).",
       references: ["Peirce1931", "ZacksTversky2001", "Norman2013"],
       signType: "icon",
