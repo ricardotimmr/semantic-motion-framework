@@ -1,5 +1,6 @@
 import { motion, useAnimationControls, useReducedMotion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import MotionActionButton from '../components/MotionActionButton';
 import type { PageId } from './pageTypes';
 
 type EasingKey = 'easeOut' | 'easeIn' | 'sharp' | 'spring';
@@ -171,13 +172,13 @@ function Startseite({ onNavigate }: StartseiteProps) {
             Motion-Phasen semantischen Bedeutungsdimensionen zu.
           </p>
           <div className="hero-actions">
-            <button
+            <MotionActionButton
               className="button-primary"
               onClick={() => onNavigate('editor')}
               type="button"
             >
               Editor öffnen
-            </button>
+            </MotionActionButton>
             <a
               className="button-secondary"
               href={documentationUrl}
@@ -194,7 +195,7 @@ function Startseite({ onNavigate }: StartseiteProps) {
             <span>Easing als semantischer Träger</span>
             <div className="easing-tabs">
               {(Object.keys(easingDemos) as EasingKey[]).map((key) => (
-                <button
+                <MotionActionButton
                   className={
                     selectedEasing === key ? 'easing-tab active' : 'easing-tab'
                   }
@@ -203,7 +204,7 @@ function Startseite({ onNavigate }: StartseiteProps) {
                   type="button"
                 >
                   {easingDemos[key].label}
-                </button>
+                </MotionActionButton>
               ))}
             </div>
           </div>
@@ -329,13 +330,13 @@ function Startseite({ onNavigate }: StartseiteProps) {
           <a href={documentationUrl} target="_blank" rel="noreferrer">
             Dokumentation
           </a>
-          <button
+          <MotionActionButton
             className="footer-link-button"
             onClick={() => onNavigate('ueberDasProjekt')}
             type="button"
           >
             Über das Projekt
-          </button>
+          </MotionActionButton>
         </div>
       </footer>
     </main>

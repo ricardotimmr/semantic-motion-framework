@@ -3,7 +3,10 @@ import './App.css';
 import AppNavigation from './components/AppNavigation';
 import PageTransition from './components/PageTransition';
 import type { PageTransitionDirection } from './components/PageTransition';
-import Editor from './pages/Editor';
+import Editor, {
+  defaultEditorSelection,
+  type EditorSelection,
+} from './pages/Editor';
 import FrameworkKarte from './pages/FrameworkKarte';
 import Startseite from './pages/Startseite';
 import UeberDasProjekt from './pages/UeberDasProjekt';
@@ -12,6 +15,9 @@ import type { PageId } from './pages/pageTypes';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageId>('startseite');
+  const [editorSelection, setEditorSelection] = useState<EditorSelection>(
+    defaultEditorSelection,
+  );
   const [transitionDirection, setTransitionDirection] =
     useState<PageTransitionDirection>(0);
 
@@ -30,7 +36,12 @@ function App() {
   let pageContent = <Startseite onNavigate={navigateToPage} />;
 
   if (currentPage === 'editor') {
-    pageContent = <Editor />;
+    pageContent = (
+      <Editor
+        onSelectionChange={setEditorSelection}
+        selection={editorSelection}
+      />
+    );
   }
 
   if (currentPage === 'frameworkKarte') {

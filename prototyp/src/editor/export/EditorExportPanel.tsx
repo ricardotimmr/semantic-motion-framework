@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import MotionActionButton from '../../components/MotionActionButton';
 import type { MappingEntry } from '../../framework/types';
 import { generateExportBundle } from './exportGenerators';
 
@@ -57,7 +58,7 @@ function EditorExportPanel({ entry }: EditorExportPanelProps) {
 
       <div className="editor-export-tabs" role="tablist">
         {exportModes.map((mode) => (
-          <button
+          <MotionActionButton
             aria-selected={activeMode === mode.id}
             className={activeMode === mode.id ? 'selected' : ''}
             key={mode.id}
@@ -66,7 +67,7 @@ function EditorExportPanel({ entry }: EditorExportPanelProps) {
             type="button"
           >
             {mode.label}
-          </button>
+          </MotionActionButton>
         ))}
       </div>
 
@@ -81,9 +82,13 @@ function EditorExportPanel({ entry }: EditorExportPanelProps) {
       <pre>{code}</pre>
 
       <div className="editor-export-actions">
-        <button className="editor-copy-button" onClick={copyCode} type="button">
+        <MotionActionButton
+          className="editor-copy-button"
+          onClick={copyCode}
+          type="button"
+        >
           Code kopieren
-        </button>
+        </MotionActionButton>
         <span aria-live="polite">
           {copyState === 'copied'
             ? 'Kopiert'

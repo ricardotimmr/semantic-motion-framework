@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import MotionActionButton from '../components/MotionActionButton';
 import EditorExportPanel from '../editor/export/EditorExportPanel';
 import EditorPreview from '../editor/preview/EditorPreview';
 import {
@@ -28,6 +29,17 @@ import {
 
 const defaultComponent: ComponentId = 'button';
 
+export type EditorSelection = {
+  component: ComponentId;
+  dimension: Dimension;
+  subcategory: Subcategory;
+};
+
+type EditorProps = {
+  selection: EditorSelection;
+  onSelectionChange: (selection: EditorSelection) => void;
+};
+
 function getFirstDimension(component: ComponentId) {
   return getDimensionsForComponent(component)[0] ?? 'feedback';
 }
@@ -51,15 +63,18 @@ function getSignClass(signType: SignType) {
   return 'index';
 }
 
-function Editor() {
-  const [component, setComponent] = useState<ComponentId>(defaultComponent);
-  const [dimension, setDimension] = useState<Dimension>(
+export const defaultEditorSelection: EditorSelection = {
+  component: defaultComponent,
+  dimension: getFirstDimension(defaultComponent),
+  subcategory: getFirstSubcategory(
+    defaultComponent,
     getFirstDimension(defaultComponent),
-  );
-  const [subcategory, setSubcategory] = useState<Subcategory>(
-    getFirstSubcategory(defaultComponent, getFirstDimension(defaultComponent)),
-  );
+  ),
+};
+
+function Editor({ selection, onSelectionChange }: EditorProps) {
   const [replayKey, setReplayKey] = useState(0);
+  const { component, dimension, subcategory } = selection;
 
   const validationReport = useMemo(() => validateMappingDatabase(), []);
   const selectedEntry = getMapping({ component, dimension, subcategory });
@@ -77,9 +92,11 @@ function Editor() {
     const nextDimension = getFirstDimension(nextComponent);
     const nextSubcategory = getFirstSubcategory(nextComponent, nextDimension);
 
-    setComponent(nextComponent);
-    setDimension(nextDimension);
-    setSubcategory(nextSubcategory);
+    onSelectionChange({
+      component: nextComponent,
+      dimension: nextDimension,
+      subcategory: nextSubcategory,
+    });
   };
 
   const selectDimension = (nextDimension: Dimension) => {
@@ -87,8 +104,11 @@ function Editor() {
       return;
     }
 
-    setDimension(nextDimension);
-    setSubcategory(getFirstSubcategory(component, nextDimension));
+    onSelectionChange({
+      component,
+      dimension: nextDimension,
+      subcategory: getFirstSubcategory(component, nextDimension),
+    });
   };
 
   const selectSubcategory = (nextSubcategory: Subcategory) => {
@@ -96,7 +116,11 @@ function Editor() {
       return;
     }
 
-    setSubcategory(nextSubcategory);
+    onSelectionChange({
+      component,
+      dimension,
+      subcategory: nextSubcategory,
+    });
   };
 
   return (
@@ -109,14 +133,14 @@ function Editor() {
             <span>Komponente</span>
             <div>
               {getDefinedComponents().map((item) => (
-                <button
+                <MotionActionButton
                   className={component === item ? 'selected' : ''}
                   key={item}
                   onClick={() => selectComponent(item)}
                   type="button"
                 >
                   {componentLabels[item]}
-                </button>
+                </MotionActionButton>
               ))}
             </div>
           </div>
@@ -129,7 +153,7 @@ function Editor() {
                   getMappingsForDimension(component, item).length > 0;
 
                 return (
-                  <button
+                  <MotionActionButton
                     className={dimension === item ? 'selected' : ''}
                     disabled={!isAvailable}
                     key={item}
@@ -137,7 +161,7 @@ function Editor() {
                     type="button"
                   >
                     {dimensionLabels[item]}
-                  </button>
+                  </MotionActionButton>
                 );
               })}
             </div>
@@ -154,7 +178,7 @@ function Editor() {
                 );
 
                 return (
-                  <button
+                  <MotionActionButton
                     className={subcategory === item ? 'selected' : ''}
                     disabled={!isAvailable}
                     key={item}
@@ -162,7 +186,7 @@ function Editor() {
                     type="button"
                   >
                     {subcategoryLabels[item]}
-                  </button>
+                  </MotionActionButton>
                 );
               })}
             </div>
@@ -192,7 +216,6 @@ function Editor() {
         <section className="editor-panel editor-preview-panel">
           <div className="editor-panel-header">
             <p className="editor-panel-title">Vorschau</p>
-            <span>Reduced Motion wird automatisch berücksichtigt</span>
           </div>
 
           <div className="editor-stage">
@@ -203,13 +226,13 @@ function Editor() {
             <EditorPreview entry={entry} replayKey={replayKey} />
           </div>
 
-          <button
+          <MotionActionButton
             className="editor-replay-button"
             onClick={() => setReplayKey((current) => current + 1)}
             type="button"
           >
             Wiederholen
-          </button>
+          </MotionActionButton>
 
           <div className="editor-parameter-grid">
             {getEditorParameterRows(entry).map(([label, value]) => (
@@ -225,17 +248,30 @@ function Editor() {
           <section className="editor-panel editor-rationale-panel">
             <div className="editor-panel-header">
               <p className="editor-panel-title">Semantische Begründung</p>
-              <span
-                className={[
-                  'editor-sign-badge',
-                  getSignClass(entry.rationale.signType),
-                ].join(' ')}
-              >
-                {signTypeLabels[entry.rationale.signType]}
-              </span>
+              <div className="editor-rationale-tools">
+                <span
+                  className={[
+                    'editor-sign-badge',
+                    getSignClass(entry.rationale.signType),
+                  ].join(' ')}
+                >
+                  {signTypeLabels[entry.rationale.signType]}
+                </span>
+                <div className="editor-source-tooltip-wrap">
+                  <MotionActionButton
+                    aria-label="Theoretische Begründung anzeigen"
+                    className="editor-source-tooltip-trigger"
+                    type="button"
+                  >
+                    ?
+                  </MotionActionButton>
+                  <div className="editor-source-tooltip" role="tooltip">
+                    {entry.rationale.source}
+                  </div>
+                </div>
+              </div>
             </div>
             <p>{entry.rationale.short}</p>
-            <div className="editor-source-text">{entry.rationale.source}</div>
 
             <div className="editor-sign-group">
               {(['icon', 'index', 'symbol'] as const).map((signType) => (
