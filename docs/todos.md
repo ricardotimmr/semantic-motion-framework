@@ -4,28 +4,31 @@ Diese Datei sammelt die noch offenen Punkte, die das Framework vor dem eigentlic
 
 ## Offene Reihenfolge
 
-1. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen.
+1. Editor-Integration mit allen 24 Mappings prüfen.
 
-## 1. Spring, `motionPhases`, Validierung und Exportlogik in den Hauptprototyp übernehmen
+## 1. Editor-Integration mit allen 24 Mappings prüfen
 
-Status: Offen, sobald der eigentliche Editor/Hauptprototyp gebaut wird.
+Status: Offen.
 
 Aktueller Befund:
 
-- POC 03/04 haben die relevanten Logiken bereits prototypisch gelöst.
-- Der Hauptprototyp muss diese Entscheidungen übernehmen, statt erneut Sonderfälle einzubauen.
+- POC 03 wurde bereits als Mapping-Review-Werkzeug genutzt.
+- Nach der Integration in den Haupteditor muss dieselbe Prüfung erneut im finalen Kontext stattfinden.
 
 TODO:
 
-- Spring in Framer Motion mit `springConfig` rendern/exportieren.
-- CSS-Spring nur mit Hinweis oder bewusster Approximation exportieren.
-- `motionPhases` generisch rendern/exportieren.
-- Zentrale Validierung vor oder während Editor-Initialisierung nutzbar machen.
-- Export-Kommentare weiterhin aus `rationale.short`, `rationale.source` und `signType` ziehen.
+- Alle 24 Mapping-Einträge im Editor durchklicken.
+- Besonders prüfen:
+  - Toast-Mappings mit `motionPhases`
+  - Spring-Mappings
+  - Skeleton Loading und Resolved
+  - Input Focus, Blur und Required Field
+  - Reduced-Motion-Verhalten
+- Auffälligkeiten entweder direkt beheben oder als Folge-Todo dokumentieren.
 
 Akzeptanzkriterium:
 
-- Der Editor nutzt dieselben Framework-Regeln wie POC 03/04 und führt keine neuen parallelen Sonderlogiken ein.
+- Der Editor bildet alle vorhandenen Mapping-Einträge sichtbar, begründet und exportierbar ab.
 
 ## Laufende Pflege: README synchronisieren
 
@@ -80,6 +83,11 @@ Akzeptanzkriterium:
 
 ## Erledigt
 
+- Export-Logik aus POC 04 lokal in den Hauptprototyp nach `prototyp/src/editor/export/` überführt.
+- Export-UI im Editor mit Framer-Motion-/CSS-Tabs, Live-Code, Copy-to-Clipboard und CSS-Hinweisen fertiggestellt.
+- Preview-Komponenten im Editor mit echten Framer-Motion-Animationen angebunden.
+- Reduced Motion in der Editor-Preview über `useReducedMotion` und Mapping-Strategien berücksichtigt.
+- Preview-Logik aus POC 03 in den Hauptprototyp nach `prototyp/src/editor/preview/` überführt.
 - Framework-Dokumentation mit dem finalen Datenmodell synchronisiert.
 - Review-Artefakt `mappings.rationale-review.ts` aus dem produktiven `src/data`-Kontext entfernt.
 - Mapping-Validierung aus POC 02 in den Framework-Kern verschoben und um numerische Parameterregeln erweitert.
