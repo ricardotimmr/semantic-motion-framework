@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import MotionActionButton from './MotionActionButton';
 import type { PageId, PageProps } from '../pages/pageTypes';
 
 type NavItem = {
@@ -114,7 +115,7 @@ function AppNavigation({
     <div className="app-page">
       <header className="top-tabs" aria-label="Hauptnavigation">
         {navItems.map((item) => (
-          <button
+          <MotionActionButton
             className={currentPage === item.id ? 'tab-item active' : 'tab-item'}
             key={item.id}
             onClick={() => onNavigate(item.id)}
@@ -124,7 +125,7 @@ function AppNavigation({
             type="button"
           >
             {item.label}
-          </button>
+          </MotionActionButton>
         ))}
         <span
           aria-hidden="true"
@@ -156,7 +157,7 @@ function AppNavigation({
               style={{ transform: `translateY(${sideIndicatorTop}px)` }}
             />
             {navItems.map((item) => (
-              <button
+              <MotionActionButton
                 className={[
                   'side-link',
                   currentPage === item.id ? 'active' : '',
@@ -172,14 +173,14 @@ function AppNavigation({
                 type="button"
               >
                 {item.label}
-              </button>
+              </MotionActionButton>
             ))}
           </nav>
 
           <div className="sidebar-meta">
             <div className="side-nav-label">Abschlussarbeit</div>
             <span>TH Köln · 2026</span>
-            <span>Ricardo Timmr</span>
+            <span>Ricardo Timm</span>
           </div>
         </aside>
 

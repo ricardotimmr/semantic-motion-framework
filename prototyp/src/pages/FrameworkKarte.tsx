@@ -1,5 +1,6 @@
 import { mappings } from '../data/mappings';
 import { DIMENSIONS } from '../framework/types';
+import MotionActionButton from '../components/MotionActionButton';
 import type { Dimension, MappingEntry, SignType } from '../framework/types';
 
 const dimensionMeta: Record<Dimension, { label: string; subtitle: string }> = {
@@ -209,12 +210,12 @@ function FrameworkKarte() {
                         {getParameterSummary(entry)}
                       </div>
                       <span className="framework-map-source">
-                        <button
+                        <MotionActionButton
                           aria-label={`Wissenschaftliche Begründung für ${componentLabels[entry.component]} ${subcategoryLabels[entry.subcategory]}`}
                           type="button"
                         >
                           ?
-                        </button>
+                        </MotionActionButton>
                         <span className="framework-map-tooltip" role="tooltip">
                           {entry.rationale.source}
                         </span>
