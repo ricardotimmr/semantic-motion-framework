@@ -322,7 +322,7 @@ function Startseite({ onNavigate }: StartseiteProps) {
       </section>
 
       <footer className="page-footer">
-        <span>Bachelorarbeit · TH Köln · Ricardo Timmr · 2026</span>
+        <span>Bachelorarbeit · TH Köln · Ricardo Timm · 2026</span>
         <div>
           <a href={githubUrl} target="_blank" rel="noreferrer">
             GitHub

@@ -180,7 +180,7 @@ function AppNavigation({
           <div className="sidebar-meta">
             <div className="side-nav-label">Abschlussarbeit</div>
             <span>TH Köln · 2026</span>
-            <span>Ricardo Timmr</span>
+            <span>Ricardo Timm</span>
           </div>
         </aside>
 

@@ -1376,6 +1376,11 @@
   background: var(--soft);
 }
 
+.editor-replay-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .editor-parameter-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

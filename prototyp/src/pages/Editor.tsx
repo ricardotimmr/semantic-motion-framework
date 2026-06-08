@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import MotionActionButton from '../components/MotionActionButton';
 import EditorExportPanel from '../editor/export/EditorExportPanel';
 import EditorPreview from '../editor/preview/EditorPreview';
+import { getPreviewChoreography } from '../editor/preview/previewChoreography';
 import {
   getDefinedComponents,
   getDefinedDimensions,
@@ -63,6 +64,23 @@ function getSignClass(signType: SignType) {
   return 'index';
 }
 
+function getReplayCooldownMs(entry: NonNullable<ReturnType<typeof getMapping>>) {
+  const phases = entry.params.motionPhases;
+  const choreography = getPreviewChoreography(entry);
+  const animationDuration =
+    phases !== undefined
+      ? phases.reduce(
+          (sum, phase) => sum + phase.duration + (phase.delay ?? 0),
+          0,
+        )
+      : entry.params.duration;
+
+  return Math.min(
+    Math.max(animationDuration + choreography.holdInitialMs + 120, 420),
+    1400,
+  );
+}
+
 export const defaultEditorSelection: EditorSelection = {
   component: defaultComponent,
   dimension: getFirstDimension(defaultComponent),
@@ -74,6 +92,8 @@ export const defaultEditorSelection: EditorSelection = {
 
 function Editor({ selection, onSelectionChange }: EditorProps) {
   const [replayKey, setReplayKey] = useState(0);
+  const [isReplayCoolingDown, setIsReplayCoolingDown] = useState(false);
+  const replayCooldownRef = useRef<number | null>(null);
   const { component, dimension, subcategory } = selection;
 
   const validationReport = useMemo(() => validateMappingDatabase(), []);
@@ -84,9 +104,37 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
     subcategory: 'success',
   });
 
+  const clearReplayCooldown = () => {
+    if (replayCooldownRef.current !== null) {
+      window.clearTimeout(replayCooldownRef.current);
+      replayCooldownRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    setIsReplayCoolingDown(false);
+    clearReplayCooldown();
+
+    return clearReplayCooldown;
+  }, [entry?.id]);
+
   if (!entry) {
     return <main className="main-content empty-page" />;
   }
+
+  const replayAnimation = () => {
+    if (isReplayCoolingDown) {
+      return;
+    }
+
+    setReplayKey((current) => current + 1);
+    setIsReplayCoolingDown(true);
+    clearReplayCooldown();
+    replayCooldownRef.current = window.setTimeout(() => {
+      setIsReplayCoolingDown(false);
+      replayCooldownRef.current = null;
+    }, getReplayCooldownMs(entry));
+  };
 
   const selectComponent = (nextComponent: ComponentId) => {
     const nextDimension = getFirstDimension(nextComponent);
@@ -228,7 +276,9 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
 
           <MotionActionButton
             className="editor-replay-button"
-            onClick={() => setReplayKey((current) => current + 1)}
+            disabled={isReplayCoolingDown}
+            onClick={replayAnimation}
+            successFeedback={false}
             type="button"
           >
             Wiederholen
