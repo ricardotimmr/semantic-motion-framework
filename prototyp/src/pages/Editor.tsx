@@ -41,6 +41,8 @@ type EditorProps = {
   onSelectionChange: (selection: EditorSelection) => void;
 };
 
+type MobilePicker = 'component' | 'dimension' | 'subcategory';
+
 function getFirstDimension(component: ComponentId) {
   return getDimensionsForComponent(component)[0] ?? 'feedback';
 }
@@ -93,6 +95,10 @@ export const defaultEditorSelection: EditorSelection = {
 function Editor({ selection, onSelectionChange }: EditorProps) {
   const [replayKey, setReplayKey] = useState(0);
   const [isReplayCoolingDown, setIsReplayCoolingDown] = useState(false);
+  const [isSourceTooltipOpen, setIsSourceTooltipOpen] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [openMobilePicker, setOpenMobilePicker] =
+    useState<MobilePicker | null>(null);
   const replayCooldownRef = useRef<number | null>(null);
   const { component, dimension, subcategory } = selection;
 
@@ -113,10 +119,24 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
 
   useEffect(() => {
     setIsReplayCoolingDown(false);
+    setIsSourceTooltipOpen(false);
     clearReplayCooldown();
 
     return clearReplayCooldown;
   }, [entry?.id]);
+
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 820px)');
+    const updateViewportMode = () => {
+      setIsMobileViewport(query.matches);
+      setIsSourceTooltipOpen(false);
+    };
+
+    updateViewportMode();
+    query.addEventListener('change', updateViewportMode);
+
+    return () => query.removeEventListener('change', updateViewportMode);
+  }, []);
 
   if (!entry) {
     return <main className="main-content empty-page" />;
@@ -145,6 +165,7 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
       dimension: nextDimension,
       subcategory: nextSubcategory,
     });
+    setOpenMobilePicker(null);
   };
 
   const selectDimension = (nextDimension: Dimension) => {
@@ -157,6 +178,7 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
       dimension: nextDimension,
       subcategory: getFirstSubcategory(component, nextDimension),
     });
+    setOpenMobilePicker(null);
   };
 
   const selectSubcategory = (nextSubcategory: Subcategory) => {
@@ -169,6 +191,11 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
       dimension,
       subcategory: nextSubcategory,
     });
+    setOpenMobilePicker(null);
+  };
+
+  const toggleMobilePicker = (picker: MobilePicker) => {
+    setOpenMobilePicker((current) => (current === picker ? null : picker));
   };
 
   return (
@@ -177,9 +204,24 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
         <aside className="editor-panel editor-selection-panel">
           <p className="editor-panel-title">Auswahl</p>
 
-          <div className="editor-option-group">
-            <span>Komponente</span>
-            <div>
+          <div
+            className={[
+              'editor-option-group',
+              openMobilePicker === 'component' ? 'mobile-open' : '',
+            ].join(' ')}
+          >
+            <button
+              aria-controls="editor-component-options"
+              aria-expanded={openMobilePicker === 'component'}
+              className="editor-option-summary"
+              onClick={() => toggleMobilePicker('component')}
+              type="button"
+            >
+              <span>Komponente</span>
+              <strong>{componentLabels[component]}</strong>
+            </button>
+            <span className="editor-option-label">Komponente</span>
+            <div className="editor-option-list" id="editor-component-options">
               {getDefinedComponents().map((item) => (
                 <MotionActionButton
                   className={component === item ? 'selected' : ''}
@@ -193,9 +235,24 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
             </div>
           </div>
 
-          <div className="editor-option-group">
-            <span>Dimension</span>
-            <div>
+          <div
+            className={[
+              'editor-option-group',
+              openMobilePicker === 'dimension' ? 'mobile-open' : '',
+            ].join(' ')}
+          >
+            <button
+              aria-controls="editor-dimension-options"
+              aria-expanded={openMobilePicker === 'dimension'}
+              className="editor-option-summary"
+              onClick={() => toggleMobilePicker('dimension')}
+              type="button"
+            >
+              <span>Dimension</span>
+              <strong>{dimensionLabels[dimension]}</strong>
+            </button>
+            <span className="editor-option-label">Dimension</span>
+            <div className="editor-option-list" id="editor-dimension-options">
               {getDefinedDimensions().map((item) => {
                 const isAvailable =
                   getMappingsForDimension(component, item).length > 0;
@@ -215,9 +272,24 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
             </div>
           </div>
 
-          <div className="editor-option-group">
-            <span>Subkategorie</span>
-            <div>
+          <div
+            className={[
+              'editor-option-group',
+              openMobilePicker === 'subcategory' ? 'mobile-open' : '',
+            ].join(' ')}
+          >
+            <button
+              aria-controls="editor-subcategory-options"
+              aria-expanded={openMobilePicker === 'subcategory'}
+              className="editor-option-summary"
+              onClick={() => toggleMobilePicker('subcategory')}
+              type="button"
+            >
+              <span>Subkategorie</span>
+              <strong>{subcategoryLabels[subcategory]}</strong>
+            </button>
+            <span className="editor-option-label">Subkategorie</span>
+            <div className="editor-option-list" id="editor-subcategory-options">
               {getDefinedSubcategoriesForDimension(dimension).map((item) => {
                 const isAvailable = isSupportedCombination(
                   component,
@@ -307,10 +379,23 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
                 >
                   {signTypeLabels[entry.rationale.signType]}
                 </span>
-                <div className="editor-source-tooltip-wrap">
+                <div
+                  className={[
+                    'editor-source-tooltip-wrap',
+                    isSourceTooltipOpen ? 'is-open' : '',
+                  ].join(' ')}
+                >
                   <MotionActionButton
+                    aria-controls="editor-source-mobile-panel"
+                    aria-expanded={isSourceTooltipOpen}
                     aria-label="Theoretische Begründung anzeigen"
                     className="editor-source-tooltip-trigger"
+                    onClick={() => {
+                      if (isMobileViewport) {
+                        setIsSourceTooltipOpen((current) => !current);
+                      }
+                    }}
+                    successFeedback={false}
                     type="button"
                   >
                     ?
@@ -322,6 +407,15 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
               </div>
             </div>
             <p>{entry.rationale.short}</p>
+            <div
+              className={[
+                'editor-source-mobile-panel',
+                isSourceTooltipOpen ? 'is-open' : '',
+              ].join(' ')}
+              id="editor-source-mobile-panel"
+            >
+              {entry.rationale.source}
+            </div>
 
             <div className="editor-sign-group">
               {(['icon', 'index', 'symbol'] as const).map((signType) => (
