@@ -33,6 +33,11 @@ function App() {
     setCurrentPage(nextPage);
   };
 
+  const openMappingInEditor = (selection: EditorSelection) => {
+    setEditorSelection(selection);
+    navigateToPage('editor');
+  };
+
   let pageContent = <Startseite onNavigate={navigateToPage} />;
 
   if (currentPage === 'editor') {
@@ -45,7 +50,7 @@ function App() {
   }
 
   if (currentPage === 'frameworkKarte') {
-    pageContent = <FrameworkKarte />;
+    pageContent = <FrameworkKarte onOpenInEditor={openMappingInEditor} />;
   }
 
   if (currentPage === 'ueberDasProjekt') {

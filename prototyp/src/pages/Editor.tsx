@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import MotionActionButton from '../components/MotionActionButton';
+import SourceTooltip from '../components/SourceTooltip';
 import EditorExportPanel from '../editor/export/EditorExportPanel';
 import EditorPreview from '../editor/preview/EditorPreview';
 import { getPreviewChoreography } from '../editor/preview/previewChoreography';
@@ -79,8 +80,6 @@ export const defaultEditorSelection: EditorSelection = {
 function Editor({ selection, onSelectionChange }: EditorProps) {
   const [replayKey, setReplayKey] = useState(0);
   const [isReplayCoolingDown, setIsReplayCoolingDown] = useState(false);
-  const [isSourceTooltipOpen, setIsSourceTooltipOpen] = useState(false);
-  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [openMobilePicker, setOpenMobilePicker] =
     useState<MobilePicker | null>(null);
   const replayCooldownRef = useRef<number | null>(null);
@@ -103,24 +102,10 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
 
   useEffect(() => {
     setIsReplayCoolingDown(false);
-    setIsSourceTooltipOpen(false);
     clearReplayCooldown();
 
     return clearReplayCooldown;
   }, [entry?.id]);
-
-  useEffect(() => {
-    const query = window.matchMedia('(max-width: 820px)');
-    const updateViewportMode = () => {
-      setIsMobileViewport(query.matches);
-      setIsSourceTooltipOpen(false);
-    };
-
-    updateViewportMode();
-    query.addEventListener('change', updateViewportMode);
-
-    return () => query.removeEventListener('change', updateViewportMode);
-  }, []);
 
   if (!entry) {
     return <main className="main-content empty-page" />;
@@ -363,43 +348,14 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
                 >
                   {signTypeLabels[entry.rationale.signType]}
                 </span>
-                <div
-                  className={[
-                    'editor-source-tooltip-wrap',
-                    isSourceTooltipOpen ? 'is-open' : '',
-                  ].join(' ')}
-                >
-                  <MotionActionButton
-                    aria-controls="editor-source-mobile-panel"
-                    aria-expanded={isSourceTooltipOpen}
-                    aria-label="Theoretische Begründung anzeigen"
-                    className="editor-source-tooltip-trigger"
-                    onClick={() => {
-                      if (isMobileViewport) {
-                        setIsSourceTooltipOpen((current) => !current);
-                      }
-                    }}
-                    successFeedback={false}
-                    type="button"
-                  >
-                    ?
-                  </MotionActionButton>
-                  <div className="editor-source-tooltip" role="tooltip">
-                    {entry.rationale.source}
-                  </div>
-                </div>
+                <SourceTooltip
+                  id={`editor-source-${entry.id}`}
+                  label="Theoretische Begründung anzeigen"
+                  source={entry.rationale.source}
+                />
               </div>
             </div>
             <p>{entry.rationale.short}</p>
-            <div
-              className={[
-                'editor-source-mobile-panel',
-                isSourceTooltipOpen ? 'is-open' : '',
-              ].join(' ')}
-              id="editor-source-mobile-panel"
-            >
-              {entry.rationale.source}
-            </div>
 
             <div className="editor-sign-group">
               {(['icon', 'index', 'symbol'] as const).map((signType) => (

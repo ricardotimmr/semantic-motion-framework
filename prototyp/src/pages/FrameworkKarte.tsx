@@ -9,7 +9,16 @@ import {
 } from '../framework/displayLabels';
 import { DIMENSIONS } from '../framework/types';
 import MotionActionButton from '../components/MotionActionButton';
+import SourceTooltip from '../components/SourceTooltip';
 import type { MappingEntry } from '../framework/types';
+
+type FrameworkKarteProps = {
+  onOpenInEditor: (selection: {
+    component: MappingEntry['component'];
+    dimension: MappingEntry['dimension'];
+    subcategory: MappingEntry['subcategory'];
+  }) => void;
+};
 
 function formatIteration(iterations: number | typeof Infinity | undefined) {
   if (!iterations || iterations === 1) {
@@ -84,7 +93,7 @@ function getParameterSummary(entry: MappingEntry) {
   return parts.join(' · ');
 }
 
-function FrameworkKarte() {
+function FrameworkKarte({ onOpenInEditor }: FrameworkKarteProps) {
   return (
     <main className="main-content framework-map-page">
       <section className="framework-map-header">
@@ -141,18 +150,36 @@ function FrameworkKarte() {
                     </div>
                     <p>{entry.rationale.short}</p>
                     <div className="framework-map-entry-foot">
-                      <div className="framework-map-param">
-                        {getParameterSummary(entry)}
+                      <div className="framework-map-meta">
+                        <div className="framework-map-param">
+                          {getParameterSummary(entry)}
+                        </div>
+                        <SourceTooltip
+                          align="auto"
+                          id={`framework-source-${entry.id}`}
+                          label={`Wissenschaftliche Begründung für ${componentLabels[entry.component]} ${subcategoryLabels[entry.subcategory]}`}
+                          placement="top"
+                          source={entry.rationale.source}
+                        />
                       </div>
-                      <span className="framework-map-source">
+                      <span className="framework-map-open">
                         <MotionActionButton
-                          aria-label={`Wissenschaftliche Begründung für ${componentLabels[entry.component]} ${subcategoryLabels[entry.subcategory]}`}
+                          aria-label={`${componentLabels[entry.component]} ${subcategoryLabels[entry.subcategory]} im Editor öffnen`}
+                          className="framework-map-open-button"
+                          onClick={() =>
+                            onOpenInEditor({
+                              component: entry.component,
+                              dimension: entry.dimension,
+                              subcategory: entry.subcategory,
+                            })
+                          }
+                          title="Im Editor öffnen"
                           type="button"
                         >
-                          ?
+                          →
                         </MotionActionButton>
-                        <span className="framework-map-tooltip" role="tooltip">
-                          {entry.rationale.source}
+                        <span className="framework-map-open-tooltip" role="tooltip">
+                          Im Editor öffnen
                         </span>
                       </span>
                     </div>
