@@ -12,6 +12,24 @@ const projectMeta = [
   ['Zweitprüfer', 'Prof. Dr. Hoai Viet Nguyen'],
 ];
 
+const researchSources = [
+  {
+    field: 'Semiotik',
+    source: 'Peirce',
+    focus: 'Zeichenrelationen, Ikon, Index und Symbol',
+  },
+  {
+    field: 'Wahrnehmung',
+    source: 'Treisman & Gelade',
+    focus: 'präattentive Verarbeitung von visuellen Reizen',
+  },
+  {
+    field: 'Motion Design',
+    source: 'Thomas & Johnston',
+    focus: 'Timing, Easing und Bewegungsprinzipien als Ausdrucksmittel',
+  },
+];
+
 const limitations = [
   {
     question: 'Ist das Framework empirisch validiert?',
@@ -32,6 +50,16 @@ const limitations = [
     question: 'Ist der Prototyp ein produktionsreifes Tool?',
     answer:
       'Nein. Der Editor ist ein Demonstrationsartefakt, das die Operationalisierung des Frameworks zeigt und keinen Anspruch auf Produktreife erhebt.',
+  },
+  {
+    question: 'Warum ein Editor und nicht nur eine Dokumentation?',
+    answer:
+      'Der Editor zeigt, ob das Framework operationalisierbar ist: Auswahl, Begründung, Preview und Export machen die theoretische Logik praktisch prüfbar.',
+  },
+  {
+    question: 'Warum werden auch visuelle Zustände gezeigt?',
+    answer:
+      'Farbe, Fokusrahmen oder Statusmarkierungen machen Motion-Signale im Interface-Kontext lesbar. Sie unterstützen die Animation, ersetzen aber nicht den eigentlichen Motion-Parameter.',
   },
 ];
 
@@ -70,6 +98,18 @@ function UeberDasProjekt() {
             Peirces Semiotik, Wahrnehmungspsychologie und etablierte
             Motion-Design-Prinzipien.
           </p>
+          <div
+            className="about-source-grid"
+            aria-label="Theoretischer Forschungsrahmen"
+          >
+            {researchSources.map((item) => (
+              <article className="about-source-card" key={item.field}>
+                <span>{item.field}</span>
+                <strong>{item.source}</strong>
+                <p>{item.focus}</p>
+              </article>
+            ))}
+          </div>
           <p>
             Der Editor operationalisiert das Framework. Er macht die
             semantische Begründung der Mappings sichtbar und übersetzt sie in

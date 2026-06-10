@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import AppNavigation from './components/AppNavigation';
 import PageTransition from './components/PageTransition';
@@ -10,26 +10,69 @@ import Editor, {
 import FrameworkKarte from './pages/FrameworkKarte';
 import Startseite from './pages/Startseite';
 import UeberDasProjekt from './pages/UeberDasProjekt';
-import { pageOrder } from './pages/pageTypes';
+import { getPageFromPath, getPagePath, pageOrder } from './pages/pageTypes';
 import type { PageId } from './pages/pageTypes';
 
+function getTransitionDirection(
+  currentPage: PageId,
+  nextPage: PageId,
+): PageTransitionDirection {
+  const currentIndex = pageOrder.indexOf(currentPage);
+  const nextIndex = pageOrder.indexOf(nextPage);
+
+  if (nextIndex === currentIndex) {
+    return 0;
+  }
+
+  return nextIndex > currentIndex ? 1 : -1;
+}
+
 function App() {
-  const [currentPage, setCurrentPage] = useState<PageId>('startseite');
+  const [currentPage, setCurrentPage] = useState<PageId>(() =>
+    getPageFromPath(window.location.pathname),
+  );
   const [editorSelection, setEditorSelection] = useState<EditorSelection>(
     defaultEditorSelection,
   );
   const [transitionDirection, setTransitionDirection] =
     useState<PageTransitionDirection>(0);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [currentPage]);
+
+  useEffect(() => {
+    const currentPath = getPagePath(currentPage);
+
+    if (window.location.pathname !== currentPath) {
+      window.history.replaceState({}, '', currentPath);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const nextPage = getPageFromPath(window.location.pathname);
+
+      if (nextPage === currentPage) {
+        return;
+      }
+
+      setTransitionDirection(getTransitionDirection(currentPage, nextPage));
+      setCurrentPage(nextPage);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [currentPage]);
+
   const navigateToPage = (nextPage: PageId) => {
     if (nextPage === currentPage) {
       return;
     }
 
-    const currentIndex = pageOrder.indexOf(currentPage);
-    const nextIndex = pageOrder.indexOf(nextPage);
-
-    setTransitionDirection(nextIndex > currentIndex ? 1 : -1);
+    window.history.pushState({}, '', getPagePath(nextPage));
+    setTransitionDirection(getTransitionDirection(currentPage, nextPage));
     setCurrentPage(nextPage);
   };
 

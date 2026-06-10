@@ -1001,6 +1001,45 @@
   line-height: 1.72;
 }
 
+.about-source-grid {
+  display: grid;
+  max-width: 46rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1.2rem 0 1.25rem;
+  border-top: 0.5px solid var(--border);
+  border-left: 0.5px solid var(--border);
+}
+
+.about-source-card {
+  min-height: 7.25rem;
+  border-right: 0.5px solid var(--border);
+  border-bottom: 0.5px solid var(--border);
+  padding: 0.8rem 0.85rem;
+}
+
+.about-source-card span {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--red);
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.about-source-card strong {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.about-source-card p {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  line-height: 1.48;
+}
+
 .about-meta {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1869,6 +1908,14 @@
   }
 
   .framework-map-entry {
+    min-height: 0;
+  }
+
+  .about-source-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-source-card {
     min-height: 0;
   }
 
