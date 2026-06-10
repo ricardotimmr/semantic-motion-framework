@@ -84,7 +84,7 @@ Der aktuelle Prototyp ist als Vier-Seiten-Struktur angelegt:
 - Framework-Karte
 - Über das Projekt
 
-Die Startseite ist bereits als Informations- und Einstiegsebene umgesetzt. Die weiteren Seiten sind strukturell angelegt und werden im Verlauf der Editor-Implementierung ausgebaut.
+Die Startseite dient als Informations- und Einstiegsebene. Der Editor bildet die zentrale Nutzungskette des Frameworks ab: Mapping auswählen, semantische Begründung lesen, Animation in der Preview prüfen und Framer-Motion- oder CSS-Code exportieren. Die Framework-Karte zeigt alle semantischen Mappings als Überblick, die Projektseite bündelt Forschungsrahmen, Kontext und Ressourcen.
 
 ## POCs
 
@@ -110,6 +110,7 @@ semantic-motion-framework/
 │   ├── src/
 │   │   ├── components/      # übergreifende UI-Komponenten des Prototyps
 │   │   ├── data/            # Mapping-Datenbank
+│   │   ├── editor/          # Preview-, Export- und Editor-Hilfslogik
 │   │   ├── framework/       # Typen, Classifier und Validierung
 │   │   └── pages/           # Startseite, Editor, Framework-Karte, Über das Projekt
 │   └── package.json
