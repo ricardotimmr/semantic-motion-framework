@@ -1,8 +1,8 @@
 import { motion, useAnimationControls, useReducedMotion } from 'framer-motion';
 import { useEffect } from 'react';
 import { getMappingById } from '../../framework/classifier';
+import { subcategoryLabels } from '../../framework/displayLabels';
 import type { MappingEntry } from '../../framework/types';
-import { subcategoryLabels } from '../editorLabels';
 import { playInputPreviewAnimation } from './inputMotionAdapter';
 import { playMappingAnimation } from './motionAdapter';
 

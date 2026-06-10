@@ -13,20 +13,16 @@ import {
   getSubcategoriesForDimension,
   isSupportedCombination,
 } from '../framework/classifier';
-import type {
-  ComponentId,
-  Dimension,
-  SignType,
-  Subcategory,
-} from '../framework/types';
-import { validateMappingDatabase } from '../framework/validation';
 import {
   componentLabels,
   dimensionLabels,
-  getEditorParameterRows,
+  getSignClass,
   signTypeLabels,
   subcategoryLabels,
-} from '../editor/editorLabels';
+} from '../framework/displayLabels';
+import type { ComponentId, Dimension, Subcategory } from '../framework/types';
+import { validateMappingDatabase } from '../framework/validation';
+import { getEditorParameterRows } from '../editor/editorLabels';
 
 const defaultComponent: ComponentId = 'button';
 
@@ -52,18 +48,6 @@ function getFirstSubcategory(component: ComponentId, dimension: Dimension) {
     getSubcategoriesForDimension(component, dimension)[0] ??
     getDefinedSubcategoriesForDimension(dimension)[0]
   );
-}
-
-function getSignClass(signType: SignType) {
-  if (signType === 'symbol') {
-    return 'symbol';
-  }
-
-  if (signType === 'icon') {
-    return 'icon';
-  }
-
-  return 'index';
 }
 
 function getReplayCooldownMs(entry: NonNullable<ReturnType<typeof getMapping>>) {

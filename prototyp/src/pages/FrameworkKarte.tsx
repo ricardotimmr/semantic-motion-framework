@@ -1,79 +1,15 @@
 import { mappings } from '../data/mappings';
+import {
+  componentLabels,
+  dimensionDescriptions,
+  dimensionLabels,
+  getSignClass,
+  signTypeLabels,
+  subcategoryLabels,
+} from '../framework/displayLabels';
 import { DIMENSIONS } from '../framework/types';
 import MotionActionButton from '../components/MotionActionButton';
-import type { Dimension, MappingEntry, SignType } from '../framework/types';
-
-const dimensionMeta: Record<Dimension, { label: string; subtitle: string }> = {
-  feedback: {
-    label: 'Feedback',
-    subtitle: 'Reaktion auf eine abgeschlossene Nutzeraktion',
-  },
-  stateChange: {
-    label: 'Zustandswechsel',
-    subtitle: 'Übergang zwischen gleichwertigen Zuständen',
-  },
-  direction: {
-    label: 'Richtung',
-    subtitle: 'Navigation mit räumlicher Vorwärts- oder Rückwärtslogik',
-  },
-  hierarchy: {
-    label: 'Hierarchie',
-    subtitle: 'Elemente treten in den Vordergrund oder verlieren Priorität',
-  },
-  attention: {
-    label: 'Aufmerksamkeit',
-    subtitle: 'Systeminitiiertes Signal ohne direkte Nutzeraktion',
-  },
-};
-
-const componentLabels: Record<MappingEntry['component'], string> = {
-  button: 'Button',
-  toggle: 'Toggle',
-  toast: 'Toast',
-  modal: 'Modal',
-  input: 'Input',
-  skeleton: 'Skeleton',
-};
-
-const subcategoryLabels: Record<MappingEntry['subcategory'], string> = {
-  success: 'Erfolg',
-  error: 'Fehler',
-  warning: 'Warnung',
-  toggleOn: 'An',
-  toggleOff: 'Aus',
-  focus: 'Fokus',
-  blur: 'Blur',
-  enter: 'Enter',
-  exit: 'Exit',
-  backEnter: 'Back Enter',
-  backExit: 'Back Exit',
-  toForeground: 'Vordergrund',
-  toBackground: 'Hintergrund',
-  oneShot: 'Einmalig',
-  persistent: 'Persistent',
-  requiredField: 'Pflichtfeld',
-  loading: 'Loading',
-  resolved: 'Resolved',
-};
-
-const signTypeLabels: Record<SignType, string> = {
-  icon: 'Ikon',
-  index: 'Index',
-  symbol: 'Symbol',
-  'icon/index': 'Ikon/Index',
-};
-
-function getSignClass(signType: SignType) {
-  if (signType === 'symbol') {
-    return 'symbol';
-  }
-
-  if (signType === 'icon') {
-    return 'icon';
-  }
-
-  return 'index';
-}
+import type { MappingEntry } from '../framework/types';
 
 function formatIteration(iterations: number | typeof Infinity | undefined) {
   if (!iterations || iterations === 1) {
@@ -177,13 +113,12 @@ function FrameworkKarte() {
       <section className="framework-map-body" aria-label="Mapping-Übersicht">
         {DIMENSIONS.map((dimension) => {
           const entries = mappings.filter((entry) => entry.dimension === dimension);
-          const meta = dimensionMeta[dimension];
 
           return (
             <article className="framework-map-row" key={dimension}>
               <div className="framework-map-dimension">
-                <h2>{meta.label}</h2>
-                <p>{meta.subtitle}</p>
+                <h2>{dimensionLabels[dimension]}</h2>
+                <p>{dimensionDescriptions[dimension]}</p>
                 <span>{entries.length} Einträge</span>
               </div>
 
