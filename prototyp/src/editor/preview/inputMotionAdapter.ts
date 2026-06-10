@@ -201,6 +201,7 @@ async function playInputWarning(
   controls: InputPreviewControls,
 ) {
   const transition = getTransition(entry);
+  const pulseDuration = Math.max(entry.params.duration * 1.1, 320);
 
   stopInputControls(controls);
   setInputState(controls, {
@@ -215,6 +216,15 @@ async function playInputWarning(
   await controls.message.start({
     ...visibleMessage,
     transition,
+  });
+
+  await controls.message.start({
+    opacity: [1, 0.72, 1, 0.72, 1],
+    transition: {
+      duration: pulseDuration / 1000,
+      ease: EASING_CURVES.easeInOut,
+      times: [0, 0.25, 0.5, 0.75, 1],
+    },
   });
 }
 

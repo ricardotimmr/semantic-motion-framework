@@ -9,6 +9,12 @@ const defaultChoreography: PreviewChoreography = {
 };
 
 const choreographyByMappingId: Partial<Record<string, PreviewChoreography>> = {
+  "toggle-stateChange-toggleOn": {
+    holdInitialMs: 140,
+  },
+  "toggle-stateChange-toggleOff": {
+    holdInitialMs: 140,
+  },
   "modal-hierarchy-toForeground": {
     holdInitialMs: 180,
   },
@@ -29,6 +35,12 @@ const choreographyByMappingId: Partial<Record<string, PreviewChoreography>> = {
   },
   "input-stateChange-blur": {
     holdInitialMs: 220,
+  },
+  "input-stateChange-focus": {
+    holdInitialMs: 160,
+  },
+  "input-feedback-warning": {
+    holdInitialMs: 140,
   },
   "skeleton-attention-resolved": {
     holdInitialMs: 260,
