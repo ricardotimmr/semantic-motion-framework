@@ -1,6 +1,8 @@
 import { motion, useAnimationControls, useReducedMotion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import MotionActionButton from '../components/MotionActionButton';
+import { mappings } from '../data/mappings';
+import { COMPONENT_IDS, DIMENSIONS } from '../framework/types';
 import type { PageId } from './pageTypes';
 
 type EasingKey = 'easeOut' | 'easeIn' | 'sharp' | 'spring';
@@ -59,6 +61,10 @@ const dimensions = [
   ['Hierarchie', 'Vordergrund · Hintergrund'],
   ['Aufmerksamkeit', 'OneShot · Persistent · Loading'],
 ];
+
+const peirceSignTypeCount = new Set(
+  mappings.flatMap((entry) => entry.rationale.signType.split('/')),
+).size;
 
 function sampleCubicBezier(
   curve: [number, number, number, number],
@@ -302,21 +308,21 @@ function Startseite({ onNavigate }: StartseiteProps) {
         </div>
         <div className="stats-grid" aria-label="Framework-Kennzahlen">
           <div>
-            <strong>6</strong>
+            <strong>{COMPONENT_IDS.length}</strong>
             <span>Komponenten</span>
           </div>
           <div>
-            <strong>5</strong>
+            <strong>{DIMENSIONS.length}</strong>
             <span>Dimensionen</span>
           </div>
           <div>
-            <strong>24</strong>
+            <strong>{mappings.length}</strong>
             <span>
               Mappings · theoretisch hergeleitet, nicht empirisch validiert
             </span>
           </div>
           <div>
-            <strong>3</strong>
+            <strong>{peirceSignTypeCount}</strong>
             <span>Peirce-Zeichentypen</span>
           </div>
         </div>
