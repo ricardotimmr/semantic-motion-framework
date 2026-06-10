@@ -85,6 +85,7 @@ function EditorExportPanel({ entry }: EditorExportPanelProps) {
         <MotionActionButton
           className="editor-copy-button"
           onClick={copyCode}
+          successFeedback
           type="button"
         >
           Code kopieren

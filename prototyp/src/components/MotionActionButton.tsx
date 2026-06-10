@@ -42,7 +42,7 @@ const MotionActionButton = forwardRef<
     children,
     disabled,
     onPointerDown,
-    successFeedback = true,
+    successFeedback = false,
     type = 'button',
     ...props
   },

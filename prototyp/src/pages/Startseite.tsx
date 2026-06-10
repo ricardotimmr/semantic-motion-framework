@@ -175,6 +175,7 @@ function Startseite({ onNavigate }: StartseiteProps) {
             <MotionActionButton
               className="button-primary"
               onClick={() => onNavigate('editor')}
+              successFeedback
               type="button"
             >
               Editor öffnen
