@@ -68,8 +68,15 @@ function formatMovement(entry: MappingEntry) {
     return 'Helper-Text y + Opacity-Pulse';
   }
 
+  if (
+    entry.id === 'input-stateChange-focus' ||
+    entry.id === 'input-stateChange-blur'
+  ) {
+    return 'Container + Border + Label';
+  }
+
   if (params.motionPhases) {
-    return `${params.motionPhases.length} Phasen`;
+    return params.motionPhases.map((phase) => phase.id).join(' + ');
   }
 
   if (params.scaleMode) {

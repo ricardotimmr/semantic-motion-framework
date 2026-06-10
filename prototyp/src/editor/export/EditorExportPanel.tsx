@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import MotionActionButton from '../../components/MotionActionButton';
 import type { MappingEntry } from '../../framework/types';
 import { generateExportBundle } from './exportGenerators';
@@ -26,6 +26,7 @@ function EditorExportPanel({ entry }: EditorExportPanelProps) {
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>(
     'idle',
   );
+  const copyResetTimeoutRef = useRef<number | null>(null);
   const exportBundle = useMemo(() => generateExportBundle(entry), [entry]);
   const code = exportBundle[activeMode];
   const cssNotices = useMemo(
@@ -36,8 +37,25 @@ function EditorExportPanel({ entry }: EditorExportPanelProps) {
     [activeMode, exportBundle.css],
   );
 
+  const clearCopyResetTimeout = () => {
+    if (copyResetTimeoutRef.current !== null) {
+      window.clearTimeout(copyResetTimeoutRef.current);
+      copyResetTimeoutRef.current = null;
+    }
+  };
+
+  const scheduleCopyStateReset = () => {
+    clearCopyResetTimeout();
+    copyResetTimeoutRef.current = window.setTimeout(() => {
+      setCopyState('idle');
+      copyResetTimeoutRef.current = null;
+    }, 1800);
+  };
+
   useEffect(() => {
+    clearCopyResetTimeout();
     setCopyState('idle');
+    return clearCopyResetTimeout;
   }, [activeMode, entry.id]);
 
   const copyCode = async () => {
@@ -47,6 +65,8 @@ function EditorExportPanel({ entry }: EditorExportPanelProps) {
     } catch {
       setCopyState('error');
     }
+
+    scheduleCopyStateReset();
   };
 
   return (
