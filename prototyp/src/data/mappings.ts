@@ -323,14 +323,15 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        "Der Toast gleitet langsam von unten herein und setzt nach der Ankunft " +
+        "Der Toast erscheint kontrolliert von unten und setzt nach der Ankunft " +
         "einen moderaten vertikalen Nudge. Die Bewegung signalisiert, dass " +
         "Aufmerksamkeit erwünscht ist, aber keine sofortige Aktion erforderlich.",
       source:
         "Index (Peirce): Erscheinen aus dem Bildschirmrand. Ease-In-Out: " +
         "keine Abruptheit, kein Follow-Through, ruhige Mitteilung ohne " +
-        "emotionale Valenz. Duration 420ms + delay 80ms: langsamer als " +
-        "success (300ms) und error (320ms). Der anschließende y-Nudge " +
+        "emotionale Valenz. Duration 420ms + delay 80ms: zeitlich " +
+        "zurückgenommener als success (300ms) und error (320ms), ohne " +
+        "als dringlicher Fehler zu wirken. Der anschließende y-Nudge " +
         "setzt ein moderates Warnsignal ohne Fehler-Shake oder positiven Spring " +
         "(Head 2016; Bartram et al. 2003).",
       references: ["Peirce1931", "Head2016", "BartramWareCalvert2003"],
@@ -548,14 +549,16 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        "Das Modal fährt von links ein und signalisiert horizontale " +
-        "Rückwärtsnavigation. Es unterscheidet sich damit von der vertikalen " +
+        "Das Modal fährt von links ein und macht die vorherige Ebene wieder " +
+        "sichtbar. Die Bewegung unterscheidet sich damit von der vertikalen " +
         "Sheet-Öffnung des normalen Enter-Mappings.",
       source:
-        "Index (Peirce): Direction Bias, Bewegung von links kodiert " +
-        "Rückwärtsbewegung in Schriftkulturen mit Links-rechts-Leserichtung " +
-        "(Ware 2012). Ease-Out: Ankommen (Zacks & Tversky 2001). " +
-        "Komplementäres horizontales Navigationspaar zu modal-direction-backExit. " +
+        "Index (Peirce): Im Navigationskontext verweist die Bewegung von " +
+        "links auf die Rückkehr zur vorherigen Ebene in Schriftkulturen mit " +
+        "Links-rechts-Leserichtung (Ware 2012). Die Richtung ist damit nicht " +
+        "isoliert als universelles Rückwärtszeichen zu verstehen, sondern als " +
+        "Teil eines horizontalen Navigationspaars. Ease-Out: Ankommen " +
+        "(Zacks & Tversky 2001). Komplementär zu modal-direction-backExit. " +
         "Duration 350ms: identisch zu enter, Richtung trägt die Bedeutung.",
       references: ["Peirce1931", "Ware2012", "ZacksTversky2001"],
       signType: "index",
@@ -581,13 +584,14 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        "Das Modal fährt nach rechts aus. Die horizontale Bewegung kommuniziert, " +
-        "dass die aktuelle Ebene im Rahmen einer Rückwärtsnavigation verlassen wird.",
+        "Das Modal fährt nach rechts aus und gibt den sichtbaren Kontext für " +
+        "die vorherige Ebene frei. Die Bedeutung entsteht aus dem horizontalen " +
+        "Navigationspaar, nicht aus der Richtung allein.",
       source:
         "Index (Peirce): Die Bewegung nach rechts ist nicht isoliert als " +
         "allgemeines Rückwärtszeichen zu verstehen, sondern als komplementäre " +
-        "Ausfahrt zu backEnter von links innerhalb einer horizontalen " +
-        "Rückwärtsnavigation. " +
+        "Ausfahrt zu backEnter von links innerhalb einer Rückkehr zur " +
+        "vorherigen Ebene. " +
         "Anders als modal-direction-exit beschreibt dieses Mapping keine " +
         "vertikale Sheet-Schließung, sondern eine horizontale Navigationsrichtung. " +
         "Ware (2012). Ease-In: Verlassen als Aufbaukurve " +
@@ -681,16 +685,19 @@ export const mappings: MappingDatabase = [
     rationale: {
       short:
         "Der Warnhinweis erscheint sanft unterhalb des Felds und kommt mit " +
-        "einem kleinen vertikalen Offset zur Ruhe. So bleibt die Eingabe " +
-        "unterbrechungsarm, aber die Warnung wird wahrnehmbar.",
+        "einem kleinen vertikalen Offset zur Ruhe. Zwei lokale Opacity-Impulse " +
+        "markieren den Hinweis, ohne das Eingabefeld selbst zu bewegen.",
       source:
         "Ikon (Peirce): Opacity-Transition ähnelt physikalischem Erscheinen " +
         "eines Objekts - ikonische Beziehung. Der kleine y-Offset des " +
         "Helper-Texts verstärkt dieses Erscheinen als lokales Ankommen, " +
-        "ohne das Eingabefeld selbst zu verschieben. Die Farbkonvention " +
-        "(Orange/Gelb) des Warnhinweises ist symbolisch, klassifiziert aber " +
-        "die Farbe, nicht die Animation. Ease-In-Out: sanfte, nicht dringende " +
-        "Einblendung. Duration 300ms: Eingabefluss nicht unterbrechen " +
+        "ohne das Eingabefeld selbst zu verschieben. Zwei lokale " +
+        "Opacity-Impulse verstärken die Wahrnehmbarkeit des Warnhinweises, ohne " +
+        "das Feld als Ganzes in ein Aufmerksamkeitssignal zu verwandeln. " +
+        "Die Farbkonvention (Orange/Gelb) des Warnhinweises ist symbolisch, " +
+        "klassifiziert aber die Farbe, nicht die Animation. Ease-In-Out: " +
+        "sanfte, nicht dringende Einblendung. Duration 300ms: Eingabefluss " +
+        "nicht unterbrechen " +
         "(Head 2016).",
       references: ["Peirce1931", "Head2016"],
       signType: "icon",

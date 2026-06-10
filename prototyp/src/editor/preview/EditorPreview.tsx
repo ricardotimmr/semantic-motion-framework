@@ -1,5 +1,6 @@
 import { motion, useAnimationControls, useReducedMotion } from 'framer-motion';
 import { useEffect } from 'react';
+import { getMappingById } from '../../framework/classifier';
 import type { MappingEntry } from '../../framework/types';
 import { subcategoryLabels } from '../editorLabels';
 import { playInputPreviewAnimation } from './inputMotionAdapter';
@@ -11,6 +12,8 @@ type EditorPreviewProps = {
 };
 
 type MotionControls = ReturnType<typeof useAnimationControls>;
+
+const skeletonLoadingEntry = getMappingById('skeleton-attention-loading');
 
 function PreviewButton({
   controls,
@@ -154,6 +157,7 @@ function PreviewSkeleton({
   replayKey,
 }: EditorPreviewProps & { reducedMotion: boolean }) {
   const isLoading = entry.subcategory === 'loading';
+  const shouldShowShimmerContext = isLoading || !reducedMotion;
   const containerControls = useAnimationControls();
   const shimmerControls = useAnimationControls();
 
@@ -162,6 +166,18 @@ function PreviewSkeleton({
       void containerControls.set({ opacity: 1, x: 0, y: 0, scale: 1 });
       void playMappingAnimation(entry, shimmerControls, { reducedMotion });
       return;
+    }
+
+    if (!reducedMotion && skeletonLoadingEntry != null) {
+      void shimmerControls.set({ opacity: 1, x: 0, y: 0, scale: 1 });
+      void playMappingAnimation(
+        skeletonLoadingEntry,
+        shimmerControls,
+        { reducedMotion: false },
+      );
+    } else {
+      void shimmerControls.stop();
+      void shimmerControls.set({ opacity: 0, x: 0, y: 0, scale: 1 });
     }
 
     void playMappingAnimation(entry, containerControls, { reducedMotion });
@@ -178,7 +194,7 @@ function PreviewSkeleton({
     <motion.div animate={containerControls} className="editor-preview-skeleton">
       {['wide', 'mid', 'short'].map((variant) => (
         <span className={`editor-skeleton-line ${variant}`} key={variant}>
-          {isLoading ? (
+          {shouldShowShimmerContext ? (
             <motion.span
               animate={shimmerControls}
               className="editor-skeleton-shimmer"

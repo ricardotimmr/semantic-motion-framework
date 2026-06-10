@@ -64,6 +64,10 @@ function formatEasing(entry: MappingEntry) {
 function formatMovement(entry: MappingEntry) {
   const { params } = entry;
 
+  if (entry.id === 'input-feedback-warning') {
+    return 'Helper-Text y + Opacity-Pulse';
+  }
+
   if (params.motionPhases) {
     return `${params.motionPhases.length} Phasen`;
   }

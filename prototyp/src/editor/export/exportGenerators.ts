@@ -388,6 +388,10 @@ ${phaseBlocks}
 
 function generateInputWarningFramerCode(entry: MappingEntry) {
   const name = toCamelCase(entry.id);
+  const pulseDuration = Math.max(entry.params.duration * 1.1, 320);
+  const totalDuration = entry.params.duration + pulseDuration;
+  const settleTime = entry.params.duration / totalDuration;
+  const pulseStep = pulseDuration / 4 / totalDuration;
 
   return `${sourceComment(entry, "//")}
 
@@ -406,12 +410,13 @@ export const ${name} = {
       y: 4, // lokales Erscheinen des Helper-Texts
     },
     animate: {
-      opacity: ${entry.params.opacity?.[1] ?? 1},
-      y: 0,
+      opacity: [${entry.params.opacity?.[0] ?? 0}, ${entry.params.opacity?.[1] ?? 1}, 0.72, ${entry.params.opacity?.[1] ?? 1}, 0.72, ${entry.params.opacity?.[1] ?? 1}],
+      y: [4, 0, 0, 0, 0, 0],
     },
     transition: {
-      duration: ${entry.params.duration / 1000},
+      duration: ${totalDuration / 1000},
       ease: ${formatFramerEase(entry.params.easing)},
+      times: [0, ${settleTime}, ${settleTime + pulseStep}, ${settleTime + pulseStep * 2}, ${settleTime + pulseStep * 3}, 1],
     },
   },
 };`;
@@ -857,15 +862,32 @@ function generateInputCSSCode(entry: MappingEntry) {
   const easing = formatCssEase(entry.params.easing);
 
   if (entry.id === "input-feedback-warning") {
+    const pulseDuration = Math.max(entry.params.duration * 1.1, 320);
+    const totalDuration = entry.params.duration + pulseDuration;
+    const settlePercent = Math.round((entry.params.duration / totalDuration) * 100);
+    const firstPulsePercent = Math.round(
+      ((entry.params.duration + pulseDuration / 4) / totalDuration) * 100,
+    );
+    const firstRecoverPercent = Math.round(
+      ((entry.params.duration + pulseDuration / 2) / totalDuration) * 100,
+    );
+    const secondPulsePercent = Math.round(
+      ((entry.params.duration + (pulseDuration / 4) * 3) / totalDuration) * 100,
+    );
+
     return `${sourceComment(entry, "/*")}
 
 @keyframes ${className}-message {
   0% { opacity: ${entry.params.opacity?.[0] ?? 0}; transform: translateY(4px); }
+  ${settlePercent}% { opacity: ${entry.params.opacity?.[1] ?? 1}; transform: translateY(0); }
+  ${firstPulsePercent}% { opacity: 0.72; transform: translateY(0); }
+  ${firstRecoverPercent}% { opacity: ${entry.params.opacity?.[1] ?? 1}; transform: translateY(0); }
+  ${secondPulsePercent}% { opacity: 0.72; transform: translateY(0); }
   100% { opacity: ${entry.params.opacity?.[1] ?? 1}; transform: translateY(0); }
 }
 
 .${className} .input-message {
-  animation: ${className}-message ${entry.params.duration}ms ${easing} both;
+  animation: ${className}-message ${totalDuration}ms ${easing} both;
 }`;
   }
 
