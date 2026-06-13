@@ -24,12 +24,12 @@
  *            ohne ikonische oder indexikalische Grundlage (Chandler 2007, S. 36).
  */
 export const COMPONENT_IDS = [
-  "button",
-  "toggle",
-  "toast",
-  "modal",
-  "input",
-  "skeleton",
+  'button',
+  'toggle',
+  'toast',
+  'modal',
+  'input',
+  'skeleton',
 ] as const;
 
 export type ComponentId = (typeof COMPONENT_IDS)[number];
@@ -48,11 +48,11 @@ export type ComponentId = (typeof COMPONENT_IDS)[number];
  * attention   – Element lenkt Aufmerksamkeit ohne vorherige Nutzeraktion
  */
 export const DIMENSIONS = [
-  "feedback",
-  "stateChange",
-  "direction",
-  "hierarchy",
-  "attention",
+  'feedback',
+  'stateChange',
+  'direction',
+  'hierarchy',
+  'attention',
 ] as const;
 
 export type Dimension = (typeof DIMENSIONS)[number];
@@ -61,39 +61,39 @@ export type Dimension = (typeof DIMENSIONS)[number];
 // Subkategorien je Dimension
 // ---------------------------------------------------------------------------
 
-export const FEEDBACK_SUBCATEGORIES = ["success", "error", "warning"] as const;
+export const FEEDBACK_SUBCATEGORIES = ['success', 'error', 'warning'] as const;
 export type FeedbackSubcategory = (typeof FEEDBACK_SUBCATEGORIES)[number];
 
 export const STATE_CHANGE_SUBCATEGORIES = [
-  "toggleOn",
-  "toggleOff",
-  "focus",
-  "blur",
+  'toggleOn',
+  'toggleOff',
+  'focus',
+  'blur',
 ] as const;
 export type StateChangeSubcategory =
   (typeof STATE_CHANGE_SUBCATEGORIES)[number];
 
 export const DIRECTION_SUBCATEGORIES = [
-  "enter",      // Element erscheint als neue/vorwärts gerichtete Ebene
-  "exit",       // Aktuelle Ebene wird in Vorwärtsnavigation verlassen
-  "backEnter",  // Vorherige Ebene erscheint bei Rückwärtsnavigation
-  "backExit",   // Aktuelle Ebene wird in Rückwärtsnavigation verlassen
+  'enter', // Element erscheint als neue/vorwärts gerichtete Ebene
+  'exit', // Aktuelle Ebene wird in Vorwärtsnavigation verlassen
+  'backEnter', // Vorherige Ebene erscheint bei Rückwärtsnavigation
+  'backExit', // Aktuelle Ebene wird in Rückwärtsnavigation verlassen
 ] as const;
 export type DirectionSubcategory = (typeof DIRECTION_SUBCATEGORIES)[number];
 
 export const HIERARCHY_SUBCATEGORIES = [
-  "toForeground", // Element wird zum primären Inhalt
-  "toBackground", // Element verliert Vordergrundpriorität und tritt aus dem Fokus zurück
+  'toForeground', // Element wird zum primären Inhalt
+  'toBackground', // Element verliert Vordergrundpriorität und tritt aus dem Fokus zurück
 ] as const;
 export type HierarchySubcategory = (typeof HIERARCHY_SUBCATEGORIES)[number];
 
 export const ATTENTION_SUBCATEGORIES = [
-  "oneShot",       // Einmaliges Aufmerksamkeitssignal, endet automatisch
-  "persistent",    // Wiederholendes Signal bis zur Nutzeraktion (unendliche Iterationen)
-  "warning",       // Systeminitiiertes Warnsignal, endet nach N Iterationen
-  "requiredField", // Pflichtfeld fordert Aufmerksamkeit nach fehlgeschlagenem Absenden
-  "loading",       // Skeleton-Shimmer: kontinuierliches Prozesssignal (Symbol)
-  "resolved",      // Skeleton-Ausblenden: Inhalt ist angekommen (Ikon)
+  'oneShot', // Einmaliges Aufmerksamkeitssignal, endet automatisch
+  'persistent', // Wiederholendes Signal bis zur Nutzeraktion (unendliche Iterationen)
+  'warning', // Systeminitiiertes Warnsignal, endet nach N Iterationen
+  'requiredField', // Pflichtfeld fordert Aufmerksamkeit nach fehlgeschlagenem Absenden
+  'loading', // Skeleton-Shimmer: kontinuierliches Prozesssignal (Symbol)
+  'resolved', // Skeleton-Ausblenden: Inhalt ist angekommen (Ikon)
 ] as const;
 export type AttentionSubcategory = (typeof ATTENTION_SUBCATEGORIES)[number];
 
@@ -139,12 +139,12 @@ export const SUBCATEGORIES_BY_DIMENSION = {
  * spring       (Framer Motion spring) – physikalisches Gewicht, Follow-Through
  */
 export type EasingPreset =
-  | "easeOut"
-  | "easeIn"
-  | "easeInOut"
-  | "sharp"
-  | "linear"
-  | "spring";
+  | 'easeOut'
+  | 'easeIn'
+  | 'easeInOut'
+  | 'sharp'
+  | 'linear'
+  | 'spring';
 
 /**
  * Die Easing-Definition, die in Animationsparametern verwendet wird.
@@ -163,13 +163,16 @@ export type EasingValue =
  * Für "spring" ist der Wert nur ein CSS-/Fallback-Platzhalter.
  * Framer Motion muss stattdessen springConfig verwenden.
  */
-export const EASING_CURVES: Record<EasingPreset, [number, number, number, number]> = {
-  easeOut:   [0.0, 0.0, 0.2, 1.0],
-  easeIn:    [0.4, 0.0, 1.0, 1.0],
+export const EASING_CURVES: Record<
+  EasingPreset,
+  [number, number, number, number]
+> = {
+  easeOut: [0.0, 0.0, 0.2, 1.0],
+  easeIn: [0.4, 0.0, 1.0, 1.0],
   easeInOut: [0.4, 0.0, 0.2, 1.0],
-  sharp:     [0.4, 0.0, 0.6, 1.0],
-  linear:    [0.0, 0.0, 1.0, 1.0],
-  spring:    [0.0, 0.0, 0.2, 1.0], // Platzhalter; spring verwendet die Framer-Motion-Spring-Konfiguration
+  sharp: [0.4, 0.0, 0.6, 1.0],
+  linear: [0.0, 0.0, 1.0, 1.0],
+  spring: [0.0, 0.0, 0.2, 1.0], // Platzhalter; spring verwendet die Framer-Motion-Spring-Konfiguration
 };
 
 // ---------------------------------------------------------------------------
@@ -181,9 +184,9 @@ export const EASING_CURVES: Record<EasingPreset, [number, number, number, number
  * Wird nur verwendet wenn EasingValue { preset: "spring" } ist.
  */
 export interface SpringConfig {
-  stiffness: number;  // Standard 100 – höher = reaktionsschneller
-  damping: number;    // Standard 10  – niedriger = mehr Schwingung
-  mass: number;       // Standard 1   – höher = schwereres Gefühl
+  stiffness: number; // Standard 100 – höher = reaktionsschneller
+  damping: number; // Standard 10  – niedriger = mehr Schwingung
+  mass: number; // Standard 1   – höher = schwereres Gefühl
 }
 
 // ---------------------------------------------------------------------------
@@ -232,7 +235,7 @@ export interface MotionPhase {
    * Erforderlich wenn translatePx, translateDistance, translateFrom,
    * translateTo oder keyframes gesetzt ist.
    */
-  direction?: "x" | "y";
+  direction?: 'x' | 'y';
 
   /** Pixel-Versatz für translatorische Phasen */
   translatePx?: number;
@@ -267,20 +270,20 @@ export interface MotionPhase {
  * Wird nur für Enter-/Exit-Bewegungen verwendet, bei denen der konkrete Pixelwert
  * erst im Komponenten-Rendering bekannt ist.
  */
-export type TranslationEdge = "left" | "right" | "top" | "bottom";
+export type TranslationEdge = 'left' | 'right' | 'top' | 'bottom';
 
 /**
  * Distanz einer größenabhängigen Translation.
  * "self" bedeutet: volle Breite oder Höhe des animierten Elements, abhängig von direction.
  */
-export type TranslationDistance = "self";
+export type TranslationDistance = 'self';
 
 /**
  * Explizite Interpretation von scaleFactor.
  * scaleFactor bleibt dabei ein positives Intensitätsdelta; scaleMode legt fest,
  * ob daraus ein Pulse, Scale-In oder Scale-Out entsteht.
  */
-export type ScaleMode = "pulse" | "scaleIn" | "scaleOut";
+export type ScaleMode = 'pulse' | 'scaleIn' | 'scaleOut';
 
 // ---------------------------------------------------------------------------
 // Animationsparameter
@@ -346,7 +349,7 @@ export interface AnimationParams {
    * Die konkrete Herkunft/Zielrichtung wird bei größenabhängigen Bewegungen
    * über translateFrom und translateTo angegeben.
    */
-  direction?: "x" | "y";
+  direction?: 'x' | 'y';
 
   /**
    * Pixel-Versatz für translatorische Animationen (Shake, Slide).
@@ -470,11 +473,7 @@ export interface AnimationParams {
  * replace  – problematische Bewegung wird durch weniger bewegungsintensive Darstellung ersetzt
  * static   – Bewegung entfällt; ein statischer Zustand trägt die Information
  */
-export type ReducedMotionStrategy =
-  | "none"
-  | "shorten"
-  | "replace"
-  | "static";
+export type ReducedMotionStrategy = 'none' | 'shorten' | 'replace' | 'static';
 
 /**
  * Accessibility-Metadaten für einen Mapping-Eintrag.
@@ -498,7 +497,7 @@ export interface MappingAccessibility {
  * symbol     – Bedeutung der Animation ist rein konventionell (erlernt)
  * icon/index – dominanter Aspekt ist ikonisch mit einem indexikalischen Anteil
  */
-export type SignType = "icon" | "index" | "symbol" | "icon/index";
+export type SignType = 'icon' | 'index' | 'symbol' | 'icon/index';
 
 /**
  * Maschinenlesbare Referenzschlüssel für wissenschaftliche und technische Quellen.
@@ -506,19 +505,66 @@ export type SignType = "icon" | "index" | "symbol" | "icon/index";
  * zusätzlich eine konsistente Nachvollziehbarkeit über alle Mapping-Einträge.
  */
 export type ReferenceKey =
-  | "Peirce1931"
-  | "Chandler2007"
-  | "Norman2013"
-  | "Ware2012"
-  | "ZacksTversky2001"
-  | "BartramWareCalvert2003"
-  | "ThomasJohnston1981"
-  | "ChangUngar1993"
-  | "HeerRobertson2007"
-  | "Head2016"
-  | "MaterialDesign3"
-  | "AppleHIG"
-  | "WCAG21";
+  | 'Peirce1931'
+  | 'Chandler2007'
+  | 'Norman2013'
+  | 'Ware2012'
+  | 'ZacksTversky2001'
+  | 'BartramWareCalvert2003'
+  | 'ThomasJohnston1981'
+  | 'ChangUngar1993'
+  | 'HeerRobertson2007'
+  | 'Head2016'
+  | 'MaterialDesign3'
+  | 'AppleHIG'
+  | 'WCAG21';
+
+/**
+ * Kleine semantische Hinweiszeichen für die bildhafte Lesart eines Mappings.
+ * Diese IDs beschreiben keine konkreten Icon-Komponenten und keine Animation.
+ * Sie werden später im Editor auf Glyphs oder Icon-Platzhalter abgebildet.
+ */
+export const VISUAL_CUE_IDS = [
+  'refusalGesture',
+  'pulseSignal',
+  'toggleTravel',
+  'arrival',
+  'departure',
+  'nudgeSignal',
+  'returnLayer',
+  'foreground',
+  'backgroundRecede',
+  'focusSignal',
+  'helperMessage',
+  'shimmerSignal',
+  'fadeResolve',
+] as const;
+
+export type VisualCueId = (typeof VISUAL_CUE_IDS)[number];
+
+/**
+ * Bildhafte Lesart einer Bewegung.
+ * Das Label erklärt die Wahrnehmungs- oder Gestenmetapher sprachlich.
+ * visualCue verweist auf ein kleines erklärendes Glyph, nicht auf die
+ * technische Animation selbst.
+ */
+export interface SemanticMetaphor {
+  label: string;
+  visualCue: VisualCueId | VisualCueId[];
+}
+
+/**
+ * Reflexionsebene für Graustufen und Möglichkeitsräume.
+ * primaryReading hält die dominante semantische Lesart fest.
+ * adjacentReadings beschreibt nahe Bedeutungen, die mitgelesen werden können.
+ * boundaries grenzt die primäre Zuordnung gegen ähnliche Lesarten ab.
+ */
+export interface SemanticContext {
+  metaphor: SemanticMetaphor;
+  primaryReading: string;
+  adjacentReadings: string[];
+  boundaries: string[];
+}
 
 /**
  * Die zweischichtige Begründung für jeden Mapping-Eintrag.
@@ -537,12 +583,19 @@ export type ReferenceKey =
  *           und spätere Export-/Details-Ansichten.
  *
  * signType: Der dominante Peirce'sche Zeichentyp für dieses Mapping.
+ *
+ * semanticContext:
+ *           Ergänzende Reflexionsebene aus bildhafter Lesart, visuellem Cue,
+ *           primärer Lesart, angrenzenden Lesarten und Abgrenzungen. Dieses
+ *           Feld steuert weder Preview noch Export, sondern unterstützt die
+ *           begründete Auswahl im Editor und die wissenschaftliche Einordnung.
  */
 export interface Rationale {
   short: string;
   source: string;
   references: ReferenceKey[];
   signType: SignType;
+  semanticContext: SemanticContext;
 }
 
 // ---------------------------------------------------------------------------

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import MotionActionButton from '../components/MotionActionButton';
 import SourceTooltip from '../components/SourceTooltip';
 import EditorExportPanel from '../editor/export/EditorExportPanel';
+import SemanticContextPanel from '../editor/SemanticContextPanel';
 import EditorPreview from '../editor/preview/EditorPreview';
 import { getPreviewChoreography } from '../editor/preview/previewChoreography';
 import {
@@ -36,6 +38,7 @@ export type EditorSelection = {
 type EditorProps = {
   selection: EditorSelection;
   onSelectionChange: (selection: EditorSelection) => void;
+  showSemanticContext: boolean;
 };
 
 type MobilePicker = 'component' | 'dimension' | 'subcategory';
@@ -51,7 +54,9 @@ function getFirstSubcategory(component: ComponentId, dimension: Dimension) {
   );
 }
 
-function getReplayCooldownMs(entry: NonNullable<ReturnType<typeof getMapping>>) {
+function getReplayCooldownMs(
+  entry: NonNullable<ReturnType<typeof getMapping>>,
+) {
   const phases = entry.params.motionPhases;
   const choreography = getPreviewChoreography(entry);
   const animationDuration =
@@ -77,21 +82,28 @@ export const defaultEditorSelection: EditorSelection = {
   ),
 };
 
-function Editor({ selection, onSelectionChange }: EditorProps) {
+function Editor({
+  selection,
+  onSelectionChange,
+  showSemanticContext,
+}: EditorProps) {
   const [replayKey, setReplayKey] = useState(0);
   const [isReplayCoolingDown, setIsReplayCoolingDown] = useState(false);
-  const [openMobilePicker, setOpenMobilePicker] =
-    useState<MobilePicker | null>(null);
+  const [openMobilePicker, setOpenMobilePicker] = useState<MobilePicker | null>(
+    null,
+  );
   const replayCooldownRef = useRef<number | null>(null);
   const { component, dimension, subcategory } = selection;
 
   const validationReport = useMemo(() => validateMappingDatabase(), []);
   const selectedEntry = getMapping({ component, dimension, subcategory });
-  const entry = selectedEntry ?? getMapping({
-    component: defaultComponent,
-    dimension: 'feedback',
-    subcategory: 'success',
-  });
+  const entry =
+    selectedEntry ??
+    getMapping({
+      component: defaultComponent,
+      dimension: 'feedback',
+      subcategory: 'success',
+    });
 
   const clearReplayCooldown = () => {
     if (replayCooldownRef.current !== null) {
@@ -372,6 +384,15 @@ function Editor({ selection, onSelectionChange }: EditorProps) {
               ))}
             </div>
           </section>
+
+          <AnimatePresence initial={false}>
+            {showSemanticContext && (
+              <SemanticContextPanel
+                key="semantic-context"
+                semanticContext={entry.rationale.semanticContext}
+              />
+            )}
+          </AnimatePresence>
 
           <EditorExportPanel entry={entry} />
         </aside>
