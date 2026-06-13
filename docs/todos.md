@@ -4,31 +4,33 @@ Diese Datei sammelt die noch offenen Punkte, die das Framework vor dem eigentlic
 
 ## Offene Reihenfolge
 
-1. Editor-Integration mit allen 24 Mappings prüfen.
+1. Finale Visual-Cue-Glyphs für den semantischen Möglichkeitsraum zeichnen oder modellieren.
 
-## 1. Editor-Integration mit allen 24 Mappings prüfen
+## 1. Finale Visual-Cue-Glyphs für den semantischen Möglichkeitsraum zeichnen oder modellieren
 
 Status: Offen.
 
 Aktueller Befund:
 
-- POC 03 wurde bereits als Mapping-Review-Werkzeug genutzt.
-- Nach der Integration in den Haupteditor muss dieselbe Prüfung erneut im finalen Kontext stattfinden.
+- `rationale.semanticContext.metaphor.visualCue` ist im Framework modelliert.
+- Für die UI existiert aktuell nur eine vorläufige Zuordnung zu Lucide-Platzhaltern in `prototyp/src/framework/visualCues.ts`.
+- Der Editor kann den semantischen Möglichkeitsraum bereits optional anzeigen.
+- Die Platzhalter sind aber noch keine konsistente eigene Glyph-Sprache.
 
 TODO:
 
-- Alle 24 Mapping-Einträge im Editor durchklicken.
-- Besonders prüfen:
-  - Toast-Mappings mit `motionPhases`
-  - Spring-Mappings
-  - Skeleton Loading und Resolved
-  - Input Focus, Blur und Required Field
-  - Reduced-Motion-Verhalten
-- Auffälligkeiten entweder direkt beheben oder als Folge-Todo dokumentieren.
+- Für alle `VISUAL_CUE_IDS` eigene kleine Line-Glyphs entwerfen oder die Platzhalter bewusst final kuratieren.
+- Glyphs konsistent halten:
+  - gleiche Strichstärke
+  - keine dekorativen Illustrationen
+  - klein lesbar im Editor
+  - maximal erklärend, nicht dominanter als Preview oder Rationale
+- Prüfen, ob kombinierte Cues wie `arrival + refusalGesture` im Editor lesbar bleiben.
+- Finale Umsetzung als austauschbare `VisualCueGlyph`-Komponente planen.
 
 Akzeptanzkriterium:
 
-- Der Editor bildet alle vorhandenen Mapping-Einträge sichtbar, begründet und exportierbar ab.
+- Der semantische Möglichkeitsraum nutzt eine visuell konsistente Cue-Sprache und ist nicht mehr auf rohe Platzhalter angewiesen.
 
 ## Laufende Pflege: README synchronisieren
 
@@ -83,6 +85,7 @@ Akzeptanzkriterium:
 
 ## Erledigt
 
+- Editor-Integration mit allen 24 Mappings im Haupteditor geprüft und Mapping-Review-Punkte abgearbeitet.
 - Export-Logik aus POC 04 lokal in den Hauptprototyp nach `prototyp/src/editor/export/` überführt.
 - Export-UI im Editor mit Framer-Motion-/CSS-Tabs, Live-Code, Copy-to-Clipboard und CSS-Hinweisen fertiggestellt.
 - Preview-Komponenten im Editor mit echten Framer-Motion-Animationen angebunden.
