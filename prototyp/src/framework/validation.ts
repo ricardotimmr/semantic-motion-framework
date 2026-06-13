@@ -1,9 +1,10 @@
-import { mappings } from "../data/mappings";
+import { mappings } from '../data/mappings';
 import {
   COMPONENT_IDS,
   DIMENSIONS,
   SUBCATEGORIES_BY_DIMENSION,
-} from "./types";
+  VISUAL_CUE_IDS,
+} from './types';
 import type {
   ComponentId,
   Dimension,
@@ -14,16 +15,18 @@ import type {
   MotionPhase,
   ReducedMotionStrategy,
   ScaleMode,
+  SemanticContext,
   SpringConfig,
   Subcategory,
   TranslationEdge,
-} from "./types";
+  VisualCueId,
+} from './types';
 import {
   getMapping,
   getMappingCount,
   getOutOfScopeCombinations,
   getSupportedComponents,
-} from "./classifier";
+} from './classifier';
 
 export type ValidationReport = {
   totalEntries: number;
@@ -35,15 +38,16 @@ export type ValidationReport = {
 
 const componentIds = new Set<ComponentId>(COMPONENT_IDS);
 const dimensions = new Set<Dimension>(DIMENSIONS);
-const xEdges = new Set<TranslationEdge>(["left", "right"]);
-const yEdges = new Set<TranslationEdge>(["top", "bottom"]);
+const xEdges = new Set<TranslationEdge>(['left', 'right']);
+const yEdges = new Set<TranslationEdge>(['top', 'bottom']);
 const reducedMotionStrategies = new Set<ReducedMotionStrategy>([
-  "none",
-  "shorten",
-  "replace",
-  "static",
+  'none',
+  'shorten',
+  'replace',
+  'static',
 ]);
-const scaleModes = new Set<ScaleMode>(["pulse", "scaleIn", "scaleOut"]);
+const scaleModes = new Set<ScaleMode>(['pulse', 'scaleIn', 'scaleOut']);
+const visualCueIds = new Set<VisualCueId>(VISUAL_CUE_IDS);
 const durationTolerance = 0.001;
 
 function isFiniteNumber(value: number): boolean {
@@ -131,7 +135,7 @@ function validateEasing(
 ): string[] {
   const errors: string[] = [];
 
-  if ("preset" in easing) {
+  if ('preset' in easing) {
     return errors;
   }
 
@@ -151,7 +155,9 @@ function validateEasing(
   const [x1, , x2] = cubicBezier;
 
   if (x1 < 0 || x1 > 1 || x2 < 0 || x2 > 1) {
-    errors.push(`${ownerId}: ${label}.cubicBezier x values must be between 0 and 1`);
+    errors.push(
+      `${ownerId}: ${label}.cubicBezier x values must be between 0 and 1`,
+    );
   }
 
   return errors;
@@ -167,8 +173,16 @@ function validateSpringConfig(
   }
 
   return [
-    ...validatePositiveNumber(ownerId, `${label}.stiffness`, springConfig.stiffness),
-    ...validatePositiveNumber(ownerId, `${label}.damping`, springConfig.damping),
+    ...validatePositiveNumber(
+      ownerId,
+      `${label}.stiffness`,
+      springConfig.stiffness,
+    ),
+    ...validatePositiveNumber(
+      ownerId,
+      `${label}.damping`,
+      springConfig.damping,
+    ),
     ...validatePositiveNumber(ownerId, `${label}.mass`, springConfig.mass),
   ];
 }
@@ -209,7 +223,9 @@ function validateKeyframeSequence(
 
   times.forEach((time, index) => {
     if (!isFiniteNumber(time) || time < 0 || time > 1) {
-      errors.push(`${entryId}: ${label} times[${index}] must be between 0 and 1`);
+      errors.push(
+        `${entryId}: ${label} times[${index}] must be between 0 and 1`,
+      );
     }
   });
 
@@ -224,7 +240,7 @@ function validateKeyframeSequence(
 
 function validateTranslationEdges(
   ownerId: string,
-  direction: "x" | "y" | undefined,
+  direction: 'x' | 'y' | undefined,
   translateFrom: TranslationEdge | undefined,
   translateTo: TranslationEdge | undefined,
 ): string[] {
@@ -234,14 +250,18 @@ function validateTranslationEdges(
     return errors;
   }
 
-  const allowedEdges = direction === "x" ? xEdges : yEdges;
+  const allowedEdges = direction === 'x' ? xEdges : yEdges;
 
   if (translateFrom !== undefined && !allowedEdges.has(translateFrom)) {
-    errors.push(`${ownerId}: translateFrom does not match direction "${direction}"`);
+    errors.push(
+      `${ownerId}: translateFrom does not match direction "${direction}"`,
+    );
   }
 
   if (translateTo !== undefined && !allowedEdges.has(translateTo)) {
-    errors.push(`${ownerId}: translateTo does not match direction "${direction}"`);
+    errors.push(
+      `${ownerId}: translateTo does not match direction "${direction}"`,
+    );
   }
 
   return errors;
@@ -267,7 +287,9 @@ function validateSharedPhaseTimes(
 
   const [firstSequence, ...otherSequences] = sequences;
 
-  if (otherSequences.some((sequence) => !hasSameTimes(firstSequence, sequence))) {
+  if (
+    otherSequences.some((sequence) => !hasSameTimes(firstSequence, sequence))
+  ) {
     return [
       `${phaseId}: multiple keyframe sequences in one phase must share the same times`,
     ];
@@ -298,8 +320,12 @@ function validateMotionPhase(
     errors.push(`${entry.id}: motion phase requires id`);
   }
 
-  errors.push(...validatePositiveNumber(phaseId, "motion phase duration", phase.duration));
-  errors.push(...validateNonNegativeNumber(phaseId, "motion phase delay", phase.delay));
+  errors.push(
+    ...validatePositiveNumber(phaseId, 'motion phase duration', phase.duration),
+  );
+  errors.push(
+    ...validateNonNegativeNumber(phaseId, 'motion phase delay', phase.delay),
+  );
 
   if (!phaseHasAnyMotion) {
     errors.push(`${phaseId}: motion phase must define motion or opacity`);
@@ -339,16 +365,16 @@ function validateMotionPhase(
   );
 
   if (phase.easing !== undefined) {
-    errors.push(...validateEasing(phaseId, "easing", phase.easing));
+    errors.push(...validateEasing(phaseId, 'easing', phase.easing));
   }
 
   if (phase.opacity !== undefined) {
-    errors.push(...validateOpacityRange(phaseId, "opacity", phase.opacity));
+    errors.push(...validateOpacityRange(phaseId, 'opacity', phase.opacity));
   }
 
   if (phase.keyframes !== undefined) {
     errors.push(
-      ...validateKeyframeSequence(phaseId, "keyframe", phase.keyframes),
+      ...validateKeyframeSequence(phaseId, 'keyframe', phase.keyframes),
     );
   }
 
@@ -356,7 +382,7 @@ function validateMotionPhase(
     errors.push(
       ...validateKeyframeSequence(
         phaseId,
-        "scale keyframe",
+        'scale keyframe',
         phase.scaleKeyframes,
       ),
     );
@@ -366,7 +392,7 @@ function validateMotionPhase(
     errors.push(
       ...validateKeyframeSequence(
         phaseId,
-        "opacity keyframe",
+        'opacity keyframe',
         phase.opacityKeyframes,
         { opacityValues: true },
       ),
@@ -382,8 +408,7 @@ function validateMotionPhase(
   errors.push(...validateSharedPhaseTimes(phaseId, keyframeSequences));
 
   const phaseEasing = phase.easing ?? entry.params.easing;
-  const usesSpring =
-    "preset" in phaseEasing && phaseEasing.preset === "spring";
+  const usesSpring = 'preset' in phaseEasing && phaseEasing.preset === 'spring';
 
   if (
     usesSpring &&
@@ -399,23 +424,27 @@ function validateMotionPhase(
     );
   }
 
-  errors.push(...validateSpringConfig(phaseId, "springConfig", phase.springConfig));
+  errors.push(
+    ...validateSpringConfig(phaseId, 'springConfig', phase.springConfig),
+  );
 
   return errors;
 }
 
 function usesComponentSpecificRenderer(entry: MappingEntry): boolean {
   return (
-    entry.component === "input" &&
-    entry.dimension === "stateChange" &&
-    (entry.subcategory === "focus" || entry.subcategory === "blur")
+    entry.component === 'input' &&
+    entry.dimension === 'stateChange' &&
+    (entry.subcategory === 'focus' || entry.subcategory === 'blur')
   );
 }
 
 function requiresReducedMotionStrategy(entry: MappingEntry): boolean {
   const { iterations } = entry.params;
 
-  return iterations === Infinity || (iterations !== undefined && iterations > 1);
+  return (
+    iterations === Infinity || (iterations !== undefined && iterations > 1)
+  );
 }
 
 function validateAccessibility(entry: MappingEntry): string[] {
@@ -437,6 +466,92 @@ function validateAccessibility(entry: MappingEntry): string[] {
   }
 
   return errors;
+}
+
+function validateNonEmptyText(
+  entryId: string,
+  label: string,
+  value: string | undefined,
+): string[] {
+  if (value === undefined || !value.trim()) {
+    return [`${entryId}: missing ${label}`];
+  }
+
+  return [];
+}
+
+function validateNonEmptyTextArray(
+  entryId: string,
+  label: string,
+  values: string[] | undefined,
+): string[] {
+  const errors: string[] = [];
+
+  if (values === undefined || values.length === 0) {
+    return [`${entryId}: ${label} must not be empty`];
+  }
+
+  values.forEach((value, index) => {
+    if (!value.trim()) {
+      errors.push(`${entryId}: ${label}[${index}] must not be empty`);
+    }
+  });
+
+  return errors;
+}
+
+function validateVisualCue(
+  entryId: string,
+  visualCue: VisualCueId | VisualCueId[] | undefined,
+): string[] {
+  const errors: string[] = [];
+  const label = 'rationale.semanticContext.metaphor.visualCue';
+  const cues = Array.isArray(visualCue) ? visualCue : [visualCue];
+
+  if (visualCue === undefined || cues.length === 0) {
+    return [`${entryId}: ${label} must not be empty`];
+  }
+
+  cues.forEach((cue) => {
+    if (cue === undefined || !visualCueIds.has(cue)) {
+      errors.push(`${entryId}: invalid ${label} "${String(cue)}"`);
+    }
+  });
+
+  return errors;
+}
+
+function validateSemanticContext(
+  entryId: string,
+  semanticContext: SemanticContext | undefined,
+): string[] {
+  if (semanticContext === undefined) {
+    return [`${entryId}: missing rationale.semanticContext`];
+  }
+
+  return [
+    ...validateNonEmptyText(
+      entryId,
+      'rationale.semanticContext.metaphor.label',
+      semanticContext.metaphor?.label,
+    ),
+    ...validateVisualCue(entryId, semanticContext.metaphor?.visualCue),
+    ...validateNonEmptyText(
+      entryId,
+      'rationale.semanticContext.primaryReading',
+      semanticContext.primaryReading,
+    ),
+    ...validateNonEmptyTextArray(
+      entryId,
+      'rationale.semanticContext.adjacentReadings',
+      semanticContext.adjacentReadings,
+    ),
+    ...validateNonEmptyTextArray(
+      entryId,
+      'rationale.semanticContext.boundaries',
+      semanticContext.boundaries,
+    ),
+  ];
 }
 
 export function validateMappingEntry(entry: MappingEntry): string[] {
@@ -479,6 +594,10 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
     errors.push(`${entry.id}: missing rationale.references`);
   }
 
+  errors.push(
+    ...validateSemanticContext(entry.id, entry.rationale.semanticContext),
+  );
+
   const params = entry.params;
   const hasTranslation =
     params.translatePx !== undefined ||
@@ -494,10 +613,10 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
   const hasMotionPhases = params.motionPhases !== undefined;
   const movementGroups = [hasTranslation, hasScale, hasTrack].filter(Boolean);
 
-  errors.push(...validatePositiveNumber(entry.id, "duration", params.duration));
-  errors.push(...validateNonNegativeNumber(entry.id, "delay", params.delay));
+  errors.push(...validatePositiveNumber(entry.id, 'duration', params.duration));
+  errors.push(...validateNonNegativeNumber(entry.id, 'delay', params.delay));
   errors.push(...validateIterations(entry.id, params.iterations));
-  errors.push(...validateEasing(entry.id, "easing", params.easing));
+  errors.push(...validateEasing(entry.id, 'easing', params.easing));
   errors.push(...validateAccessibility(entry));
 
   if (movementGroups.length > 1) {
@@ -593,7 +712,7 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
   );
 
   const usesSpring =
-    "preset" in params.easing && params.easing.preset === "spring";
+    'preset' in params.easing && params.easing.preset === 'spring';
 
   if (usesSpring && params.springConfig === undefined) {
     errors.push(`${entry.id}: spring easing requires springConfig`);
@@ -605,15 +724,17 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
     );
   }
 
-  errors.push(...validateSpringConfig(entry.id, "springConfig", params.springConfig));
+  errors.push(
+    ...validateSpringConfig(entry.id, 'springConfig', params.springConfig),
+  );
 
   if (params.opacity !== undefined) {
-    errors.push(...validateOpacityRange(entry.id, "opacity", params.opacity));
+    errors.push(...validateOpacityRange(entry.id, 'opacity', params.opacity));
   }
 
   if (params.keyframes !== undefined) {
     errors.push(
-      ...validateKeyframeSequence(entry.id, "keyframe", params.keyframes),
+      ...validateKeyframeSequence(entry.id, 'keyframe', params.keyframes),
     );
   }
 
@@ -621,7 +742,7 @@ export function validateMappingEntry(entry: MappingEntry): string[] {
     errors.push(
       ...validateKeyframeSequence(
         entry.id,
-        "opacity keyframe",
+        'opacity keyframe',
         params.opacityKeyframes,
         { opacityValues: true },
       ),
@@ -702,7 +823,7 @@ export function validateMappingDatabase(): ValidationReport {
   }
 
   if (getMappingCount() !== mappings.length) {
-    errors.push("classifier count differs from mappings length");
+    errors.push('classifier count differs from mappings length');
   }
 
   return {

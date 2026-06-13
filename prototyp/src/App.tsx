@@ -34,6 +34,7 @@ function App() {
   const [editorSelection, setEditorSelection] = useState<EditorSelection>(
     defaultEditorSelection,
   );
+  const [showSemanticContext, setShowSemanticContext] = useState(false);
   const [transitionDirection, setTransitionDirection] =
     useState<PageTransitionDirection>(0);
 
@@ -88,6 +89,7 @@ function App() {
       <Editor
         onSelectionChange={setEditorSelection}
         selection={editorSelection}
+        showSemanticContext={showSemanticContext}
       />
     );
   }
@@ -101,7 +103,12 @@ function App() {
   }
 
   return (
-    <AppNavigation currentPage={currentPage} onNavigate={navigateToPage}>
+    <AppNavigation
+      currentPage={currentPage}
+      onNavigate={navigateToPage}
+      onSemanticContextToggle={setShowSemanticContext}
+      showSemanticContext={showSemanticContext}
+    >
       <PageTransition direction={transitionDirection} pageKey={currentPage}>
         {pageContent}
       </PageTransition>

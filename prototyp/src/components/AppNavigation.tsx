@@ -15,6 +15,8 @@ type NavItem = {
 
 type AppNavigationProps = PageProps & {
   children: ReactNode;
+  onSemanticContextToggle: (isEnabled: boolean) => void;
+  showSemanticContext: boolean;
 };
 
 const navItems: NavItem[] = [
@@ -30,6 +32,8 @@ function AppNavigation({
   children,
   currentPage,
   onNavigate,
+  onSemanticContextToggle,
+  showSemanticContext,
 }: AppNavigationProps) {
   const topRefs = useRef<Partial<Record<PageId, HTMLButtonElement | null>>>({});
   const sideRefs = useRef<Partial<Record<PageId, HTMLButtonElement | null>>>(
@@ -95,9 +99,7 @@ function AppNavigation({
       const step = Math.abs(pageIndex - previousIndex);
       const releaseProgress = Math.min(1, (step + 0.45) / distance);
       const releaseDelay =
-        step === 0
-          ? 70
-          : Math.round(releaseProgress * navigationTransitionMs);
+        step === 0 ? 70 : Math.round(releaseProgress * navigationTransitionMs);
 
       return window.setTimeout(() => {
         setPassingPageIds((activeIds) =>
@@ -114,27 +116,59 @@ function AppNavigation({
   return (
     <div className="app-page">
       <header className="top-tabs" aria-label="Hauptnavigation">
-        {navItems.map((item) => (
-          <MotionActionButton
-            className={currentPage === item.id ? 'tab-item active' : 'tab-item'}
-            key={item.id}
-            onClick={() => onNavigate(item.id)}
-            ref={(node) => {
-              topRefs.current[item.id] = node;
+        <div className="top-tab-list">
+          {navItems.map((item) => (
+            <MotionActionButton
+              className={
+                currentPage === item.id ? 'tab-item active' : 'tab-item'
+              }
+              key={item.id}
+              onClick={() => onNavigate(item.id)}
+              ref={(node) => {
+                topRefs.current[item.id] = node;
+              }}
+              type="button"
+            >
+              {item.label}
+            </MotionActionButton>
+          ))}
+          <span
+            aria-hidden="true"
+            className="top-tab-indicator"
+            style={{
+              transform: `translateX(${topIndicator.left}px)`,
+              width: topIndicator.width,
             }}
-            type="button"
-          >
-            {item.label}
-          </MotionActionButton>
-        ))}
-        <span
-          aria-hidden="true"
-          className="top-tab-indicator"
-          style={{
-            transform: `translateX(${topIndicator.left}px)`,
-            width: topIndicator.width,
-          }}
-        />
+          />
+        </div>
+
+        {currentPage === 'editor' && (
+          <div className="semantic-context-toggle-wrap">
+            <input
+              checked={showSemanticContext}
+              className="semantic-context-toggle-input"
+              id="semantic-context-toggle"
+              onChange={(event) =>
+                onSemanticContextToggle(event.currentTarget.checked)
+              }
+              type="checkbox"
+            />
+            <label
+              className="semantic-context-toggle-label"
+              htmlFor="semantic-context-toggle"
+            >
+              <span>Semantischer Möglichkeitsraum</span>
+              <span
+                aria-hidden="true"
+                className="semantic-context-toggle-track"
+              />
+            </label>
+            <span className="semantic-context-toggle-tooltip" role="tooltip">
+              Zeigt bildhafte Lesart, angrenzende Bedeutungen und Abgrenzungen
+              als konzeptionelle Zusatzebene.
+            </span>
+          </div>
+        )}
       </header>
 
       <div className="app-shell">

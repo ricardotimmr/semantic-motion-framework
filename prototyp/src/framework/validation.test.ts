@@ -17,10 +17,12 @@ import {
   COMPONENT_IDS,
   DIMENSIONS,
   SUBCATEGORIES_BY_DIMENSION,
+  VISUAL_CUE_IDS,
   type Dimension,
   type Subcategory,
 } from './types';
 import { validateMappingDatabase, validateMappingEntry } from './validation';
+import { lucidePlaceholderByVisualCueId } from './visualCues';
 
 function sortedKeys(record: Record<string, unknown>) {
   return Object.keys(record).sort();
@@ -51,9 +53,7 @@ describe('framework mapping database validation', () => {
     expect(entry?.id).toBe('button-feedback-error');
     expect(entry?.params.easing).toEqual({ preset: 'sharp' });
     expect(entry?.params.direction).toBe('x');
-    expect(entry?.params.keyframes?.values).toEqual([
-      0, -8, 8, -8, 8, -4, 0,
-    ]);
+    expect(entry?.params.keyframes?.values).toEqual([0, -8, 8, -8, 8, -4, 0]);
     expect(entry?.rationale.source).toContain('Peirce');
     expect(entry?.rationale.references.length).toBeGreaterThan(0);
   });
@@ -108,6 +108,36 @@ describe('framework mapping database validation', () => {
     ]);
   });
 
+  it('keeps semantic context complete for every mapping entry', () => {
+    for (const entry of mappings) {
+      const { semanticContext } = entry.rationale;
+      const visualCues = Array.isArray(semanticContext.metaphor.visualCue)
+        ? semanticContext.metaphor.visualCue
+        : [semanticContext.metaphor.visualCue];
+
+      expect(semanticContext.metaphor.label.trim()).not.toBe('');
+      expect(semanticContext.primaryReading.trim()).not.toBe('');
+      expect(semanticContext.adjacentReadings.length).toBeGreaterThan(0);
+      expect(semanticContext.boundaries.length).toBeGreaterThan(0);
+      expect(visualCues.length).toBeGreaterThan(0);
+
+      for (const cue of visualCues) {
+        expect(VISUAL_CUE_IDS).toContain(cue);
+      }
+    }
+  });
+
+  it('keeps visual cue placeholders aligned with framework cue ids', () => {
+    expect(sortedKeys(lucidePlaceholderByVisualCueId)).toEqual(
+      [...VISUAL_CUE_IDS].sort(),
+    );
+
+    for (const placeholder of Object.values(lucidePlaceholderByVisualCueId)) {
+      expect(placeholder.lucideIcon.trim()).not.toBe('');
+      expect(placeholder.note.trim()).not.toBe('');
+    }
+  });
+
   it('requires scaleMode when scaleFactor is used', () => {
     const entry = getMappingById('button-feedback-success');
 
@@ -156,6 +186,48 @@ describe('framework mapping database validation', () => {
 
     expect(errors).toContain(
       'skeleton-attention-loading: repeated or endless motion requires accessibility.reducedMotion',
+    );
+  });
+
+  it('requires semantic context on mapping rationales', () => {
+    const entry = getMappingById('button-feedback-success');
+
+    expect(entry).not.toBeNull();
+
+    const errors = validateMappingEntry({
+      ...entry!,
+      rationale: {
+        ...entry!.rationale,
+        semanticContext: undefined as never,
+      },
+    });
+
+    expect(errors).toContain(
+      'button-feedback-success: missing rationale.semanticContext',
+    );
+  });
+
+  it('rejects unknown semantic visual cues', () => {
+    const entry = getMappingById('button-feedback-success');
+
+    expect(entry).not.toBeNull();
+
+    const errors = validateMappingEntry({
+      ...entry!,
+      rationale: {
+        ...entry!.rationale,
+        semanticContext: {
+          ...entry!.rationale.semanticContext,
+          metaphor: {
+            ...entry!.rationale.semanticContext.metaphor,
+            visualCue: 'doesNotExist' as never,
+          },
+        },
+      },
+    });
+
+    expect(errors).toContain(
+      'button-feedback-success: invalid rationale.semanticContext.metaphor.visualCue "doesNotExist"',
     );
   });
 });
