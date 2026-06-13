@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 import './App.css';
 import AppNavigation from './components/AppNavigation';
 import PageTransition from './components/PageTransition';
@@ -35,12 +36,28 @@ function App() {
     defaultEditorSelection,
   );
   const [showSemanticContext, setShowSemanticContext] = useState(false);
+  const [isPageTransitioning, setIsPageTransitioning] = useState(false);
+  const [frozenTransitionPage, setFrozenTransitionPage] =
+    useState<PageId | null>(null);
+  const [pageTransitionPlaceholderHeight, setPageTransitionPlaceholderHeight] =
+    useState(0);
+  const [pageTransitionScrollOffset, setPageTransitionScrollOffset] =
+    useState(0);
   const [transitionDirection, setTransitionDirection] =
     useState<PageTransitionDirection>(0);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-  }, [currentPage]);
+    if (!('scrollRestoration' in window.history)) {
+      return undefined;
+    }
+
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = 'manual';
+
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, []);
 
   useEffect(() => {
     const currentPath = getPagePath(currentPage);
@@ -50,31 +67,63 @@ function App() {
     }
   }, []);
 
+  const startPageTransition = (
+    nextPage: PageId,
+    updateHistory?: () => void,
+  ) => {
+    if (nextPage === currentPage || isPageTransitioning) {
+      return;
+    }
+
+    const nextDirection = getTransitionDirection(currentPage, nextPage);
+    const scrollOffset = window.scrollY;
+    const placeholderHeight = document.documentElement.scrollHeight;
+
+    flushSync(() => {
+      setIsPageTransitioning(true);
+      setFrozenTransitionPage(currentPage);
+      setPageTransitionScrollOffset(scrollOffset);
+      setPageTransitionPlaceholderHeight(placeholderHeight);
+    });
+
+    updateHistory?.();
+
+    window.requestAnimationFrame(() => {
+      setTransitionDirection(nextDirection);
+      setCurrentPage(nextPage);
+    });
+  };
+
   useEffect(() => {
     const handlePopState = () => {
       const nextPage = getPageFromPath(window.location.pathname);
 
-      if (nextPage === currentPage) {
-        return;
-      }
-
-      setTransitionDirection(getTransitionDirection(currentPage, nextPage));
-      setCurrentPage(nextPage);
+      startPageTransition(nextPage);
     };
 
     window.addEventListener('popstate', handlePopState);
 
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [currentPage]);
+  }, [currentPage, isPageTransitioning]);
 
   const navigateToPage = (nextPage: PageId) => {
-    if (nextPage === currentPage) {
+    startPageTransition(nextPage, () => {
+      window.history.pushState({}, '', getPagePath(nextPage));
+    });
+  };
+
+  const completePageTransition = () => {
+    if (!isPageTransitioning) {
       return;
     }
 
-    window.history.pushState({}, '', getPagePath(nextPage));
-    setTransitionDirection(getTransitionDirection(currentPage, nextPage));
-    setCurrentPage(nextPage);
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    flushSync(() => {
+      setIsPageTransitioning(false);
+      setFrozenTransitionPage(null);
+      setPageTransitionPlaceholderHeight(0);
+      setPageTransitionScrollOffset(0);
+    });
   };
 
   const openMappingInEditor = (selection: EditorSelection) => {
@@ -109,7 +158,15 @@ function App() {
       onSemanticContextToggle={setShowSemanticContext}
       showSemanticContext={showSemanticContext}
     >
-      <PageTransition direction={transitionDirection} pageKey={currentPage}>
+      <PageTransition
+        direction={transitionDirection}
+        frozenPage={frozenTransitionPage}
+        isFixedTransitioning={isPageTransitioning}
+        onTransitionComplete={completePageTransition}
+        pageKey={currentPage}
+        placeholderHeight={pageTransitionPlaceholderHeight}
+        scrollOffset={pageTransitionScrollOffset}
+      >
         {pageContent}
       </PageTransition>
     </AppNavigation>

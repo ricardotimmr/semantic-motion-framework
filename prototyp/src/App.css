@@ -285,12 +285,35 @@
   flex-direction: column;
 }
 
+.page-transition-host {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+
+.page-transition-placeholder {
+  width: 100%;
+  min-width: 0;
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+
 .page-transition-shell {
   display: grid;
   flex: 1;
   min-width: 0;
   overflow-x: hidden;
   background: var(--bg);
+}
+
+.page-transition-shell.is-fixed-transitioning {
+  position: fixed;
+  z-index: 5;
+  top: 39px;
+  right: 0;
+  bottom: 0;
+  left: 162px;
+  overflow: hidden;
 }
 
 .page-transition-panel {
@@ -2044,6 +2067,10 @@
 
   .app-shell {
     display: block;
+  }
+
+  .page-transition-shell.is-fixed-transitioning {
+    left: 0;
   }
 
   .sidebar {
