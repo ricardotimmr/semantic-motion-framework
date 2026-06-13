@@ -352,3 +352,58 @@ Diese Entscheidung gilt nur, solange interne Teilziele komponentenspezifische Ei
 - `content`
 
 Besonders bei möglichen Erweiterungen wie Card-, Panel-, Sidebar- oder gestapelten Layer-Mappings kann ein explizites Target-Modell sinnvoll werden. Vorher reicht die dokumentierte Renderer-Konvention.
+
+---
+
+## ADR-13: Semantischer Möglichkeitsraum als optionale Erklärungsebene
+
+### Entscheidung
+
+Das Framework ergänzt die bestehende Rationale um eine zusätzliche Erklärungsebene `semanticContext`. Diese Ebene beschreibt bildhafte Lesarten, visuelle Cues, primäre Lesart, angrenzende Lesarten und Abgrenzungen eines Mappings.
+
+`semanticContext` ist Teil von `rationale`, nicht Teil der Animationsparameter. Die Ebene steuert weder Preview noch Export und verändert keine Mapping-Logik.
+
+Die Editor-UI zeigt diese Ebene nur optional über den Toggle **Semantischer Möglichkeitsraum**. Der Toggle ist standardmäßig deaktiviert und nur auf der Editor-Seite sichtbar.
+
+### Begründung
+
+Das Feedback aus Research Diary 02 hat darauf hingewiesen, dass die theoretische Begründung zwar vorhanden ist, die bildhafte oder anschauliche Lesart einer Bewegung aber noch stärker sichtbar werden kann. Außerdem wurde angeregt, Graustufen zwischen Bedeutungen und einen semantischen Möglichkeitsraum zu reflektieren.
+
+Das Framework bleibt trotzdem bei eindeutigen Mappings. Eine Kombination aus Komponente, Dimension und Subkategorie erhält weiterhin genau eine primäre Zuordnung. Der Möglichkeitsraum macht diese Zuordnung nicht beliebig, sondern erklärt:
+
+- welche bildhafte Lesart die Bewegung stützt
+- welche angrenzenden Bedeutungen mitgelesen werden können
+- warum das Mapping dennoch bei seiner primären Dimension bleibt
+
+Damit wird die wissenschaftliche Argumentation stärker, ohne das Framework in einen Variantenkatalog umzubauen.
+
+### Modellierung
+
+Die Ebene wird in `rationale.semanticContext` modelliert:
+
+- `metaphor.label`
+- `metaphor.visualCue`
+- `primaryReading`
+- `adjacentReadings`
+- `boundaries`
+
+Die Visual Cues werden über kontrollierte IDs in `VISUAL_CUE_IDS` beschrieben. Aktuell existiert eine vorläufige Zuordnung zu Icon-Platzhaltern. Finale Glyphs bleiben ein offener Gestaltungspunkt.
+
+### Abgrenzung
+
+Der semantische Möglichkeitsraum ist keine neue Framework-Dimension und kein neuer Animationsparameter. Er beschreibt keine alternativen Bewegungen und keine Gewichtung wie „70 Prozent Feedback, 30 Prozent Attention“.
+
+Er ist eine Reflexionsebene innerhalb der Begründung:
+
+- `rationale.short` erklärt die Bedeutung kompakt.
+- `rationale.source` erklärt die theoretische Herleitung.
+- `rationale.signType` benennt die semiotische Beziehung.
+- `rationale.semanticContext` macht bildhafte Lesart, angrenzende Lesarten und Abgrenzung sichtbar.
+
+### Konsequenz
+
+Alle Mapping-Einträge müssen einen vollständigen `semanticContext` besitzen. Die zentrale Validierung prüft die Struktur und die erlaubten Visual-Cue-IDs.
+
+Im Editor kann die Ebene zugeschaltet werden, ohne die Kernansicht zu überladen. Dadurch bleibt der Prototyp zuerst ein Werkzeug für Auswahl, Preview, Begründung und Export. Die zusätzliche Ebene dient der konzeptionellen Vertiefung und kann in Präsentation oder Bachelorarbeit gezielt erklärt werden.
+
+Die ausführliche konzeptionelle Grundlage liegt in `docs/gesamtkonzept-bildhafte-lesarten-und-moeglichkeitsraum.md`.

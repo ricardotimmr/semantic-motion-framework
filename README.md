@@ -75,6 +75,12 @@ Der Hauptprototyp befindet sich in:
 prototyp/
 ```
 
+Deployment:
+
+```text
+https://semantic-motion-framework.vercel.app/
+```
+
 Er wird mit React, TypeScript, Vite und Framer Motion umgesetzt.
 
 Der aktuelle Prototyp ist als Vier-Seiten-Struktur angelegt:
