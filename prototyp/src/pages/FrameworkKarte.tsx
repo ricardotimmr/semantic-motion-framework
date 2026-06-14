@@ -86,10 +86,6 @@ function getParameterSummary(entry: MappingEntry) {
     formatIteration(params.iterations),
   ].filter(Boolean);
 
-  if (entry.accessibility && entry.accessibility.reducedMotion !== 'none') {
-    parts.push('Reduced Motion');
-  }
-
   return parts.join(' · ');
 }
 

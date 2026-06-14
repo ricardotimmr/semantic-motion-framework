@@ -5,8 +5,7 @@ Diese Datei sammelt die noch offenen Punkte am Semantic Motion Framework und am 
 ## Offene Reihenfolge
 
 1. Finale Visual-Cue-Glyphs für den semantischen Möglichkeitsraum zeichnen oder modellieren.
-2. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen.
-3. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren.
+2. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren.
 
 ## 1. Finale Visual-Cue-Glyphs für den semantischen Möglichkeitsraum zeichnen oder modellieren
 
@@ -34,38 +33,7 @@ Akzeptanzkriterium:
 
 - Der semantische Möglichkeitsraum nutzt eine visuell konsistente Cue-Sprache und ist nicht mehr auf rohe Platzhalter angewiesen.
 
-## 2. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen
-
-Status: Offen.
-
-Aktueller Befund:
-
-- Reduced-Motion-Strategien sind im Datenmodell und in der Preview-Logik umgesetzt.
-- Der Editor nutzt `useReducedMotion()` und respektiert `prefers-reduced-motion`.
-- Für Nutzer ist aber nicht klar, was Strategien wie `replace`, `shorten` oder `static` konkret bedeuten.
-- Es gibt kein UI-Element, um Reduced Motion im Editor bewusst zu simulieren.
-
-TODO:
-
-- Reduced-Motion-Information im Editor verständlicher anzeigen:
-  - nicht nur Strategie-Name
-  - sondern kurze Erklärung, was im konkreten Mapping reduziert wird
-- Optional einen Preview-Schalter ergänzen:
-  - Systempräferenz
-  - Reduced Motion simulieren
-  - normale Motion erzwingen
-- Prüfen, ob dieser Schalter nur im Editor-Preview-Bereich liegen sollte, damit er nicht wie eine globale App-Einstellung wirkt.
-- Besonders prüfen:
-  - `button-attention-persistent`
-  - `skeleton-attention-loading`
-  - Toast-Mappings mit Phasen
-  - wiederholte Attention-Mappings
-
-Akzeptanzkriterium:
-
-- Nutzer können im Editor nachvollziehen und testen, wie ein Mapping bei Reduced Motion dargestellt wird.
-
-## 3. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren
+## 2. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren
 
 Status: Offen.
 
@@ -145,6 +113,7 @@ Akzeptanzkriterium:
 
 ## Erledigt
 
+- Reduced Motion als Framework-Metadatum im Datenmodell behalten, aber nicht als sichtbares Editor-Feature ausgebaut; sichtbare Prototyp-Kennzeichnung aus der Framework-Karte entfernt und Source-Texte auf konzeptionelle Anschlussfähigkeit geschärft.
 - Shareable Links für spezifische Editor-Mappings ergänzt: `/editor?mapping=...` kann konkrete Mappings direkt öffnen, Editor-Auswahl wird in der URL gespiegelt und Framework-Karten-Einträge öffnen direkt den passenden Editor-Zustand.
 - Deaktivierte Editor-Kombinationen erklärbar gemacht, damit ausgegraute Optionen als Scope-Entscheidung und nicht als UI-Fehler lesbar sind.
 - Editor-Integration mit allen 24 Mappings im Haupteditor geprüft und Mapping-Review-Punkte abgearbeitet.

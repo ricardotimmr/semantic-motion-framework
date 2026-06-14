@@ -191,9 +191,10 @@ export const mappings: MappingDatabase = [
         'Aktion. Ease-In-Out: gleichmäßig, nicht dringend. Duration 1000ms: ' +
         'langsam genug, um periphere Wahrnehmung zu aktivieren ohne ' +
         'Hauptaufgabe zu stören (Bartram et al. 2003). Iterations Infinity: ' +
-        'Persistenz als semantisches Ziel. Accessibility: endlose Bewegung ' +
-        'muss im Editor über prefers-reduced-motion reduziert oder ersetzt ' +
-        'werden können (WCAG 2.1 SC 2.3.3).',
+        'Persistenz als semantisches Ziel. Accessibility bleibt als ' +
+        'Framework-Metadatum anschlussfähig, weil endlose Bewegung bei ' +
+        'prefers-reduced-motion reduziert oder ersetzt werden können sollte ' +
+        '(WCAG 2.1 SC 2.3.3).',
       references: ['Peirce1931', 'BartramWareCalvert2003', 'WCAG21'],
       signType: 'index',
       semanticContext: {
@@ -1245,9 +1246,10 @@ export const mappings: MappingDatabase = [
         'Lineares Easing: konstante Geschwindigkeit repräsentiert einen ' +
         'kontinuierlichen Prozess ohne identifizierbare Phasenstruktur ' +
         '(Zacks & Tversky 2001). Linear ist der einzige semantisch ' +
-        'begründete Einsatz dieses Presets im Framework. Accessibility: ' +
-        'Der endlose Shimmer muss bei prefers-reduced-motion reduzierbar oder ' +
-        'durch einen statischen Ladezustand ersetzbar sein (WCAG 2.1 SC 2.3.3).',
+        'begründete Einsatz dieses Presets im Framework. Accessibility bleibt ' +
+        'als Framework-Metadatum anschlussfähig, weil endloser Shimmer bei ' +
+        'prefers-reduced-motion reduzierbar oder durch einen statischen ' +
+        'Ladezustand ersetzbar sein sollte (WCAG 2.1 SC 2.3.3).',
       references: ['Peirce1931', 'Chandler2007', 'ZacksTversky2001', 'WCAG21'],
       signType: 'symbol',
       semanticContext: {
