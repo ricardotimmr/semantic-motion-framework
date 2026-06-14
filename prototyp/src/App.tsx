@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import './App.css';
 import AppNavigation from './components/AppNavigation';
@@ -8,6 +8,10 @@ import Editor, {
   defaultEditorSelection,
   type EditorSelection,
 } from './pages/Editor';
+import {
+  getEditorPathForSelection,
+  getEditorSelectionFromSearch,
+} from './editor/editorRouting';
 import FrameworkKarte from './pages/FrameworkKarte';
 import Startseite from './pages/Startseite';
 import UeberDasProjekt from './pages/UeberDasProjekt';
@@ -28,12 +32,27 @@ function getTransitionDirection(
   return nextIndex > currentIndex ? 1 : -1;
 }
 
+function getInitialPage() {
+  return getPageFromPath(window.location.pathname);
+}
+
+function getInitialEditorSelection(): EditorSelection {
+  if (getInitialPage() !== 'editor') {
+    return defaultEditorSelection;
+  }
+
+  return getEditorSelectionFromSearch(window.location.search) ??
+    defaultEditorSelection;
+}
+
+function getBrowserPath() {
+  return `${window.location.pathname}${window.location.search}`;
+}
+
 function App() {
-  const [currentPage, setCurrentPage] = useState<PageId>(() =>
-    getPageFromPath(window.location.pathname),
-  );
+  const [currentPage, setCurrentPage] = useState<PageId>(getInitialPage);
   const [editorSelection, setEditorSelection] = useState<EditorSelection>(
-    defaultEditorSelection,
+    getInitialEditorSelection,
   );
   const [showSemanticContext, setShowSemanticContext] = useState(false);
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
@@ -59,44 +78,66 @@ function App() {
     };
   }, []);
 
+  const getPathForPage = (
+    page: PageId,
+    selection: EditorSelection = editorSelection,
+  ) =>
+    page === 'editor'
+      ? getEditorPathForSelection(selection)
+      : getPagePath(page);
+
   useEffect(() => {
-    const currentPath = getPagePath(currentPage);
-
-    if (window.location.pathname !== currentPath) {
-      window.history.replaceState({}, '', currentPath);
-    }
-  }, []);
-
-  const startPageTransition = (
-    nextPage: PageId,
-    updateHistory?: () => void,
-  ) => {
-    if (nextPage === currentPage || isPageTransitioning) {
+    if (isPageTransitioning) {
       return;
     }
 
-    const nextDirection = getTransitionDirection(currentPage, nextPage);
-    const scrollOffset = window.scrollY;
-    const placeholderHeight = document.documentElement.scrollHeight;
+    const currentPath =
+      currentPage === 'editor'
+        ? getEditorPathForSelection(editorSelection)
+        : getPagePath(currentPage);
 
-    flushSync(() => {
-      setIsPageTransitioning(true);
-      setFrozenTransitionPage(currentPage);
-      setPageTransitionScrollOffset(scrollOffset);
-      setPageTransitionPlaceholderHeight(placeholderHeight);
-    });
+    if (getBrowserPath() !== currentPath) {
+      window.history.replaceState({}, '', currentPath);
+    }
+  }, [currentPage, editorSelection, isPageTransitioning]);
 
-    updateHistory?.();
+  const startPageTransition = useCallback(
+    (nextPage: PageId, updateHistory?: () => void) => {
+      if (nextPage === currentPage || isPageTransitioning) {
+        return;
+      }
 
-    window.requestAnimationFrame(() => {
-      setTransitionDirection(nextDirection);
-      setCurrentPage(nextPage);
-    });
-  };
+      const nextDirection = getTransitionDirection(currentPage, nextPage);
+      const scrollOffset = window.scrollY;
+      const placeholderHeight = document.documentElement.scrollHeight;
+
+      flushSync(() => {
+        setIsPageTransitioning(true);
+        setFrozenTransitionPage(currentPage);
+        setPageTransitionScrollOffset(scrollOffset);
+        setPageTransitionPlaceholderHeight(placeholderHeight);
+      });
+
+      updateHistory?.();
+
+      window.requestAnimationFrame(() => {
+        setTransitionDirection(nextDirection);
+        setCurrentPage(nextPage);
+      });
+    },
+    [currentPage, isPageTransitioning],
+  );
 
   useEffect(() => {
     const handlePopState = () => {
       const nextPage = getPageFromPath(window.location.pathname);
+
+      if (nextPage === 'editor') {
+        setEditorSelection(
+          getEditorSelectionFromSearch(window.location.search) ??
+            defaultEditorSelection,
+        );
+      }
 
       startPageTransition(nextPage);
     };
@@ -104,11 +145,11 @@ function App() {
     window.addEventListener('popstate', handlePopState);
 
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [currentPage, isPageTransitioning]);
+  }, [startPageTransition]);
 
-  const navigateToPage = (nextPage: PageId) => {
+  const navigateToPage = (nextPage: PageId, path = getPathForPage(nextPage)) => {
     startPageTransition(nextPage, () => {
-      window.history.pushState({}, '', getPagePath(nextPage));
+      window.history.pushState({}, '', path);
     });
   };
 
@@ -128,7 +169,7 @@ function App() {
 
   const openMappingInEditor = (selection: EditorSelection) => {
     setEditorSelection(selection);
-    navigateToPage('editor');
+    navigateToPage('editor', getEditorPathForSelection(selection));
   };
 
   let pageContent = <Startseite onNavigate={navigateToPage} />;

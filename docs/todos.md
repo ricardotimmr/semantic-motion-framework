@@ -5,9 +5,8 @@ Diese Datei sammelt die noch offenen Punkte am Semantic Motion Framework und am 
 ## Offene Reihenfolge
 
 1. Finale Visual-Cue-Glyphs für den semantischen Möglichkeitsraum zeichnen oder modellieren.
-2. Shareable Links für spezifische Editor-Mappings ergänzen.
-3. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen.
-4. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren.
+2. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen.
+3. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren.
 
 ## 1. Finale Visual-Cue-Glyphs für den semantischen Möglichkeitsraum zeichnen oder modellieren
 
@@ -35,36 +34,7 @@ Akzeptanzkriterium:
 
 - Der semantische Möglichkeitsraum nutzt eine visuell konsistente Cue-Sprache und ist nicht mehr auf rohe Platzhalter angewiesen.
 
-## 2. Shareable Links für spezifische Editor-Mappings ergänzen
-
-Status: Offen.
-
-Aktueller Befund:
-
-- Die App besitzt bereits Clean URLs für die vier Seiten.
-- Der Editor hält die Auswahl aber nur im React-State von `App.tsx`.
-- Die URL bleibt bei jeder Editor-Auswahl `/editor`.
-- Eine konkrete Mapping-Auswahl kann dadurch nicht direkt verlinkt oder in einer Präsentation geöffnet werden.
-
-TODO:
-
-- URL-Parameter für Mapping-Auswahl ergänzen, z. B.:
-  - `/editor?mapping=button-feedback-error`
-- Beim Öffnen des Editors:
-  - Query-Parameter lesen
-  - Mapping per `getMappingById()` validieren
-  - daraus `component`, `dimension` und `subcategory` setzen
-  - bei ungültiger ID auf Default-Auswahl zurückfallen
-- Bei Auswahlwechsel im Editor:
-  - URL per `history.replaceState()` oder `pushState()` aktualisieren
-  - dabei keine unnötigen History-Einträge erzeugen, wenn nur die Auswahl gewechselt wird
-- Framework-Karte kann beim Öffnen im Editor direkt den Mapping-Parameter setzen.
-
-Akzeptanzkriterium:
-
-- Ein spezifisches Mapping kann direkt über eine URL geöffnet werden und ist damit präsentations- und reviewfähig verlinkbar.
-
-## 3. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen
+## 2. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen
 
 Status: Offen.
 
@@ -95,7 +65,7 @@ Akzeptanzkriterium:
 
 - Nutzer können im Editor nachvollziehen und testen, wie ein Mapping bei Reduced Motion dargestellt wird.
 
-## 4. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren
+## 3. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren
 
 Status: Offen.
 
@@ -175,6 +145,7 @@ Akzeptanzkriterium:
 
 ## Erledigt
 
+- Shareable Links für spezifische Editor-Mappings ergänzt: `/editor?mapping=...` kann konkrete Mappings direkt öffnen, Editor-Auswahl wird in der URL gespiegelt und Framework-Karten-Einträge öffnen direkt den passenden Editor-Zustand.
 - Deaktivierte Editor-Kombinationen erklärbar gemacht, damit ausgegraute Optionen als Scope-Entscheidung und nicht als UI-Fehler lesbar sind.
 - Editor-Integration mit allen 24 Mappings im Haupteditor geprüft und Mapping-Review-Punkte abgearbeitet.
 - Export-Logik aus POC 04 lokal in den Hauptprototyp nach `prototyp/src/editor/export/` überführt.
