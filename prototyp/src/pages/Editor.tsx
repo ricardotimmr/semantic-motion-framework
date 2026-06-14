@@ -239,15 +239,21 @@ function Editor({
                   getMappingsForDimension(component, item).length > 0;
 
                 return (
-                  <MotionActionButton
-                    className={dimension === item ? 'selected' : ''}
-                    disabled={!isAvailable}
+                  <span
                     key={item}
-                    onClick={() => selectDimension(item)}
-                    type="button"
+                    {...(!isAvailable && {
+                      'data-disabled-reason': `Für ${componentLabels[component]} ist diese Dimension im Framework nicht modelliert.`,
+                    })}
                   >
-                    {dimensionLabels[item]}
-                  </MotionActionButton>
+                    <MotionActionButton
+                      className={dimension === item ? 'selected' : ''}
+                      disabled={!isAvailable}
+                      onClick={() => selectDimension(item)}
+                      type="button"
+                    >
+                      {dimensionLabels[item]}
+                    </MotionActionButton>
+                  </span>
                 );
               })}
             </div>
@@ -279,15 +285,22 @@ function Editor({
                 );
 
                 return (
-                  <MotionActionButton
-                    className={subcategory === item ? 'selected' : ''}
-                    disabled={!isAvailable}
+                  <span
                     key={item}
-                    onClick={() => selectSubcategory(item)}
-                    type="button"
+                    {...(!isAvailable && {
+                      'data-disabled-reason':
+                        'Diese Kombination liegt außerhalb des Framework-Scopes.',
+                    })}
                   >
-                    {subcategoryLabels[item]}
-                  </MotionActionButton>
+                    <MotionActionButton
+                      className={subcategory === item ? 'selected' : ''}
+                      disabled={!isAvailable}
+                      onClick={() => selectSubcategory(item)}
+                      type="button"
+                    >
+                      {subcategoryLabels[item]}
+                    </MotionActionButton>
+                  </span>
                 );
               })}
             </div>

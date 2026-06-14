@@ -1386,6 +1386,39 @@
   opacity: 0.32;
 }
 
+.editor-option-list > span {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+.editor-option-list > span[data-disabled-reason]::after {
+  content: attr(data-disabled-reason);
+  position: absolute;
+  bottom: calc(100% + 0.3rem);
+  left: 0;
+  z-index: 200;
+  width: 100%;
+  border: 1px solid rgba(240, 45, 0, 0.3);
+  background: var(--bg);
+  color: rgba(17, 24, 39, 0.68);
+  font-family: inherit;
+  font-size: 0.5625rem;
+  line-height: 1.5;
+  padding: 0.4rem 0.5rem;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(0.2rem);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.editor-option-list > span[data-disabled-reason]:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .editor-metadata {
   margin-top: auto;
   border-top: 0.5px solid var(--border);

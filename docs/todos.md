@@ -5,10 +5,9 @@ Diese Datei sammelt die noch offenen Punkte am Semantic Motion Framework und am 
 ## Offene Reihenfolge
 
 1. Finale Visual-Cue-Glyphs für den semantischen Möglichkeitsraum zeichnen oder modellieren.
-2. Deaktivierte Editor-Kombinationen erklärbar machen.
-3. Shareable Links für spezifische Editor-Mappings ergänzen.
-4. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen.
-5. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren.
+2. Shareable Links für spezifische Editor-Mappings ergänzen.
+3. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen.
+4. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren.
 
 ## 1. Finale Visual-Cue-Glyphs für den semantischen Möglichkeitsraum zeichnen oder modellieren
 
@@ -36,36 +35,7 @@ Akzeptanzkriterium:
 
 - Der semantische Möglichkeitsraum nutzt eine visuell konsistente Cue-Sprache und ist nicht mehr auf rohe Platzhalter angewiesen.
 
-## 2. Deaktivierte Editor-Kombinationen erklärbar machen
-
-Status: Offen.
-
-Aktueller Befund:
-
-- Der Editor zeigt theoretisch definierte Dimensionen und Subkategorien an.
-- Nicht unterstützte Kombinationen werden ausgegraut, z. B. `Toggle + Hierarchie`.
-- Aktuell erklärt die UI aber nicht, warum eine Option deaktiviert ist.
-- `getOutOfScopeCombinations()` ist im Classifier bereits vorhanden, wird aber nicht für UI-Feedback genutzt.
-- Ohne Erklärung kann eine deaktivierte Option wie ein Bug wirken, obwohl es sich um eine bewusste Scope- und Framework-Entscheidung handelt.
-
-TODO:
-
-- Für deaktivierte Dimensionen und Subkategorien einen knappen Hinweis ergänzen.
-- Möglichst keinen großen Textblock einbauen, sondern ein dezentes Pattern nutzen:
-  - Tooltip
-  - Inline-Hinweis im Auswahlbereich
-  - oder kurzer Disabled-Reason unter der aktuell fokussierten Option
-- Prüfen, ob generische Gründe reichen:
-  - Kombination liegt außerhalb des aktuellen Framework-Scopes.
-  - Für diese Komponente wurde keine fachlich tragfähige Zuordnung modelliert.
-  - Die Dimension wird über andere Komponenten abgedeckt.
-- Optional später spezifischere Gründe für einzelne Kombinationen ergänzen.
-
-Akzeptanzkriterium:
-
-- Deaktivierte Editor-Optionen sind als konzeptuelle Entscheidung erkennbar und wirken nicht wie kaputte UI.
-
-## 3. Shareable Links für spezifische Editor-Mappings ergänzen
+## 2. Shareable Links für spezifische Editor-Mappings ergänzen
 
 Status: Offen.
 
@@ -94,7 +64,7 @@ Akzeptanzkriterium:
 
 - Ein spezifisches Mapping kann direkt über eine URL geöffnet werden und ist damit präsentations- und reviewfähig verlinkbar.
 
-## 4. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen
+## 3. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen
 
 Status: Offen.
 
@@ -125,7 +95,7 @@ Akzeptanzkriterium:
 
 - Nutzer können im Editor nachvollziehen und testen, wie ein Mapping bei Reduced Motion dargestellt wird.
 
-## 5. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren
+## 4. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren
 
 Status: Offen.
 
@@ -205,6 +175,7 @@ Akzeptanzkriterium:
 
 ## Erledigt
 
+- Deaktivierte Editor-Kombinationen erklärbar gemacht, damit ausgegraute Optionen als Scope-Entscheidung und nicht als UI-Fehler lesbar sind.
 - Editor-Integration mit allen 24 Mappings im Haupteditor geprüft und Mapping-Review-Punkte abgearbeitet.
 - Export-Logik aus POC 04 lokal in den Hauptprototyp nach `prototyp/src/editor/export/` überführt.
 - Export-UI im Editor mit Framer-Motion-/CSS-Tabs, Live-Code, Copy-to-Clipboard und CSS-Hinweisen fertiggestellt.
