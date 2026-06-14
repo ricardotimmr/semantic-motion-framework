@@ -1,10 +1,14 @@
-# TODOs vor Editor- und UI-Implementierung
+# TODOs Framework und Prototyp
 
-Diese Datei sammelt die noch offenen Punkte, die das Framework vor dem eigentlichen Editor möglichst stabil machen sollen. Ziel ist, spätere UI-Umbauten zu vermeiden, indem Datenmodell, Validierung, Exportlogik und semantische Sonderfälle vorher geklärt werden.
+Diese Datei sammelt die noch offenen Punkte am Semantic Motion Framework und am Prototyp. Ziel ist, fachliche Modellentscheidungen, Editor-Verhalten, Exportlogik und Dokumentation nachvollziehbar zu halten.
 
 ## Offene Reihenfolge
 
 1. Finale Visual-Cue-Glyphs für den semantischen Möglichkeitsraum zeichnen oder modellieren.
+2. Deaktivierte Editor-Kombinationen erklärbar machen.
+3. Shareable Links für spezifische Editor-Mappings ergänzen.
+4. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen.
+5. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren.
 
 ## 1. Finale Visual-Cue-Glyphs für den semantischen Möglichkeitsraum zeichnen oder modellieren
 
@@ -31,6 +35,122 @@ TODO:
 Akzeptanzkriterium:
 
 - Der semantische Möglichkeitsraum nutzt eine visuell konsistente Cue-Sprache und ist nicht mehr auf rohe Platzhalter angewiesen.
+
+## 2. Deaktivierte Editor-Kombinationen erklärbar machen
+
+Status: Offen.
+
+Aktueller Befund:
+
+- Der Editor zeigt theoretisch definierte Dimensionen und Subkategorien an.
+- Nicht unterstützte Kombinationen werden ausgegraut, z. B. `Toggle + Hierarchie`.
+- Aktuell erklärt die UI aber nicht, warum eine Option deaktiviert ist.
+- `getOutOfScopeCombinations()` ist im Classifier bereits vorhanden, wird aber nicht für UI-Feedback genutzt.
+- Ohne Erklärung kann eine deaktivierte Option wie ein Bug wirken, obwohl es sich um eine bewusste Scope- und Framework-Entscheidung handelt.
+
+TODO:
+
+- Für deaktivierte Dimensionen und Subkategorien einen knappen Hinweis ergänzen.
+- Möglichst keinen großen Textblock einbauen, sondern ein dezentes Pattern nutzen:
+  - Tooltip
+  - Inline-Hinweis im Auswahlbereich
+  - oder kurzer Disabled-Reason unter der aktuell fokussierten Option
+- Prüfen, ob generische Gründe reichen:
+  - Kombination liegt außerhalb des aktuellen Framework-Scopes.
+  - Für diese Komponente wurde keine fachlich tragfähige Zuordnung modelliert.
+  - Die Dimension wird über andere Komponenten abgedeckt.
+- Optional später spezifischere Gründe für einzelne Kombinationen ergänzen.
+
+Akzeptanzkriterium:
+
+- Deaktivierte Editor-Optionen sind als konzeptuelle Entscheidung erkennbar und wirken nicht wie kaputte UI.
+
+## 3. Shareable Links für spezifische Editor-Mappings ergänzen
+
+Status: Offen.
+
+Aktueller Befund:
+
+- Die App besitzt bereits Clean URLs für die vier Seiten.
+- Der Editor hält die Auswahl aber nur im React-State von `App.tsx`.
+- Die URL bleibt bei jeder Editor-Auswahl `/editor`.
+- Eine konkrete Mapping-Auswahl kann dadurch nicht direkt verlinkt oder in einer Präsentation geöffnet werden.
+
+TODO:
+
+- URL-Parameter für Mapping-Auswahl ergänzen, z. B.:
+  - `/editor?mapping=button-feedback-error`
+- Beim Öffnen des Editors:
+  - Query-Parameter lesen
+  - Mapping per `getMappingById()` validieren
+  - daraus `component`, `dimension` und `subcategory` setzen
+  - bei ungültiger ID auf Default-Auswahl zurückfallen
+- Bei Auswahlwechsel im Editor:
+  - URL per `history.replaceState()` oder `pushState()` aktualisieren
+  - dabei keine unnötigen History-Einträge erzeugen, wenn nur die Auswahl gewechselt wird
+- Framework-Karte kann beim Öffnen im Editor direkt den Mapping-Parameter setzen.
+
+Akzeptanzkriterium:
+
+- Ein spezifisches Mapping kann direkt über eine URL geöffnet werden und ist damit präsentations- und reviewfähig verlinkbar.
+
+## 4. Reduced-Motion-Strategie im Editor verständlich und simulierbar machen
+
+Status: Offen.
+
+Aktueller Befund:
+
+- Reduced-Motion-Strategien sind im Datenmodell und in der Preview-Logik umgesetzt.
+- Der Editor nutzt `useReducedMotion()` und respektiert `prefers-reduced-motion`.
+- Für Nutzer ist aber nicht klar, was Strategien wie `replace`, `shorten` oder `static` konkret bedeuten.
+- Es gibt kein UI-Element, um Reduced Motion im Editor bewusst zu simulieren.
+
+TODO:
+
+- Reduced-Motion-Information im Editor verständlicher anzeigen:
+  - nicht nur Strategie-Name
+  - sondern kurze Erklärung, was im konkreten Mapping reduziert wird
+- Optional einen Preview-Schalter ergänzen:
+  - Systempräferenz
+  - Reduced Motion simulieren
+  - normale Motion erzwingen
+- Prüfen, ob dieser Schalter nur im Editor-Preview-Bereich liegen sollte, damit er nicht wie eine globale App-Einstellung wirkt.
+- Besonders prüfen:
+  - `button-attention-persistent`
+  - `skeleton-attention-loading`
+  - Toast-Mappings mit Phasen
+  - wiederholte Attention-Mappings
+
+Akzeptanzkriterium:
+
+- Nutzer können im Editor nachvollziehen und testen, wie ein Mapping bei Reduced Motion dargestellt wird.
+
+## 5. CSS-Export-Grenzen mapping-spezifisch klarer kommunizieren
+
+Status: Offen.
+
+Aktueller Befund:
+
+- Der CSS-Export weist bereits auf Grenzen bei Spring und phasenspezifischem Easing hin.
+- Der Hinweis ist aber eher generisch.
+- Es wird nicht deutlich genug, welches konkrete Mapping gerade approximiert wird und welcher semantische Parameter dadurch verloren gehen kann.
+- Besonders Spring-Mappings verlieren im CSS-Export den physikalischen Charakter.
+
+TODO:
+
+- CSS-Hinweise im Export-Panel mapping-spezifischer formulieren.
+- Bei Spring:
+  - klar sagen, dass CSS keine echte Framer-Motion-Spring-Physik abbildet
+  - benennen, dass `springConfig` nur im Framer-Motion-Export erhalten bleibt
+  - auf die konkrete Mapping-ID verweisen
+- Bei `motionPhases` mit phasenspezifischem Easing:
+  - erklären, ob und wie stark der CSS-Export approximiert
+  - deutlich machen, dass Framer Motion die präzisere Ausgabe ist
+- Visuell prüfen, ob der Hinweis stärker hervorgehoben werden muss, ohne den Codebereich zu überladen.
+
+Akzeptanzkriterium:
+
+- Beim CSS-Export ist pro betroffenem Mapping klar, ob eine Approximation vorliegt und welche semantische Qualität dadurch eingeschränkt wird.
 
 ## Laufende Pflege: README synchronisieren
 
