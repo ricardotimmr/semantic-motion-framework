@@ -82,7 +82,7 @@ export const mappings: MappingDatabase = [
         'dass eine Eingabe nicht akzeptiert wurde.',
       source:
         'Index (Peirce): assoziative Verbindung zu Kopfschütteln als ' +
-        'Ablehnungsgeste. Direction Bias (Ware 2012): horizontale Bewegung ' +
+        'Ablehnungsgeste. Richtungsbias (Ware 2012): horizontale Bewegung ' +
         'kodiert Ablehnung. Sharp easing: Abruptheit verstärkt Fehlercharakter ' +
         '(Chang & Ungar 1993). translatePx ±8px: mittelgroß, klar wahrnehmbar ' +
         'ohne visuell aggressiv zu wirken (Bartram et al. 2003).',
@@ -137,11 +137,11 @@ export const mappings: MappingDatabase = [
         'ohne Dringlichkeit zu signalisieren. Es endet nach drei Zyklen ' +
         'und unterscheidet sich damit von persistenten Aufmerksamkeitssignalen.',
       source:
-        'Attention-Dimension (nicht Feedback): Das Signal ist systeminitiiert, ' +
+        'Aufmerksamkeit als Dimension: Das Signal ist systeminitiiert, ' +
         'nicht Reaktion auf eine abgeschlossene Nutzeraktion. ' +
         'Index (Peirce): wiederholte Bewegung als kultureller Index für ' +
         'Persistenz (Bartram et al. 2003). Ease-In-Out: symmetrische Kurve, ' +
-        'keine Abruptheit. Iterations 3: endet von selbst, abgegrenzt von ' +
+        'keine Abruptheit. Iterationen 3: endet von selbst, abgegrenzt von ' +
         'button-attention-persistent (Infinity).',
       references: ['Peirce1931', 'BartramWareCalvert2003'],
       signType: 'index',
@@ -190,8 +190,8 @@ export const mappings: MappingDatabase = [
         'Index (Peirce): wiederholte Bewegung als Verweis auf ausstehende ' +
         'Aktion. Ease-In-Out: gleichmäßig, nicht dringend. Duration 1000ms: ' +
         'langsam genug, um periphere Wahrnehmung zu aktivieren ohne ' +
-        'Hauptaufgabe zu stören (Bartram et al. 2003). Iterations Infinity: ' +
-        'Persistenz als semantisches Ziel. Accessibility bleibt als ' +
+        'Hauptaufgabe zu stören (Bartram et al. 2003). Iterationen Infinity: ' +
+        'Persistenz als semantisches Ziel. Barrierefreiheit bleibt als ' +
         'Framework-Metadatum anschlussfähig, weil endlose Bewegung bei ' +
         'prefers-reduced-motion reduziert oder ersetzt werden können sollte ' +
         '(WCAG 2.1 SC 2.3.3).',
@@ -236,11 +236,11 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        'Die horizontale Bewegung des Thumb-Elements ähnelt dem physischen ' +
+        'Die horizontale Bewegung des beweglichen Schaltelements ähnelt dem physischen ' +
         'Umlegen eines Schalters und kommuniziert, dass das Element aktiviert wurde.',
       source:
         'Ikon (Peirce): ähnelt dem physischen Umlegen eines Schalters ' +
-        '(Thomas & Johnston 1981, physical analogy). Ease-In-Out: symmetrische ' +
+        '(Thomas & Johnston 1981). Ease-In-Out: symmetrische ' +
         'Kurve für symmetrischen Zustandswechsel (Zacks & Tversky 2001). ' +
         'Duration 220ms: schnell genug für direkte Reaktion (Head 2016).',
       references: [
@@ -284,14 +284,14 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        'Die umgekehrte Bewegung des Thumb-Elements kommuniziert, dass das ' +
-        'Element deaktiviert wurde. Identische Duration und Easing wie Toggle On ' +
+        'Die umgekehrte Bewegung des beweglichen Schaltelements kommuniziert, dass das ' +
+        'Element deaktiviert wurde. Identische Dauer und Easing wie Toggle On ' +
         'verhindern eine irreführende Hierarchie zwischen den Zuständen.',
       source:
         'Ikon (Peirce): Umkehrung der Toggle-On-Bewegung. Ease-In-Out und ' +
-        'Duration identisch zu toggleOn: Konsistenzprinzip, asymmetrische ' +
+        'Dauer identisch zu toggleOn: Konsistenzprinzip, asymmetrische ' +
         'Parameter würden eine semantisch falsche Gewichtung der Zustände ' +
-        'erzeugen (Norman 2013, signifier consistency).',
+        'erzeugen (Norman 2013).',
       references: ['Peirce1931', 'Norman2013'],
       signType: 'icon',
       semanticContext: {
@@ -409,14 +409,14 @@ export const mappings: MappingDatabase = [
     rationale: {
       short:
         'Der Toast erscheint abrupt und schüttelt sich kurz horizontal. ' +
-        'Die Kombination aus scharfer Einfahrt und Shake macht den ' +
+        'Die Kombination aus scharfer Einfahrt und Schütteln macht den ' +
         'Fehlercharakter unmittelbar erkennbar.',
       source:
-        'Index (Peirce): horizontaler Shake als Ablehnungsindex ' +
-        '(Ware 2012, Direction Bias). Sharp easing: Abruptheit verstärkt ' +
+        'Index (Peirce): horizontales Schütteln als Ablehnungsindex ' +
+        '(Ware 2012). Sharp easing: Abruptheit verstärkt ' +
         'Fehlercharakter, kein Follow-Through, keine Freudigkeit. ' +
         'Zweiphasige Animation: Staging-Prinzip (Heer & Robertson 2007). ' +
-        'Duration 320ms: kürzer als warning, betont Unmittelbarkeit.',
+        'Duration 320ms: kürzer als die Warnung, betont Unmittelbarkeit.',
       references: ['Peirce1931', 'Ware2012', 'HeerRobertson2007'],
       signType: 'index',
       semanticContext: {
@@ -476,15 +476,16 @@ export const mappings: MappingDatabase = [
     rationale: {
       short:
         'Der Toast erscheint kontrolliert von unten und setzt nach der Ankunft ' +
-        'einen moderaten vertikalen Nudge. Die Bewegung signalisiert, dass ' +
+        'einen moderaten vertikalen Stoß. Die Bewegung signalisiert, dass ' +
         'Aufmerksamkeit erwünscht ist, aber keine sofortige Aktion erforderlich.',
       source:
         'Index (Peirce): Erscheinen aus dem Bildschirmrand. Ease-In-Out: ' +
         'keine Abruptheit, kein Follow-Through, ruhige Mitteilung ohne ' +
         'emotionale Valenz. Duration 420ms + delay 80ms: zeitlich ' +
-        'zurückgenommener als success (300ms) und error (320ms), ohne ' +
-        'als dringlicher Fehler zu wirken. Der anschließende y-Nudge ' +
-        'setzt ein moderates Warnsignal ohne Fehler-Shake oder positiven Spring ' +
+        'zurückgenommener als beim Erfolgs-Mapping (300ms) und Fehler-Mapping ' +
+        '(320ms), ohne als dringlicher Fehler zu wirken. Der anschließende ' +
+        'vertikale Stoß (y) setzt ein moderates Warnsignal ohne Fehler-Schütteln ' +
+        'oder positiven Spring ' +
         '(Head 2016; Bartram et al. 2003).',
       references: ['Peirce1931', 'Head2016', 'BartramWareCalvert2003'],
       signType: 'index',
@@ -542,17 +543,17 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        'Der Toast fährt ruhig von unten ein und gibt zwei subtile Scale-Impulse. ' +
+        'Der Toast fährt ruhig von unten ein und gibt zwei subtile Skalierungsimpulse. ' +
         'Das Signal zeigt, dass neue Information angekommen ist, ohne ' +
         'das Ergebnis einer Nutzeraktion zu kommunizieren.',
       source:
-        'Attention-Dimension: systeminitiiertes Signal ohne vorherige ' +
+        'Aufmerksamkeit als Dimension: systeminitiiertes Signal ohne vorherige ' +
         'Nutzeraktion, strukturell verschieden von toast-feedback-success. ' +
         'Ease-Out statt Spring: kein Follow-Through, ruhigere Ankunft ' +
         'ohne positive Energie. Duration 760ms: genug Zeit für Einfahrt und ' +
-        'zwei subtile Scale-Impulse, ohne Dringlichkeit zu erzeugen. ' +
-        'Der Scale-Pulse wirkt als Aufmerksamkeitssignal, ohne den warnenden ' +
-        'y-Nudge oder den positiven Spring der Feedback-Mappings zu übernehmen. ' +
+        'zwei subtile Skalierungsimpulse, ohne Dringlichkeit zu erzeugen. ' +
+        'Der Skalierungsimpuls wirkt als Aufmerksamkeitssignal, ohne den warnenden ' +
+        'vertikalen Stoß (y) oder den positiven Spring der Feedback-Mappings zu übernehmen. ' +
         'Bartram et al. (2003) stützen die Annahme, dass einfache ' +
         'Bewegungsattribute periphere Aufmerksamkeit lenken können.',
       references: ['Peirce1931', 'BartramWareCalvert2003'],
@@ -607,7 +608,7 @@ export const mappings: MappingDatabase = [
       source:
         'Ikon (Peirce): Skalierung ähnelt physikalischer Annäherung. ' +
         'Ease-Out: Ankommen als Abklingsignal (Zacks & Tversky 2001). ' +
-        'scaleFactor 0.05 + Opacity 0→1: kombinierter Übergang für ' +
+        'scaleFactor 0.05 + Opazität 0→1: kombinierter Übergang für ' +
         'wahrgenommene Tiefe (Material Design 3).',
       references: ['Peirce1931', 'ZacksTversky2001', 'MaterialDesign3'],
       signType: 'icon',
@@ -712,7 +713,7 @@ export const mappings: MappingDatabase = [
       source:
         'Index (Peirce): Die Richtung verweist hier nicht auf horizontale ' +
         'Vorwärtsnavigation, sondern auf das Erscheinen einer neuen ' +
-        'Oberfläche aus dem unteren Bildschirmrand. Direction y von unten: ' +
+        'Oberfläche aus dem unteren Bildschirmrand. Vertikale Richtung (y) von unten: ' +
         'Sheet-Konvention (Apple HIG, Material Design 3). Ease-Out: Ankommen ' +
         '(Zacks & Tversky 2001). ' +
         'Duration 350ms: komplex genug für bewusste Richtungswahrnehmung.',
@@ -771,7 +772,7 @@ export const mappings: MappingDatabase = [
         'Die Bewegung beschreibt kein horizontales Vorwärts-/Rückwärtsnavigieren, ' +
         'sondern das Schließen einer vertikal eingeführten Oberfläche. ' +
         'Ease-In: Verlassen als Aufbaukurve (Zacks & Tversky 2001). ' +
-        'Duration 280ms: kürzer als Enter, das Verlassende ist nicht ' +
+        'Duration 280ms: kürzer als die Einfahrt, das Verlassende ist nicht ' +
         'mehr der Fokus (Head 2016).',
       references: [
         'Peirce1931',
@@ -927,17 +928,17 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        'Die minimale Ausdehnung und die unterstützende Success-Markierung ' +
+        'Die minimale Ausdehnung und die unterstützende Erfolgsmarkierung ' +
         'an Feld und Label signalisieren, dass die Eingabe valide ist, ' +
         'ohne den Tippfluss zu unterbrechen.',
       source:
         'Ikon/Index (Peirce): leichte Expansion als Positivsignal. ' +
-        'Die komponentenspezifische Success-Markierung an Border und Label ' +
+        'Die komponentenspezifische Erfolgsmarkierung an Rahmen und Label ' +
         'wirkt als visueller Zustands-Signifier (Norman 2013) und unterstützt ' +
-        'das Motion-Signal, ohne selbst primärer Bewegungsparameter zu sein. ' +
+        'das Bewegungssignal, ohne selbst primärer Bewegungsparameter zu sein. ' +
         'Ease-Out: Abklingen (Zacks & Tversky 2001). Duration 175ms: ' +
         'kürzer als button-feedback-success (250ms), weil Eingabe aktiv ' +
-        'sein kann (Head 2016). scaleFactor 0.02: minimal, subtiler als Button.',
+        'sein kann (Head 2016). scaleFactor 0.02: minimal, subtiler als beim Button.',
       references: ['Peirce1931', 'Norman2013', 'ZacksTversky2001', 'Head2016'],
       signType: 'icon/index',
       semanticContext: {
@@ -982,11 +983,11 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        'Der reduzierte Shake kommuniziert Ablehnung ohne den Eingabeinhalt ' +
-        'visuell zu destabilisieren. Die kürzere Duration respektiert, dass ' +
+        'Das reduzierte Schütteln kommuniziert Ablehnung ohne den Eingabeinhalt ' +
+        'visuell zu destabilisieren. Die kürzere Dauer respektiert, dass ' +
         'der Nutzer möglicherweise sofort weitertippen möchte.',
       source:
-        'Index (Peirce): horizontaler Shake als Ablehnungsindex (Ware 2012). ' +
+        'Index (Peirce): horizontales Schütteln als Ablehnungsindex (Ware 2012). ' +
         'translatePx ±5px statt ±8px (Button): Eingabefeld ist breiter, ' +
         'reagiert empfindlicher. Duration 275ms statt 350ms: aktive Eingabe ' +
         'darf nicht blockiert wirken (Head 2016).',
@@ -1029,14 +1030,14 @@ export const mappings: MappingDatabase = [
     rationale: {
       short:
         'Der Warnhinweis erscheint sanft unterhalb des Felds und kommt mit ' +
-        'einem kleinen vertikalen Offset zur Ruhe. Zwei lokale Opacity-Impulse ' +
+        'einem kleinen vertikalen Versatz zur Ruhe. Zwei lokale Opazitätsimpulse ' +
         'markieren den Hinweis, ohne das Eingabefeld selbst zu bewegen.',
       source:
-        'Ikon (Peirce): Opacity-Transition ähnelt physikalischem Erscheinen ' +
-        'eines Objekts - ikonische Beziehung. Der kleine y-Offset des ' +
-        'Helper-Texts verstärkt dieses Erscheinen als lokales Ankommen, ' +
+        'Ikon (Peirce): Opazitätsübergang ähnelt physikalischem Erscheinen ' +
+        'eines Objekts - ikonische Beziehung. Der kleine vertikale Versatz (y) des ' +
+        'Hilfetexts verstärkt dieses Erscheinen als lokales Ankommen, ' +
         'ohne das Eingabefeld selbst zu verschieben. Zwei lokale ' +
-        'Opacity-Impulse verstärken die Wahrnehmbarkeit des Warnhinweises, ohne ' +
+        'Opazitätsimpulse verstärken die Wahrnehmbarkeit des Warnhinweises, ohne ' +
         'das Feld als Ganzes in ein Aufmerksamkeitssignal zu verwandeln. ' +
         'Die Farbkonvention (Orange/Gelb) des Warnhinweises ist symbolisch, ' +
         'klassifiziert aber die Farbe, nicht die Animation. Ease-In-Out: ' +
@@ -1079,16 +1080,16 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        'Die schnelle, abklingende Transition von Fokusrahmen, Feldzustand ' +
+        'Der schnelle, abklingende Übergang von Fokusrahmen, Feldzustand ' +
         'und Label kommuniziert sofortige Bereitschaft. Der Nutzer sieht, ' +
         'dass das Feld aktiv ist, ' +
         'ohne auf eine Reaktion warten zu müssen.',
       source:
         'Ikon (Peirce): Die komponentenspezifische Expansion des Fokusindikators ' +
-        'und die Änderung von Border/Label ähnelt einem Herantreten des aktiven ' +
+        'und die Änderung von Rahmen und Label ähnelt einem Herantreten des aktiven ' +
         'Elements. Ease-Out: Ankommen (Zacks & Tversky 2001). ' +
         'Duration 175ms: Nutzer möchte sofort tippen (Head 2016). ' +
-        'Accessibility: Fokuszustand muss auch ohne Animation erkennbar ' +
+        'Barrierefreiheit: Fokuszustand muss auch ohne Animation erkennbar ' +
         'sein (WCAG 2.1, 2.4.7).',
       references: ['Peirce1931', 'ZacksTversky2001', 'Head2016', 'WCAG21'],
       signType: 'icon',
@@ -1126,14 +1127,14 @@ export const mappings: MappingDatabase = [
     rationale: {
       short:
         'Das Feld kehrt ruhig in seinen Ausgangszustand zurück. ' +
-        'Die leicht verlängerte Rücktransition macht sichtbar, dass ' +
+        'Der leicht verlängerte Rückübergang macht sichtbar, dass ' +
         'der Fokus passiv aus dem Feld zurücktritt.',
       source:
-        'Ikon (Peirce): Rücktransition des Fokusindikators. Ease-In: ' +
+        'Ikon (Peirce): Rückübergang des Fokusindikators. Ease-In: ' +
         'Zurücktreten als Aufbaukurve (Zacks & Tversky 2001). ' +
-        'Duration 210ms: langsam genug, damit die Rückbewegung in der Preview ' +
+        'Duration 210ms: langsam genug, damit die Rückbewegung in der Vorschau ' +
         'als Zustandswechsel lesbar bleibt. Trotz längerer Dauer wirkt Blur ' +
-        'durch Ease-In und Rücknahme von Ring/Label passiver als Focus. ' +
+        'durch Ease-In und Rücknahme von Fokusring und Label passiver als Focus. ' +
         'Bewusste Asymmetrie zu input-stateChange-focus (Ease-Out): ' +
         'Focus ist aktives Ankommen, Blur ist passives Zurücktreten, ' +
         'keine gleichwertigen Zustände (Norman 2013).',
@@ -1181,7 +1182,7 @@ export const mappings: MappingDatabase = [
         'wahrnehmbar, ohne die laufende Orientierung im Formular zu unterbrechen.',
       source:
         'Index (Peirce): wiederholte Bewegung verweist auf einen ausstehenden ' +
-        'Zustand, der Aufmerksamkeit benötigt. Attention-Dimension: Das Signal ' +
+        'Zustand, der Aufmerksamkeit benötigt. Aufmerksamkeit als Dimension: Das Signal ' +
         'markiert ein konkretes Pflichtfeld als handlungsrelevant, statt eine ' +
         'Eingabe inhaltlich zu bewerten. Bartram et al. (2003) zeigen, dass ' +
         'einfache Bewegungsattribute Aufmerksamkeit zuverlässig lenken können. ' +
@@ -1234,20 +1235,20 @@ export const mappings: MappingDatabase = [
     },
     rationale: {
       short:
-        'Der Shimmer bewegt sich mit konstanter Geschwindigkeit von links ' +
+        'Der Schimmer bewegt sich mit konstanter Geschwindigkeit von links ' +
         'nach rechts über den Platzhalter. Es besteht kein natürlicher ' +
         'Zusammenhang zwischen dieser Bewegung und dem Ladevorgang. Die ' +
         'Bedeutung entsteht ausschließlich durch Konvention, die sich ' +
         'durch den verbreiteten Einsatz in digitalen Interfaces etabliert hat.',
       source:
-        'Symbol (Peirce): Die Shimmer-Animation hat keine ikonische Ähnlichkeit ' +
+        'Symbol (Peirce): Die Schimmer-Animation hat keine ikonische Ähnlichkeit ' +
         'mit einem Ladeprozess und keine indexikalische Assoziation damit. ' +
         'Die Bedeutung ist rein konventionell (Chandler 2007, S. 36). ' +
         'Lineares Easing: konstante Geschwindigkeit repräsentiert einen ' +
         'kontinuierlichen Prozess ohne identifizierbare Phasenstruktur ' +
         '(Zacks & Tversky 2001). Linear ist der einzige semantisch ' +
-        'begründete Einsatz dieses Presets im Framework. Accessibility bleibt ' +
-        'als Framework-Metadatum anschlussfähig, weil endloser Shimmer bei ' +
+        'begründete Einsatz dieses Presets im Framework. Barrierefreiheit bleibt ' +
+        'als Framework-Metadatum anschlussfähig, weil endloser Schimmer bei ' +
         'prefers-reduced-motion reduzierbar oder durch einen statischen ' +
         'Ladezustand ersetzbar sein sollte (WCAG 2.1 SC 2.3.3).',
       references: ['Peirce1931', 'Chandler2007', 'ZacksTversky2001', 'WCAG21'],

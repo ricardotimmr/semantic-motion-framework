@@ -37,3 +37,9 @@ docs/smf-mockup-final-for-real.html
 
 # Local weekly video notes
 docs/weekly-update-vlogs/
+
+# Local thesis evaluation
+thesis/evaluation.md
+
+# Old mapping files
+prototyp/src/data/mappings-old.ts
