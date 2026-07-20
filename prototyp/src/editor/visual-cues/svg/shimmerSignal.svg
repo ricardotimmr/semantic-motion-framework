@@ -5,4 +5,6 @@
   <path d="M18 42H46" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
   <path d="M36 50L48 14" stroke="currentColor" stroke-width="7" stroke-linecap="round" opacity="0.2"/>
   <path d="M39 50L51 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M51 19V27M47 23H55" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M23 47V53M20 50H26" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
 </svg>

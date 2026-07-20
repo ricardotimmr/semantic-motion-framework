@@ -43,6 +43,19 @@ export function ShimmerSignalGlyph(props: SVGProps<SVGSVGElement>) {
         strokeWidth="2.5"
         strokeLinecap="round"
       />
+      <path
+        d="M51 19V27M47 23H55"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M23 47V53M20 50H26"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        opacity="0.75"
+      />
     </svg>
   );
 }
