@@ -5,7 +5,7 @@ import {
   type Variants,
 } from 'framer-motion';
 import type { SemanticContext, VisualCueId } from '../framework/types';
-import { lucidePlaceholderByVisualCueId } from '../framework/visualCues';
+import { VisualCueGlyph } from './visual-cues/VisualCueGlyph';
 
 type SemanticContextPanelProps = {
   semanticContext: SemanticContext;
@@ -25,22 +25,6 @@ const visualCueLabels: Record<VisualCueId, string> = {
   helperMessage: 'Hilfstext',
   shimmerSignal: 'Shimmer',
   fadeResolve: 'Auflösung',
-};
-
-const visualCueMarks: Record<VisualCueId, string> = {
-  refusalGesture: 'NO',
-  pulseSignal: '))',
-  toggleTravel: 'ON',
-  arrival: 'IN',
-  departure: 'OUT',
-  nudgeSignal: '!',
-  returnLayer: '<-',
-  foreground: 'FG',
-  backgroundRecede: 'BG',
-  focusSignal: '[]',
-  helperMessage: '?',
-  shimmerSignal: '//',
-  fadeResolve: '..',
 };
 
 const semanticContextVariants: Variants = {
@@ -88,20 +72,16 @@ function SemanticContextPanel({ semanticContext }: SemanticContextPanelProps) {
 
         <div className="semantic-context-head">
           <div aria-label="Visuelle Cues" className="semantic-context-cues">
-            {visualCues.map((cue) => {
-              const placeholder = lucidePlaceholderByVisualCueId[cue];
-
-              return (
-                <span
-                  aria-label={`${visualCueLabels[cue]} (${placeholder.lucideIcon})`}
-                  className={`semantic-context-cue cue-${cue}`}
-                  key={cue}
-                  title={`${visualCueLabels[cue]} · Lucide-Platzhalter: ${placeholder.lucideIcon}`}
-                >
-                  <span aria-hidden="true">{visualCueMarks[cue]}</span>
-                </span>
-              );
-            })}
+            {visualCues.map((cue) => (
+              <span
+                aria-label={visualCueLabels[cue]}
+                className={`semantic-context-cue cue-${cue}`}
+                key={cue}
+                title={visualCueLabels[cue]}
+              >
+                <VisualCueGlyph cue={cue} />
+              </span>
+            ))}
           </div>
 
           <div className="semantic-context-metaphor">

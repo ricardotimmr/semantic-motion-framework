@@ -1831,15 +1831,20 @@
 
 .semantic-context-cue {
   display: grid;
-  width: 1.85rem;
-  height: 1.85rem;
+  width: 2.35rem;
+  height: 2.35rem;
   place-items: center;
   border: 1px solid rgba(240, 45, 0, 0.42);
   background: rgba(240, 45, 0, 0.045);
   color: var(--red);
-  font-size: 0.625rem;
-  font-weight: 600;
   line-height: 1;
+}
+
+.visual-cue-glyph {
+  display: block;
+  width: 82%;
+  height: 82%;
+  color: currentColor;
 }
 
 .semantic-context-metaphor {
