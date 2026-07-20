@@ -1818,21 +1818,23 @@
 
 .semantic-context-head {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.65rem;
-  align-items: center;
+  grid-template-columns: minmax(3rem, 6.8rem) minmax(0, 1fr);
+  gap: 0.8rem;
+  align-items: start;
   margin-top: 0.85rem;
 }
 
 .semantic-context-cues {
   display: flex;
-  gap: 0.35rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  max-width: 6.8rem;
 }
 
 .semantic-context-cue {
   display: grid;
-  width: 2.35rem;
-  height: 2.35rem;
+  width: 3rem;
+  height: 3rem;
   place-items: center;
   border: 1px solid rgba(240, 45, 0, 0.42);
   background: rgba(240, 45, 0, 0.045);
@@ -1842,8 +1844,8 @@
 
 .visual-cue-glyph {
   display: block;
-  width: 82%;
-  height: 82%;
+  width: 90%;
+  height: 90%;
   color: currentColor;
 }
 
