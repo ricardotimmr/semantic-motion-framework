@@ -1,7 +1,9 @@
 # Semantic Motion Framework
 
 > Bachelorarbeit 2026  
-> Theoriegestütztes Framework zur semantischen Klassifikation von UI-Animationen und prototypischer Editor zur Operationalisierung des Frameworks.
+> **Semantic Motion in Web UIs: Konzeption und prototypische Umsetzung eines regelbasierten Frameworks für Microinteractions und UI-Verhalten in Web-Interfaces**
+
+Theoriegestütztes Framework zur semantischen Klassifikation von UI-Animationen und prototypischer Editor zur Operationalisierung des Frameworks.
 
 ## Kurzbeschreibung
 
@@ -32,6 +34,8 @@ Der aktuelle Framework-Kern umfasst:
 - 24 Mapping-Einträge
 - Peirce-Klassifikation pro Mapping
 - nutzergerichtete Kurzbegründung und wissenschaftliche Detailbegründung
+- semantischer Möglichkeitsraum mit bildhaften Lesarten, angrenzenden Bedeutungen und Abgrenzungen
+- Visual-Cue-Glyphs für die bildhafte Lesart im Editor
 - maschinenlesbare Animationsparameter
 - Reduced-Motion-Metadaten für relevante Mappings
 - zentrale Validierung der Mapping-Datenbank
@@ -50,6 +54,12 @@ prototyp/src/framework/classifier.ts
 prototyp/src/framework/validation.ts
 ```
 
+Die Visual-Cue-Glyphs für den semantischen Möglichkeitsraum liegen in:
+
+```text
+prototyp/src/editor/visual-cues/
+```
+
 ## Datenmodell
 
 Ein Mapping verbindet eine UI-Komponente, eine Bedeutungsdimension und eine Subkategorie mit konkreten Animationsparametern.
@@ -64,8 +74,11 @@ Beispielhaft modelliert das Framework:
 - wiederholte Animationen über `iterations`
 - mehrphasige Animationen über `motionPhases`
 - Reduced-Motion-Strategien über Accessibility-Metadaten
+- semantische Kontextdaten über `semanticContext`
 
 Mehrphasige Animationen werden explizit über `motionPhases` modelliert. Das betrifft zum Beispiel Toast-Animationen, die zuerst einfahren und danach ein sekundäres Signal wie Shake, Nudge oder Pulse zeigen.
+
+Der semantische Möglichkeitsraum ergänzt die primären Mappings um eine Reflexionsebene. Er beschreibt pro Mapping die dominante bildhafte Lesart, mögliche angrenzende Bedeutungen und Grenzen der Interpretation. Diese Ebene steuert nicht die Animation selbst, sondern macht die semantische Herleitung im Editor nachvollziehbarer.
 
 ## Prototyp
 
@@ -90,7 +103,7 @@ Der aktuelle Prototyp ist als Vier-Seiten-Struktur angelegt:
 - Framework-Karte
 - Über das Projekt
 
-Die Startseite dient als Informations- und Einstiegsebene. Der Editor bildet die zentrale Nutzungskette des Frameworks ab: Mapping auswählen, semantische Begründung lesen, Animation in der Preview prüfen und Framer-Motion- oder CSS-Code exportieren. Die Framework-Karte zeigt alle semantischen Mappings als Überblick, die Projektseite bündelt Forschungsrahmen, Kontext und Ressourcen.
+Die Startseite dient als Informations- und Einstiegsebene. Der Editor bildet die zentrale Nutzungskette des Frameworks ab: Mapping auswählen, semantische Begründung lesen, Animation in der Preview prüfen und Framer-Motion- oder CSS-Code exportieren. Optional kann der semantische Möglichkeitsraum eingeblendet werden; er zeigt die bildhafte Lesart, Visual-Cue-Glyphs, angrenzende Bedeutungen und Abgrenzungen. Die Framework-Karte zeigt alle semantischen Mappings als Überblick, die Projektseite bündelt Forschungsrahmen, Kontext und Ressourcen.
 
 ## POCs
 
@@ -116,7 +129,7 @@ semantic-motion-framework/
 │   ├── src/
 │   │   ├── components/      # übergreifende UI-Komponenten des Prototyps
 │   │   ├── data/            # Mapping-Datenbank
-│   │   ├── editor/          # Preview-, Export- und Editor-Hilfslogik
+│   │   ├── editor/          # Preview-, Export-, Visual-Cue- und Editor-Hilfslogik
 │   │   ├── framework/       # Typen, Classifier und Validierung
 │   │   └── pages/           # Startseite, Editor, Framework-Karte, Über das Projekt
 │   └── package.json
@@ -150,7 +163,8 @@ Der Prototyp ist kein produktionsreifes Design-Tool. Er dient dazu, das Framewor
 ## Autor
 
 Ricardo Timm  
-Bachelorarbeit, TH Köln, 2026
+Bachelorarbeit, TH Köln, 2026  
+**Semantic Motion in Web UIs: Konzeption und prototypische Umsetzung eines regelbasierten Frameworks für Microinteractions und UI-Verhalten in Web-Interfaces**
 
 Erstprüfer: Prof. Christian Noss  
 Zweitprüfer: Prof. Dr. Hoai Viet Nguyen
